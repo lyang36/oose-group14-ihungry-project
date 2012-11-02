@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector"
+    android:orientation="horizontal"
+    android:padding="5dip" >
+
+    <!-- ListRow Left sied Thumbnail image -->
+
+    <LinearLayout
+        android:id="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dip"
+        android:background="@drawable/image_bg"
+        android:padding="3dip" >
+
+        <ImageView
+            android:id="@+id/list_image"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:src="@drawable/food_icon" />
+    </LinearLayout>
+
+    <!-- Title Of Item -->
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/thumbnail"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:text="Item Title"
+        android:textColor="#040404"
+        android:textSize="14dip"
+        android:textStyle="bold"
+        android:typeface="sans" />
+
+    <!--
+     Rightend Arrow 
+     <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_disclosure"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+    -->
+    <!-- Rating -->
+
+    <TextView
+        android:id="@+id/rating"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/thumbnail"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:text="Rating: 4.5"
+        android:textColor="#343434"
+        android:textSize="10dip" />
+
+    <!-- Item Price -->
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/title"
+        android:layout_centerVertical="true"
+        android:gravity="right"
+        android:text="Item Price"
+        android:textColor="#10bcc9"
+        android:textSize="10dip"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btn_minus"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/rating"
+        android:layout_centerVertical="true"
+        android:text="-" />
+    
+    <!--  android:focusable="false" -->
+    
+    <Button
+        android:id="@+id/btn_add"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@+id/btn_minus"
+        android:text="+" />
+
+    <TextView
+        android:id="@+id/quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Quantity"
+        android:textSize="10dip" />
+
+</RelativeLayout>

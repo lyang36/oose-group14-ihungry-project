@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="Copyright reserved by iHungry Inc. 2012"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <ImageButton
+        android:id="@+id/imgbtn_Nearby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="78dp"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:baselineAlignBottom="true"
+        android:cropToPadding="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/nearbyicon" />
+
+    <ImageButton
+        android:id="@+id/imgbtn_Aboutme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_alignTop="@+id/imgbtn_Nearby"
+        android:layout_marginRight="17dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/me_icon" />
+
+    <ImageButton
+        android:id="@+id/imgbtn_Favourite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imgbtn_Nearby"
+        android:layout_below="@+id/imgbtn_Nearby"
+        android:layout_marginTop="80dp"
+        android:background="@null"
+        android:src="@drawable/favouriteicon" />
+
+    <ImageButton
+        android:id="@+id/imgbtn_Orderhistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imgbtn_Aboutme"
+        android:layout_alignTop="@+id/imgbtn_Favourite"
+        android:background="@null"
+        android:src="@drawable/orderhistoryicon" />
+
+</RelativeLayout>

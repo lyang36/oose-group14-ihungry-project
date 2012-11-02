@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+	<com.readystatesoftware.maps.TapControlledMapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="462dp"
+        android:layout_weight="0.15"
+        android:apiKey="0wnpKcRvr3o600kPaYvfyUH8wDEdm8IcudXn2_g"
+        android:clickable="true" />
+
+    <ImageButton
+        android:id="@+id/imgbtn_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.22"
+        android:background="@null"
+        android:src="@drawable/refresh" />
+
+</LinearLayout>
