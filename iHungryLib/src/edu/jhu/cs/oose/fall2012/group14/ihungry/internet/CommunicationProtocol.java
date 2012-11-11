@@ -41,14 +41,13 @@ public class CommunicationProtocol {
 	/**
 	 * server commands for costumer
 	 */
-	public static final String LOGOUT = 					"6b4ea69e17243db95f7b46c384d40370";
-	public static final String LOGIN = 						"4976d7ca80f2cb54c1c7d5c87fb0c7ef";
-	public static final String CUS_GET_REALNAME = 			"6b2b26dca120b5cf60141616fc1cbbdc";
-	public static final String CUS_GET_EMAIL = 				"802acd3a5c293d972012b1c661016361";
-	public static final String CUS_GET_PHONE = 				"50ac95b5fa5a0b706e7f17f2ee2d445d";
-	public static final String CUS_GET_DOCUMENT = 			"6168ef79939d6726b7c6fdcfa31a6eb9";
+	public static final String CUS_LOGIN = 						"4976d7ca80f2cb54c1c7d5c87fb0c7ef";
+	
+	public static final String CUS_GET_CONTACT = 			"6168ef79939d6726b7c6fdcfa31a6eb9";
 	public static final String CUS_SIGN_UP = 				"c5b5ff973838ac99e7c742e4dd7a5cbd";
 	public static final String CUS_CHECK_UNAME_EXISTED = 	"84f9e49f3d924ff032c5ef394aa08bdf";
+	public static final String CUS_UPDATE_CONTACT = 		"d4cc61b5adfda1a4d189abad44b0f9ed";
+
 	
 	/**
 	 * Use a md5 of facebook to login
@@ -61,12 +60,6 @@ public class CommunicationProtocol {
 	 */
 	public static final String FB_SIGN_NAME =				"ddad8792734aebb4cf9a68fd";
 	public static final String FB_SIGN_PASSWD = 			"aed78ba066b3d94e190c215ed7834bac";
-	
-	public static final String CUS_SET_REALNAME = 			"18798ace2c8cbe9825f21d5f0468eac1";
-	public static final String CUS_SET_EMAIL = 				"8ef30075f2a0b09a50bad7049db8b0cc";
-	public static final String CUS_SET_PHONE = 				"1dba9d26a4cd11aa4d319c109ec8d396";
-	public static final String CUS_SET_BIRTH = 				"aa260f4591199dde2715f2f7516a42af";
-	public static final String CUS_UPDATE_DOC = 			"d4cc61b5adfda1a4d189abad44b0f9ed";
 	
 	public static final String CUS_FIND_RESTAURANT = 		"20b56c0a6dac7f00edef0fc8180657e3";
 	public static final String CUS_GET_MENU		  =			"79907ca0920678ded973e1c7c3fde9d1";
@@ -94,6 +87,8 @@ public class CommunicationProtocol {
 	public static final String BUSI_LOGIN = 				"f4cb213d54f9344dbf4aa77a2deb1b6f";
 	public static final String BUSI_SIGNUP = 				"b5faedba1c8eb07ef588b500f6d68f9d";
 	public static final String BUSI_CHECK_UNAME_EXISTED = 	"aa1c7d9580569252f3ab9d886049e934";
+	public static final String BUSI_UPADATE_CONTACT = 		"5071cf4b162b6e66d3ca5d71321624ad";
+	public static final String BUSI_GET_CONTACT = 			"7a3b457e1544c136e822dfed78cd982e";
 	
 	/**
 	 * for orders 

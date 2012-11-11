@@ -1,6 +1,9 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOKeyNames;
 
 /**
  * One subclass of Person
@@ -14,13 +17,11 @@ public class Customer extends Person implements JSONHandler{
 
 	@Override
 	public JSONObject getJSON() {
-		// TODO Auto-generated method stub
-		return null;
+		return super.getJSON();
 	}
 
 	@Override
 	public void parseFromJSONObject(JSONObject jsonobj) {
-		// TODO Auto-generated method stub
-		
+		super.parseFromJSONObject(jsonobj);
 	}
 }

@@ -1,5 +1,6 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -10,42 +11,55 @@ import org.json.JSONObject;
  */
 
 public class Restaurant extends Person implements JSONHandler{
-
+	public static final String KEY_MENU = "Menu";
+	public static final String KEY_ALBUM = "Album";
+	Menu menu = null;
+	Album album = null;
+	
 	public Restaurant() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Restaurant(String id, String name, ContactInfo ci) {
-		super(id, name, ci);
-		// TODO Auto-generated constructor stub
-	}
-
-	public Restaurant(String id, String name, ContactInfo ci, Menu menu) {
-
-	}
-
-	public Restaurant(String id, String name, ContactInfo ci, Menu menu,
-			Album album) {
-
+	public void setMenu(Menu m){
+		this.menu = m;
 	}
 
 	public Menu getMenu() {
-		return null;
+		return menu;
+	}
+	
+	public void setAlbum(Album a){
+		this.album = a;
 	}
 	
 	public Album getAlbum(){
-		return null;
+		return album;
 	}
 
 	@Override
 	public JSONObject getJSON() {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject jsonobj = super.getJSON();
+		try {
+			jsonobj.put(KEY_ALBUM, album.getJSON());
+			jsonobj.put(KEY_MENU, menu);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonobj;
 	}
 
 	@Override
 	public void parseFromJSONObject(JSONObject jsonobj) {
-		// TODO Auto-generated method stub
+		super.parseFromJSONObject(jsonobj);
+		this.album = new Album(null);
+		this.menu = new Menu();
+		try {
+			album.parseFromJSONObject(jsonobj.getJSONObject(KEY_ALBUM));
+			menu.parseFromJSONObject(jsonobj.getJSONObject(KEY_MENU));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
 		
 	}
 }
