@@ -31,6 +31,7 @@ public class ContactInfo implements JSONHandler{
 	public ContactInfo( String address, String primPhone){
 		this.address = address;
 		this.primPhone = primPhone;
+		this.icon = new Icon();
 
 	}
 	

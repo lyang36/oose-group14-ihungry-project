@@ -24,7 +24,7 @@ public class Menu implements JSONHandler{
 	@Override
 	public JSONObject getJSON() {
 		// TODO Auto-generated method stub
-		return null;
+		return new JSONObject();
 	}
 	@Override
 	public void parseFromJSONObject(JSONObject jsonobj) {

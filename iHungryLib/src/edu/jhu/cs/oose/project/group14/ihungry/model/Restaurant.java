@@ -18,6 +18,8 @@ public class Restaurant extends Person implements JSONHandler{
 	
 	public Restaurant() {
 		// TODO Auto-generated constructor stub
+		menu = new Menu();
+		album = new Album(null);
 	}
 
 	public void setMenu(Menu m){
@@ -41,7 +43,7 @@ public class Restaurant extends Person implements JSONHandler{
 		JSONObject jsonobj = super.getJSON();
 		try {
 			jsonobj.put(KEY_ALBUM, album.getJSON());
-			jsonobj.put(KEY_MENU, menu);
+			jsonobj.put(KEY_MENU, menu.getJSON());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

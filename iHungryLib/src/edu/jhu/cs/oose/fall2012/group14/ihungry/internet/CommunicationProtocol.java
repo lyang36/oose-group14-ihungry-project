@@ -87,7 +87,7 @@ public class CommunicationProtocol {
 	public static final String BUSI_LOGIN = 				"f4cb213d54f9344dbf4aa77a2deb1b6f";
 	public static final String BUSI_SIGNUP = 				"b5faedba1c8eb07ef588b500f6d68f9d";
 	public static final String BUSI_CHECK_UNAME_EXISTED = 	"aa1c7d9580569252f3ab9d886049e934";
-	public static final String BUSI_UPADATE_CONTACT = 		"5071cf4b162b6e66d3ca5d71321624ad";
+	public static final String BUSI_UPDATE_CONTACT = 		"5071cf4b162b6e66d3ca5d71321624ad";
 	public static final String BUSI_GET_CONTACT = 			"7a3b457e1544c136e822dfed78cd982e";
 	
 	/**

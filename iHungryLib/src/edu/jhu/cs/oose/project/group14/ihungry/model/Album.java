@@ -31,7 +31,7 @@ public class Album implements JSONHandler{
 	@Override
 	public JSONObject getJSON() {
 		// TODO Auto-generated method stub
-		return null;
+		return new JSONObject();
 	}
 
 	@Override
