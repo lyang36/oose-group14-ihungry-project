@@ -13,10 +13,14 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOKeyNames;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOperatorTestUnit;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtilImpl;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
+import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 public class MessageReactorImplTest {
 	public void testCommand(String uname, String passwd,String command,
@@ -72,70 +76,44 @@ public class MessageReactorImplTest {
 				CommunicationProtocol.FALSE, "");
 		System.out.println("Check username unexisted succeeded!!!");
 		
-		//check username existed
-		testCommand(MD5.getNameMd5("lyang"),
-				MD5.getMd5("1234"), CommunicationProtocol.CUS_CHECK_UNAME_EXISTED,
-				CommunicationProtocol.TRUE, "");
-		System.out.println("Check username existed succeeded!!!");
 		
-		//check getdoc
-		testCommand(MD5.getNameMd5("lyang"),
-				MD5.getMd5("123456"), CommunicationProtocol.CUS_GET_DOCUMENT,
-				CommunicationProtocol.PROCESS_SUCCEEDED, "");
-		System.out.println("Check getdoc succeeded!!!");
-		
-		//check getdoc with wrong password
-		testCommand(MD5.getNameMd5("lyang"),
-				MD5.getMd5("fjkd"), CommunicationProtocol.CUS_GET_DOCUMENT,
-				CommunicationProtocol.PROCESS_FAILED, "");
-		System.out.println("Test getdoc wrong passwd succeeded!!!");
-	
-		//check get email test
-		testCommand(MD5.getNameMd5("lyang"),
-				MD5.getMd5("123456"), CommunicationProtocol.CUS_GET_EMAIL,
-				CommunicationProtocol.PROCESS_SUCCEEDED, "");
-		System.out.println("Test get email succeeded!!!");
-		
-		//check signup
-		JSONObject cusobj = new JSONObject();
-		String md5names = MD5.getNameMd5("szhao");
-		String md5passwd = MD5.getMd5("123456");
-		try {
-			cusobj.put(DBOKeyNames.CUS_KEY_ID, md5names);
-			cusobj.put(DBOKeyNames.CUS_KEY_REALNAME, "Sun Zhao");
-			cusobj.put(DBOKeyNames.CUS_KEY_PASSWD, md5passwd);
-			cusobj.put(DBOKeyNames.CUS_KEY_EMAIL, "1334@4444.com");
-			cusobj.put(DBOKeyNames.CUS_KEY_PRIMEPHONE, "444-456-7890");
-			cusobj.put(DBOKeyNames.CUS_KEY_UNAME, "szhao");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		//check businame unexisted
+		testCommand(MD5.getNameMd5("szhao12345"),
+				MD5.getMd5("1234"), CommunicationProtocol.BUSI_CHECK_UNAME_EXISTED,
+				CommunicationProtocol.FALSE, "");
+		System.out.println("Check businame unexisted succeeded!!!");
 
-		testCommand(MD5.getNameMd5("szhao"),
-				MD5.getMd5("123456"), CommunicationProtocol.CUS_SIGN_UP,
-				CommunicationProtocol.PROCESS_SUCCEEDED, cusobj.toString());
-		System.out.println("Test Signup succeeded!!!");
-		
-		//check signup business
-		JSONObject busobj = new JSONObject();
-		md5names = MD5.getNameMd5("lyangBus");
-		md5passwd = MD5.getMd5("111111");
-		try {
-			busobj.put(DBOKeyNames.BUS_KEY_ID, md5names);
-			busobj.put(DBOKeyNames.BUS_KEY_NAME, "Yang And His Friends' Food");
-			busobj.put(DBOKeyNames.BUS_KEY_PASSWD, md5passwd);
-			busobj.put(DBOKeyNames.BUS_KEY_EMAIL, "1111@beijing.com");
-			busobj.put(DBOKeyNames.BUS_KEY_PHONE, "444-888-8888");
-			busobj.put(DBOKeyNames.BUS_KEY_UNAME, "lyangBus");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		testCommand(MD5.getNameMd5("lyangBus"),
-				MD5.getMd5("111111"), CommunicationProtocol.BUSI_SIGNUP,
-				CommunicationProtocol.PROCESS_SUCCEEDED, busobj.toString());
-		System.out.println("Test Signup business succeeded!!!");
 		
 	}
 
+
+	
+	@Test
+	public void testBusiAccount(){
+		DBOperatorTestUnit.initializeDB();
+		
+		Restaurant busi = new Restaurant();
+		ContactInfo contact = new ContactInfo("abc dff", "123456687");
+		AccountInfo acc = new AccountInfo("lyang", "123");
+		Restaurant res = new Restaurant();
+		res.setAccountInfo(acc);
+		res.setContactInfo(contact);
+		res.parseFromJSONObject(res.getJSON());
+		System.out.println(res.getJSON().toString());
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_SIGNUP,
+				CommunicationProtocol.PROCESS_SUCCEEDED, res.getJSON().toString());
+		
+		//test re-signup
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_SIGNUP,
+				CommunicationProtocol.PROCESS_FAILED, res.getJSON().toString());
+		
+		//test re-signup
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_LOGIN,
+				CommunicationProtocol.PROCESS_SUCCEEDED, res.getJSON().toString());
+		
+	}
+	
 }

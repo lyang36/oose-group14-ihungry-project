@@ -3,17 +3,66 @@ package edu.jhu.cs.oose.fall2012.group14.ihungry.database;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.net.UnknownHostException;
+
 
 import org.junit.Test;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.MongoException;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
+import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 
 public class DBOperatorTestUnit {
 
+	public static void initializeDB(){
+		
+		DB myDB;
+		Mongo mongodb = null;	//mongo db
+		DBObject loginObj =null; 
+		BasicDBObject query;
+		DBCollection cusCollection = null;
+		DBCollection busiCollection = null;
+		DBCollection orderCollection = null;
+	    
+		try {
+			mongodb = new Mongo( "localhost" );
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MongoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		myDB = mongodb.getDB(DBOKeyNames.DATABASE_NAME);
+		cusCollection = myDB.getCollection(DBOKeyNames.CUS_COLLECTION_NAME);
+		busiCollection = myDB.getCollection(DBOKeyNames.BUS_COLLECTION_NAME);
+		orderCollection = myDB.getCollection(DBOKeyNames.ORDER_COLLECTION_NAME);
+		DBCursor cur = cusCollection.find();
+		while(cur.hasNext()){
+			cusCollection.remove(cur.next());
+		}
+		
+		cur = busiCollection.find();
+		while(cur.hasNext()){
+			busiCollection.remove(cur.next());
+		}
+		
+		cur = orderCollection.find();
+		while(cur.hasNext()){
+			orderCollection.remove(cur.next());
+		}
+		
+	}
+	
 	@Test
 	public void test() {
 		DBOperator dboperator = new DBOperator();
@@ -23,12 +72,9 @@ public class DBOperatorTestUnit {
 		DBObject busobj = new BasicDBObject();
 		md5names = MD5.getNameMd5("No1Res");
 		md5passwd = MD5.getMd5("123456");
-		busobj.put(DBOKeyNames.BUS_KEY_ID, md5names);
-		busobj.put(DBOKeyNames.BUS_KEY_NAME, "No1Res");
-		busobj.put(DBOKeyNames.BUS_KEY_PASSWD, md5passwd);
-		busobj.put(DBOKeyNames.BUS_KEY_EMAIL, "11@22.com");
-		busobj.put(DBOKeyNames.BUS_KEY_PHONE, "333-444-5555");
-		busobj.put(DBOKeyNames.BUS_KEY_UNAME, "No1Res");
+		busobj.put(AccountInfo.KEY_ID, md5names);
+		busobj.put(AccountInfo.KEY_UNAME, "No1Res");
+		busobj.put(AccountInfo.KEY_PASSWD, md5passwd);
 		
 		try {
 			assertEquals(dboperator.checkBusiUnameExisted(MD5.getNameMd5("fjlkjalk")), false);
@@ -43,7 +89,7 @@ public class DBOperatorTestUnit {
 			fail("check not existed");
 		}
 		
-		
+/*		
 		dboperator.addBusiness(busobj);
 		try {
 			String gn = (String) dboperator.getBusiness(md5names, md5passwd).get(DBOKeyNames.BUS_KEY_ID); 
@@ -99,7 +145,9 @@ public class DBOperatorTestUnit {
 			e.printStackTrace();
 			fail("user");
 		}
-		
+	*/ 	
 	}
+		
+	
 
 }

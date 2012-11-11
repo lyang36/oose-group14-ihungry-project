@@ -14,6 +14,7 @@ import com.mongodb.Mongo;
 import com.mongodb.util.JSON;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.DataBaseOperater;
+import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 
 public class DBOperator implements DataBaseOperater{
@@ -26,11 +27,12 @@ public class DBOperator implements DataBaseOperater{
     private DBCollection cusCollection = null;
     private DBCollection busiCollection = null;
     private DBCollection orderCollection = null;
+    
 	@Override
 	public boolean connectToDB() {
 		try {
 			mongodb = new Mongo( "localhost" );
-			myDB = mongodb.getDB( DBOKeyNames.DATABASE_NAME);
+			myDB = mongodb.getDB(DBOKeyNames.DATABASE_NAME);
 			cusCollection = myDB.getCollection(DBOKeyNames.CUS_COLLECTION_NAME);
 			busiCollection = myDB.getCollection(DBOKeyNames.BUS_COLLECTION_NAME);
 			orderCollection = myDB.getCollection(DBOKeyNames.ORDER_COLLECTION_NAME);
@@ -64,7 +66,7 @@ public class DBOperator implements DataBaseOperater{
 	 */
 	private DBObject getBusiness_priv(String uname){
 		query = new BasicDBObject();
-		query.put(DBOKeyNames.BUS_KEY_ID, uname);
+		query.put(AccountInfo.KEY_ID, uname);
 		DBCursor cur = queryOnCollection(busiCollection, query);
 		if(cur.hasNext()){
 			return cur.next();
@@ -78,7 +80,7 @@ public class DBOperator implements DataBaseOperater{
 	 */
 	private DBObject getCustomer_priv(String uname){
 		query = new BasicDBObject();
-		query.put(DBOKeyNames.CUS_KEY_ID, uname);
+		query.put(AccountInfo.KEY_ID, uname);
 		DBCursor cur = queryOnCollection(cusCollection, query);
 		if(cur.hasNext()){
 			return cur.next();
@@ -107,8 +109,8 @@ public class DBOperator implements DataBaseOperater{
 	@Override
 	public DBObject getCustomer(String uname, String passwd) {
 		query = new BasicDBObject();
-		query.put(DBOKeyNames.CUS_KEY_ID, uname);
-		query.put(DBOKeyNames.CUS_KEY_PASSWD, passwd);
+		query.put(AccountInfo.KEY_ID, uname);
+		query.put(AccountInfo.KEY_PASSWD, passwd);
 		DBCursor cur = queryOnCollection(cusCollection, query);
 		if(cur.hasNext()){
 			return cur.next();
@@ -119,8 +121,8 @@ public class DBOperator implements DataBaseOperater{
 	@Override
 	public DBObject getBusiness(String busiuname, String passwd) {
 		query = new BasicDBObject();
-		query.put(DBOKeyNames.BUS_KEY_ID, busiuname);
-		query.put(DBOKeyNames.BUS_KEY_PASSWD, passwd);
+		query.put(AccountInfo.KEY_ID, busiuname);
+		query.put(AccountInfo.KEY_PASSWD, passwd);
 		DBCursor cur = queryOnCollection(busiCollection, query);
 		if(cur.hasNext()){
 			return cur.next();
@@ -184,8 +186,8 @@ public class DBOperator implements DataBaseOperater{
 	
 	@Override
 	public void addCustomer(DBObject cus) {
-		if(checkUserUnameExisted((String) cus.get(DBOKeyNames.CUS_KEY_ID))){
-			DBObject origin = getCustomer_priv((String) cus.get(DBOKeyNames.CUS_KEY_ID));
+		if(checkUserUnameExisted((String) cus.get(AccountInfo.KEY_ID))){
+			DBObject origin = getCustomer_priv((String) cus.get(AccountInfo.KEY_ID));
 			ObjectId id = (ObjectId) origin.get(DBOKeyNames.OBJ_KEY_ID);
 			cus.put(DBOKeyNames.OBJ_KEY_ID, id);
 			cusCollection.update(origin, cus);
@@ -196,8 +198,8 @@ public class DBOperator implements DataBaseOperater{
 
 	@Override
 	public void addBusiness(DBObject bus) {
-		if(checkBusiUnameExisted((String) bus.get(DBOKeyNames.BUS_KEY_ID))){
-			DBObject origin = getBusiness_priv((String) bus.get(DBOKeyNames.BUS_KEY_ID));
+		if(checkBusiUnameExisted((String) bus.get(AccountInfo.KEY_ID))){
+			DBObject origin = getBusiness_priv((String) bus.get(AccountInfo.KEY_ID));
 			ObjectId id = (ObjectId) origin.get(DBOKeyNames.OBJ_KEY_ID);
 			bus.put(DBOKeyNames.OBJ_KEY_ID, id);
 			busiCollection.update(origin, bus);
@@ -206,6 +208,9 @@ public class DBOperator implements DataBaseOperater{
 		}
 	}
 
+	
+	
+	
 	@Override
 	public void close() {
 		mongodb.close();
