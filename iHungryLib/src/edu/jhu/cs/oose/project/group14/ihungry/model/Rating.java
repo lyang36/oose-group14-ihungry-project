@@ -50,7 +50,7 @@ public class Rating implements JSONHandler{
 		JSONObject retObj = new JSONObject();
 		try {
 			retObj.put(KEY_RATING, Double.toString(rating));
-			retObj.put(KEY_RATING, Double.toString(rating));
+			retObj.put(KEY_NUMOFPEOPLE, Integer.toString(this.numOfPeople));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -62,6 +62,7 @@ public class Rating implements JSONHandler{
 		try {
 			//to convert string into primitive double
 			rating = Double.parseDouble(jsonobj.getString(KEY_RATING));
+			this.numOfPeople = Integer.parseInt(jsonobj.getString(KEY_NUMOFPEOPLE));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
