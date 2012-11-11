@@ -6,7 +6,5 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Volumes/Seagate HD/Downloads-Sea/android-sdk-macosx 2/platforms/android-16/android.jar"/>
-	<classpathentry kind="lib" path="/Volumes/Seagate HD/Downloads-Sea/android-sdk-macosx 2/add-ons/addon-google_apis-google-16/libs/maps.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
