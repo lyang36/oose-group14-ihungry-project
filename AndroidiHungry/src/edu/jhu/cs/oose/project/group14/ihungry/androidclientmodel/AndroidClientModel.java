@@ -17,6 +17,14 @@ public interface AndroidClientModel {
 	 */
 	public String getResponseFromServerT();
 	
+
+	/**
+	 * Check whether the customer's username and password are valid by sending these two values to the server.
+	 * @param username
+	 * @param password
+	 * @return a boolean whether the username and password are valid.
+	 */
+	public boolean loginCheck( String username, String password);
 	
 	/**
 	 * Retrieve a list of restaurants based on the customer's GPS location.

@@ -21,6 +21,7 @@ import edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel.*;
 import android.location.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.*;
@@ -223,13 +224,15 @@ public class NearbyActivity extends MapActivity {
 			String restaurantID) {
 		Log.v("[Search address]", locationName);
 
-//		Log.v("[Cache]", FileHandler.loadFile(this, FileHandler.f_rest_location_cache));
+		// Log.v("[Cache]", FileHandler.loadFile(this,
+		// FileHandler.f_rest_location_cache));
 		/* Check if in the cache */
 		if (locationInCache(locationName)) {
 			// return;
 		} else {
-		//	GeoPoint pt = getLocationByGeocoder(locationName);
-			GeoPoint pt = new GeoPoint(restaurant_locations[index][0], restaurant_locations[index][1]);
+			// GeoPoint pt = getLocationByGeocoder(locationName);
+			GeoPoint pt = new GeoPoint(restaurant_locations[index][0],
+					restaurant_locations[index][1]);
 			if (pt != null)
 				return new MyOverlayItem(pt, restaurantName, locationName,
 						restaurantID);
@@ -240,7 +243,9 @@ public class NearbyActivity extends MapActivity {
 	}
 
 	/**
-	 * Use Geocoder to get the GeoPoint according to the street address of the restaurant.
+	 * Use Geocoder to get the GeoPoint according to the street address of the
+	 * restaurant.
+	 * 
 	 * @param locationName
 	 * @return
 	 */
@@ -363,6 +368,20 @@ public class NearbyActivity extends MapActivity {
 		// location.getLongitude());
 
 	}
+
+	/*
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		Log.v("[Nearby onActivityResult]", "Nearby_PRE");
+
+		if (resultCode == ActivitySwitchSignals.RESTAURANTINFOCLOSESWH) {
+			Log.v("[Nearby onActivityResult]", "Nearby!!");
+			this.finish();
+		}
+	}
+	*/
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
