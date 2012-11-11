@@ -49,7 +49,7 @@ public class Icon implements JSONHandler, Serializable{
 	 * @param src
 	 * @return
 	 */
-	public Image stringToImg(String src){
+	public static Image stringToImg(String src){
 		Icon ic = null;
 		try {
 			ic = (Icon) ObjStringUtil.fromString(src);
