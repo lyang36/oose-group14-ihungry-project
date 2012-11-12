@@ -62,11 +62,13 @@ public class CommunicationProtocol {
 	public static final String FB_SIGN_PASSWD = 			"aed78ba066b3d94e190c215ed7834bac";
 	
 	public static final String CUS_FIND_RESTAURANT = 		"20b56c0a6dac7f00edef0fc8180657e3";
+	public static final String CUS_GET_RES_ALBUM = 			"afc550fc2d51c2e47fa9051078362ac3";
 	public static final String CUS_GET_MENU		  =			"79907ca0920678ded973e1c7c3fde9d1";
 	public static final String CUS_SUBMIT_ORDER 	  =		"18fc1c45a61ac49fd563875a69fc7fed";
 	public static final String CUS_UPDATE_ORDER 	  =		"13ac2330ef57b95dc1bfe48f45f054c5";
 	public static final String CUS_RETRIVE_ORDER  =			"428966c09b471f152472f221d30476c6";
 	public static final String CUS_RETRIVE_CHANGED_ORDER = 	"bd472871498f04ffee93a6c6c3980b0e";
+	
 	
 	/**
 	 * server return back commands
@@ -98,7 +100,8 @@ public class CommunicationProtocol {
 	public static final String BUSI_PROCESS_ORDER = 		"8ef14e8985c487bb0025e9c4a6ae8d0a";
 	public static final String BUSI_UPLOAD_MENU	=			"ede53d1160437918f486bad4a7625f68";
 	public static final String BUSI_UPDATE_MENU	=			"19a3a67078a026f331d721ed28c98101";
-	
+	public static final String BUSI_UPDATE_ALBUM = 			"3042ae4410fb6416fc3b7e6a9a37cff9";
+	public static final String BUSI_GET_ALBUM	=			"441f01e2dd032971c771f1e2ab1f38e1";
 	
 	
 	

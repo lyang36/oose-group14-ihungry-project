@@ -28,10 +28,13 @@ public class MessageReactorImpl implements MessageReactor{
 	InternetUtil internet = null;
 	DBObject supinfoObj;
 	
+	//judge whether something is true or not
 	interface OnJudgeListener{
-		public void onTrue();
+		public String onTrue();
 		
-		public void onFalse();
+		public String onFalse();
+		
+		
 	}
 	
 	public MessageReactorImpl(){
@@ -53,26 +56,43 @@ public class MessageReactorImpl implements MessageReactor{
 	
 	/**
 	 * return the string
-	 * @param judgeObj - if null, do something; if not do something
+	 * if returnObj == null, return the object from onTrue, or onFalse
+	 * if all objects are null, return empty string
+	 * @param judge - if true, do something; if not do something
 	 * @param returnObj - return this obj as the supinfo
 	 * @param cmdSuccessStr - if not null, the return commandstr
 	 * @param cmdFailStr - if null return commandstr
 	 */
 	private void returnStringInfo(boolean judge, String returnObj, 
 			String cmdSuccessStr, String cmdFailStr, OnJudgeListener onjudge){
+		if(returnObj == null){
+			returnObj = "";
+		}
 		try{
+			String temp = null;
 			if(judge){
 				if(onjudge != null){
-					onjudge.onTrue();
+					temp = onjudge.onTrue();
 				}
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, cmdSuccessStr, returnObj));
+				if(temp != null && (returnObj == "")){
+					internet.sendMsg(CommunicationProtocol.construcSendingStr(
+						uname, passwd, cmdSuccessStr, temp));
+				}else{
+					internet.sendMsg(CommunicationProtocol.construcSendingStr(
+							uname, passwd, cmdSuccessStr, returnObj));
+				}
+				//System.out.println(cmdSuccessStr + temp);
 			}else{
 				if(onjudge != null){
-					onjudge.onFalse();
+					temp = onjudge.onFalse();
 				}
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, cmdFailStr, ""));
+				if(temp != null && (returnObj == "")){
+					internet.sendMsg(CommunicationProtocol.construcSendingStr(
+						uname, passwd, cmdFailStr, temp.toString()));
+				}else{
+					internet.sendMsg(CommunicationProtocol.construcSendingStr(
+							uname, passwd, cmdFailStr, returnObj));
+				}
 			}
 		}catch(Exception e){
 			try {
@@ -133,14 +153,16 @@ public class MessageReactorImpl implements MessageReactor{
 						CommunicationProtocol.PROCESS_FAILED, new OnJudgeListener(){
 
 							@Override
-							public void onTrue() {
+							public String onTrue() {
 								DBObject bus;
 								bus = supinfoObj;
 								dboperator.addBusiness(bus);
+								return null;
 							}
 
 							@Override
-							public void onFalse() {
+							public String onFalse() {
+								return null;
 							}
 					
 				});
@@ -157,15 +179,16 @@ public class MessageReactorImpl implements MessageReactor{
 						new OnJudgeListener(){
 
 							@Override
-							public void onTrue() {
+							public String onTrue() {
 								DBObject busa = dboperator.getBusiness(uname, passwd);
 								busa.put(Restaurant.KEY_CONTACT, supinfoObj);
 								dboperator.addBusiness(busa);
+								return null;
 							}
 
 							@Override
-							public void onFalse() {
-								
+							public String onFalse() {
+								return null;	
 							}
 					
 				});
@@ -174,26 +197,31 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//business get contact
 			else if(commandmesg.contains(CommunicationProtocol.BUSI_GET_CONTACT)){	
-				returnStringInfo(dboperator.getBusiness(uname, passwd) != null,
-						supinfo, 
+				DBObject bus = dboperator.getBusiness(uname, passwd);
+				//System.out.println(bus);
+				returnStringInfo((bus != null),
+						"", 
 						CommunicationProtocol.PROCESS_SUCCEEDED, 
 						CommunicationProtocol.PROCESS_FAILED, 
 						new OnJudgeListener(){
 							@Override
-							public void onTrue() {
-								
+							public String onTrue() {
+								String bus = dboperator.getBusiness(uname, passwd).toString();
 								Restaurant retbusi = new Restaurant();
-								retbusi.parseFromJSONObject(
-									 (JSONObject) JSON.parse(
-											 dboperator
-											 .getBusiness(uname, passwd)
-											 .toString())
-											 );
-								supinfo = retbusi.getContactInfo().getJSON().toString();
+								System.out.println(bus);
+								JSONObject jbus = null;
+								try{
+									 jbus = new JSONObject(bus);
+								}catch(Exception e){
+									e.printStackTrace();
+								}	
+								retbusi.parseFromJSONObject(jbus);
+								return retbusi.getContactInfo().getJSON().toString();
 							}
 		
 							@Override
-							public void onFalse() {				
+							public String onFalse() {	
+								return null;
 							}
 					
 						});
@@ -237,33 +265,6 @@ public class MessageReactorImpl implements MessageReactor{
 				//TODO
 				internet.sendMsg(CommunicationProtocol.construcSendingStr(
 						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_GET_CONTACT)){
-				Customer retcus = new Customer();
-				
-				returnStringInfo(dboperator.getCustomer(uname, passwd) != null,
-						supinfo, 
-						CommunicationProtocol.PROCESS_SUCCEEDED, 
-						CommunicationProtocol.PROCESS_FAILED, 
-						new OnJudgeListener(){
-							@Override
-							public void onTrue() {
-								
-								Customer retcus = new Customer();
-								retcus.parseFromJSONObject(
-									 (JSONObject) JSON.parse(
-											 dboperator
-											 .getCustomer(uname, passwd)
-											 .toString())
-											 );
-								supinfo = retcus.getContactInfo().getJSON().toString();
-							}
-		
-							@Override
-							public void onFalse() {				
-							}
-					
-						});
-				
 			}else if(commandmesg.contains(CommunicationProtocol.CUS_GET_MENU)){
 				//TODO
 				internet.sendMsg(CommunicationProtocol.construcSendingStr(
@@ -288,23 +289,6 @@ public class MessageReactorImpl implements MessageReactor{
 				//TODO
 				internet.sendMsg(CommunicationProtocol.construcSendingStr(
 						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_SIGN_UP)){
-				returnStringInfo(!dboperator.checkUserUnameExisted(uname),
-						new BasicDBObject(), CommunicationProtocol.PROCESS_SUCCEEDED, 
-						CommunicationProtocol.PROCESS_FAILED, new OnJudgeListener(){
-
-							@Override
-							public void onTrue() {
-								DBObject cus;
-								cus = supinfoObj;
-								dboperator.addCustomer(cus);
-							}
-
-							@Override
-							public void onFalse() {
-							}
-					
-				});
 			}else if(commandmesg.contains(CommunicationProtocol.CUS_SUBMIT_ORDER)){
 				//TODO
 				internet.sendMsg(CommunicationProtocol.construcSendingStr(

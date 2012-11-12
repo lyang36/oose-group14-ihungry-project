@@ -1,7 +1,7 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,9 +25,9 @@ public class Order implements JSONHandler, Serializable{
 	private String restId;
 	private int status;
 	private int arraySize;
-	private ArrayList<OrderItem> orderItems;
+	private List<OrderItem> orderItems;
 	
-	public Order (String orderId, String customerId, String restaurantId, int status, ArrayList<OrderItem> orderitems){
+	public Order (String orderId, String customerId, String restaurantId, int status, List<OrderItem> orderitems){
 		this.orderId = orderId;
 		this.custId = customerId;
 		this.restId = restaurantId;
@@ -53,7 +53,7 @@ public class Order implements JSONHandler, Serializable{
 		return this.status;
 	}
 	
-	public ArrayList<OrderItem> getOrderItems(){
+	public List<OrderItem> getOrderItems(){
 		return this.orderItems;
 	}
 	
