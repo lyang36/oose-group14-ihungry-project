@@ -5,9 +5,11 @@ import static org.junit.Assert.*;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
+import org.json.JSONObject;
 import org.junit.Test;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
@@ -67,8 +69,8 @@ public class ModelTest {
 		
 		newRating.parseFromJSONObject(newRating.getJSON());
 		assertEquals(newRating.getRating()+"", 54.0/11+"");
-	} 
-	
+	}
+	/*
 	@Test
 	public void testIcon(){
 		Icon newIcon = new Icon();
@@ -98,20 +100,28 @@ public class ModelTest {
 		
 		newIcon.parseFromJSONObject(newIcon.getJSON());
 		assertEquals(newIcon.getImage(), img1);
-	*/	
+		
+	}*/
+	
+	
+	@Test
+	public void testAlbum(){
+		List<Icon> icons = new ArrayList<Icon>();
+		Album album = new Album(icons);
+	
+		JSONObject jsonobj1 = album.getJSON();
+		
+		System.out.println(album.getJSON());
+		album.parseFromJSONObject(album.getJSON());
+		assertEquals(jsonobj1.toString(), album.getJSON().toString());
+	
 	}
 	
-/*	@Test
-	public void testAlbum(){
-		Album album = new Album(5, 10);
+	@Test
+	public void testItem(){
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
 		
-		newRating.updateRating(4);
-		assertEquals(newRating.getRating()+"", 54.0/11+"");
-		assertEquals(newRating.getNumOfPeople(), 11);
+		System.out.println(item.getJSON());
 		
-		System.out.println(newRating.getJSON());
-		
-		newRating.parseFromJSONObject(newRating.getJSON());
-		assertEquals(newRating.getRating()+"", 54.0/11+"");
-	}*/
+	}
 }
