@@ -1,6 +1,6 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
-import java.util.*;
+import java.util.ArrayList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,11 +16,9 @@ public class Album implements JSONHandler{
 	
 	public static final String KEY_ICONLIST = "IconList";
 	
-	private List<Icon> iconList = new ArrayList<Icon>();
+	private ArrayList<Icon> iconList = new ArrayList<Icon>();
 	
-	public Album(){}
-	
-	public Album(List<Icon> iconList){
+	public Album(ArrayList<Icon> iconList){
 		this.iconList = iconList;
 	}
 	

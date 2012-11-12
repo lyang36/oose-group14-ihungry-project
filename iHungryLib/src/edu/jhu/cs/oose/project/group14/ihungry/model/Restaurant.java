@@ -19,7 +19,7 @@ public class Restaurant extends Person implements JSONHandler{
 	public Restaurant() {
 		// TODO Auto-generated constructor stub
 		menu = new Menu();
-		album = new Album();
+		album = new Album(null);
 	}
 
 	public void setMenu(Menu m){
