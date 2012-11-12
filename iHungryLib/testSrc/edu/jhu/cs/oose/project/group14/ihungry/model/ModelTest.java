@@ -5,9 +5,11 @@ import static org.junit.Assert.*;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
+import org.json.JSONObject;
 import org.junit.Test;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;

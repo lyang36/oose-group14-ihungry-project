@@ -18,6 +18,8 @@ public class Album implements JSONHandler{
 	
 	private ArrayList<Icon> iconList = new ArrayList<Icon>();
 	
+	public Album() {}
+	
 	public Album(ArrayList<Icon> iconList){
 		this.iconList = iconList;
 	}
