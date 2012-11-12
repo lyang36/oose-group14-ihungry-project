@@ -67,7 +67,7 @@ public class ModelTest {
 		
 		newRating.parseFromJSONObject(newRating.getJSON());
 		assertEquals(newRating.getRating()+"", 54.0/11+"");
-	}
+	} 
 	
 	@Test
 	public void testIcon(){
@@ -101,8 +101,7 @@ public class ModelTest {
 	*/	
 	}
 	
-	/*
-	@Test
+/*	@Test
 	public void testAlbum(){
 		Album album = new Album(5, 10);
 		

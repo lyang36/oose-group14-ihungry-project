@@ -36,11 +36,11 @@ public class Icon implements JSONHandler, Serializable{
 	 */
 	public String imgToString(){
 		String str = "";
-		try {
+		/*try {
 			str = ObjStringUtil.toString(this);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 		return str;
 	}
 	
@@ -51,14 +51,14 @@ public class Icon implements JSONHandler, Serializable{
 	 */
 	public static Image stringToImg(String src){
 		Icon ic = null;
-		try {
+		/*try {
 			ic = (Icon) ObjStringUtil.fromString(src);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		}
-		return ic.getImage();
+		}*/
+		return null;//ic.getImage();
 	}
 
 	@Override
