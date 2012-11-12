@@ -17,7 +17,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 public class ModelTest {
 
 	@Test
-	public void test() {
+	public void testAccountInfo() {
 		//AccountInfo test
 		AccountInfo acc = new AccountInfo("abc", "efg");
 		System.out.println(acc.getJSON().toString());
@@ -45,16 +45,33 @@ public class ModelTest {
 		System.out.println(cus.getJSON().toString());
 	}
 	
+	
 	@Test
 	public void testRestaurant(){
 		//not do menu
 		ContactInfo contact = new ContactInfo("abc dff", "123456687");
 		AccountInfo acc = new AccountInfo("abc", "efg");
-		Restaurant res = new Restaurant();
+		
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
+		Item item2 = new Item("i002", "Soup", 3.67, new Rating(4, 20), new Album());
+
+		List<Item> items = new ArrayList<Item>();
+		items.add(item);
+		items.add(item2);
+		Menu menu = new Menu("r001", items);
+		
+		Album album = new Album();
+		
+		Restaurant res = new Restaurant(menu, album);
 		res.setAccountInfo(acc);
 		res.setContactInfo(contact);
 		res.parseFromJSONObject(res.getJSON());
-		System.out.println(res.getJSON().toString());
+		
+		JSONObject obj1 = res.getJSON();
+		System.out.println("Test Restaurant: "+obj1.toString());
+		
+		res.parseFromJSONObject(res.getJSON());
+		assertEquals(obj1.toString(), res.getJSON().toString());
 	}
 	
 	@Test
@@ -121,7 +138,62 @@ public class ModelTest {
 	public void testItem(){
 		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
 		
-		System.out.println(item.getJSON());
+		JSONObject jsonobj1 = item.getJSON();
+		System.out.println(jsonobj1.toString());
+		
+		item.parseFromJSONObject(item.getJSON());
+		
+		assertEquals(jsonobj1.toString(), item.getJSON().toString());
+		
+	}
+	
+	@Test
+	public void testOrderItem(){
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
+		OrderItem orderItem = new OrderItem(item, 2);
+		
+		JSONObject jsonobj1 = orderItem.getJSON();
+		System.out.println(jsonobj1.toString());
+		
+		orderItem.parseFromJSONObject(orderItem.getJSON());
+		
+		assertEquals(jsonobj1.toString(), orderItem.getJSON().toString());
+	}
+	
+	@Test
+	public void testOrder(){
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
+		OrderItem orderItem = new OrderItem(item, 2);
+		
+		Item item2 = new Item("i002", "Soup", 3.67, new Rating(4, 20), new Album());
+		OrderItem orderItem2 = new OrderItem(item2, 3);
+		
+		List<OrderItem> orderItems = new ArrayList<OrderItem>();
+		orderItems.add(orderItem);
+		orderItems.add(orderItem2);
+		Order order = new Order("o001", "c003", "r009", 1, orderItems);
+		
+		JSONObject job1 = order.getJSON();
+		System.out.println(job1.toString());
+		
+		order.parseFromJSONObject(order.getJSON());
+		assertEquals(job1.toString(), order.getJSON().toString());
+	}
+	
+	@Test
+	public void testMenu(){
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
+		Item item2 = new Item("i002", "Soup", 3.67, new Rating(4, 20), new Album());
+
+		List<Item> items = new ArrayList<Item>();
+		items.add(item);
+		items.add(item2);
+		Menu menu = new Menu("r001", items);
+		JSONObject job1 = menu.getJSON();
+		System.out.println(job1.toString());
+		
+		menu.parseFromJSONObject(menu.getJSON());
+		assertEquals(job1.toString(), menu.getJSON().toString());
 		
 	}
 }
