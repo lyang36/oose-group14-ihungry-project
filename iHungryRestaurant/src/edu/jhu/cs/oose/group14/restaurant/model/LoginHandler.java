@@ -64,7 +64,7 @@ public class LoginHandler {
 		String message = CommunicationProtocol.packMsg(CommunicationProtocol.packStr(cmdString,supplyInfo));
 		//System.out.println("original message is " + message);
 		
-		String a = CommunicationProtocol.construcSendingStr(
+		/*String a = CommunicationProtocol.construcSendingStr(
 				CommunicationProtocol.FB_SIGN_NAME, CommunicationProtocol.FB_SIGN_PASSWD, 
 				CommunicationProtocol.LOGIN, "{\"lyang\": \"123456\"}");
 		try{
@@ -74,7 +74,7 @@ public class LoginHandler {
 		catch(Exception e)
 		{
 			System.out.println("Exception occured while sending and getting");
-		}
+		}*/
 		
 		System.out.println("result is " + result);
 		return result;

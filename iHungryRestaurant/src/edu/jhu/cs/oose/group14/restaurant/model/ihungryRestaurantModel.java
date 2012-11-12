@@ -90,9 +90,6 @@ public class ihungryRestaurantModel {
 		     
 			if(listOfEdit.get(ind).getText()=="Save")
 			{
-				Price p = new Price(Double.valueOf(price.getText()));
-			    //Item newItem = new Item(Integer.toString(++itemNo),name.getText(),description.getText(),p);
-	     
 			     //call a method to send this item to server to be stored in the database
 			     
 			     name.setEditable(false);
