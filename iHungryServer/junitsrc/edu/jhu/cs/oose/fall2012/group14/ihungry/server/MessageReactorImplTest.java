@@ -62,7 +62,8 @@ public class MessageReactorImplTest {
 				String cmdString = CommunicationProtocol.getRequestFromReceivedStr(msg);
 				System.out.println("SuppliInfo: \n" +
 						CommunicationProtocol.getSupinfoFromReceivedStr(msg));
-				assertEquals(cmdString, expectedReturnCmd);
+				System.out.println(CommunicationProtocol.getSupinfoFromReceivedStr(msg));
+				assertEquals(expectedReturnCmd, cmdString);
 			}
 			
 		});
@@ -109,11 +110,21 @@ public class MessageReactorImplTest {
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_SIGNUP,
 				CommunicationProtocol.PROCESS_FAILED, res.getJSON().toString());
 		
-		//test re-signup
+		//test re-check name existed
 		testCommand(MD5.getNameMd5("lyang"),
-				MD5.getMd5("123"), CommunicationProtocol.BUSI_LOGIN,
-				CommunicationProtocol.PROCESS_SUCCEEDED, res.getJSON().toString());
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_CHECK_UNAME_EXISTED,
+				CommunicationProtocol.TRUE, res.getJSON().toString());
 		
+		//test update contact info
+		contact = new ContactInfo("abc dff", "4444433");
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_UPDATE_CONTACT,
+				CommunicationProtocol.PROCESS_SUCCEEDED, contact.getJSON().toString());
+		
+		//test get contact info
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_GET_CONTACT,
+				CommunicationProtocol.PROCESS_SUCCEEDED, "");
 	}
 	
 }

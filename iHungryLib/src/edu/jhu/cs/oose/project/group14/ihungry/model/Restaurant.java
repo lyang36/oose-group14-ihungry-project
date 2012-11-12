@@ -13,13 +13,14 @@ import org.json.JSONObject;
 public class Restaurant extends Person implements JSONHandler{
 	public static final String KEY_MENU = "Menu";
 	public static final String KEY_ALBUM = "Album";
-	Menu menu = null;
-	Album album = null;
+	Menu menu;
+	Album album;
 	
-	public Restaurant() {
-		// TODO Auto-generated constructor stub
-		menu = new Menu();
-		album = new Album(null);
+
+	public Restaurant(Menu menu_in, Album album_in) {
+	
+		menu = menu_in;
+		album = album_in;
 	}
 
 	public void setMenu(Menu m){
