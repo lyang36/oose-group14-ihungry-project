@@ -1,16 +1,25 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidapp;
 
 import java.awt.Image;
+import java.io.Serializable;
 
 /**
  * One object in each row of the list.
  * @author SuNFloWer
  *
  */
-public class ListMenuItem {
+@SuppressWarnings("serial")
+public class ListMenuItem implements Serializable {
+	/*
+	 * String title; 
+	double rating;
+	double price;
+	BLONG TO Item
+	*/
 	String title; 
 	double rating;
 	double price;
+	
 	int quantity;
 //	Image thumb_image;
 

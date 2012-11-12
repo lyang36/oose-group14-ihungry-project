@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -26,6 +27,7 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 
 	private ArrayList<MyOverlayItem> m_overlays = new ArrayList<MyOverlayItem>();
 	private Context c;
+	
 
 	public MyItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(boundCenterBottom(defaultMarker), mapView);
@@ -73,27 +75,19 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 
 		if (rest_id != null) { // if null => maybe is current location
 			Intent intent = new Intent(c, OrderandRestaurantInfoActivity.class);
+			
 			intent.putExtra("rest_id", rest_id);
 			intent.putExtra("rest_name", rest_name);
 			intent.putExtra("rest_addr", rest_addr);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			c.startActivity(intent);
-		//	c.startActivityForResult(intent, ActivitySwitchSignals.RESTAURANTINFO);
 		//	((Activity) c).startActivityForResult(intent, ActivitySwitchSignals.RESTAURANTINFO);
+		//	this.nearbyAct.startActivityForResult(intent, ActivitySwitchSignals.RESTAURANTINFO);
 
 		}
 		return true;
 	}
-	/*
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		if(resultCode == ActivitySwitchSignals.RESTAURANTINFOCLOSESWH){
-			this.finish();
-		}
-	}
-	*/
-
+	
 	/**
 	 * Reconstruct a BalloonOverlayView with a customized offset.
 	 * 

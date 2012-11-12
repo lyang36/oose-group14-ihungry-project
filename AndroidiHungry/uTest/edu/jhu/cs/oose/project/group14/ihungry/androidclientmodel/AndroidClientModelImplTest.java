@@ -9,19 +9,60 @@ import junit.framework.TestCase;
  *
  */
 public class AndroidClientModelImplTest extends TestCase {
-
-	AndroidClientModel clientmodel = new AndroidClientModelImpl();
-	String responseSvr = clientmodel.getResponseFromServerT();
+	AndroidClientModel clientmodel;
+	
+	@Override
+	public void setUp(){
+		clientmodel = new AndroidClientModelImpl();
+	}
 	
 	/**
 	 * Test the connection with the server.
 	 */
 	public void testGetResponseFromServerT() {
+		String responseSvr1 = clientmodel.getResponseFromServerT();
 
-		System.out.println(responseSvr);
-		assertEquals(responseSvr, "No Such Command");
+		Boolean condition = false;
+		if( !responseSvr1.equals("")){
+			condition = true;
+		}
 		
-	//	fail("Not yet implemented");
+		System.out.println(responseSvr1);
+		// assertEquals(responseSvr1, "No Such Command");
+		assertTrue(responseSvr1, condition);
+	}
+	
+	public void testLoginCheck() {
+		Boolean responseSvr2 = clientmodel.loginCheck("lyang", "1234");
+
+		System.out.println(responseSvr2);
+		assertEquals(responseSvr2, (Boolean)true);
 	}
 
+	/*
+	public void testRetrieveRestaurants() {
+		fail("Not yet implemented");
+	}
+
+	public void testRetrieveMenu() {
+		fail("Not yet implemented");
+	}
+
+	public void testCreateOrder() {
+		fail("Not yet implemented");
+	}
+
+	public void testSubmitOrder() {
+		fail("Not yet implemented");
+	}
+
+	public void testRetrieveOrders() {
+		fail("Not yet implemented");
+	}
+
+	public void testRetrieveChangedOrders() {
+		fail("Not yet implemented");
+	}
+	*/
 }
+

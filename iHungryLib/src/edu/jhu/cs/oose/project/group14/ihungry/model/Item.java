@@ -1,68 +1,117 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Represent a single item in the Menu
  * 
  * @author group14
  * 
  */
-public class Item {
-	public Item() {
-
-	}
-
-	public Item(String itemId, String itemName, Price price) {
-
-	}
-
-	public Item(String itemId, String itemName,  Price price, Album album) {
-
-	}
+public class Item implements JSONHandler{
+	public static final String KEY_ITEMID = "Itemid";
+	public static final String KEY_ITEMNAME = "Itemname";
+	public static final String KEY_PRICE = "Price";
+	public static final String KEY_RATING = "Rating";
+	public static final String KEY_ALBUM = "Album";
 	
-	public Item(String itemId, String itemName,  Price price, Rating rating) {
+	private String itemID;
+	private String itemName;
+	private double price;
+	private Rating rating;
+	private Album album;
 
+/*	public Item(String itemId, String itemName, double price, Rating rating ) {
+		this.itemID = itemId;
+		this.itemName = itemName;
+		this.price = price;
+		this.rating = rating;
 	}
+*/	
+	public Item(){}
 	
-	public Item(String itemId, String itemName, Price price, Album album, Rating rating) {
-
+	public Item(String itemId, String itemName, double price, Rating rating, Album album ) {
+		this.itemID = itemId;
+		this.itemName = itemName;
+		this.price = price;
+		this.rating = rating;
+		this.album = album;
 	}
 
 	public String getItemId() {
-		return null;
+		return this.itemID;
 	}
 
 	public String getItemName() {
-		return null;
+		return this.itemName;
 	}
 
-	public String getItemPrice() {
-		return null;
-	}
-	
-	public String getItemAlbum() {
-		return null;
+	public double getItemPrice() {
+		return this.price;
 	}
 	
-	public String getItemRating() {
-		return null;
-	}
-
-	public void setItemId() {
-
-	}
-
-	public void setItemName() {
-
-	}
-
-	public void setItemPrice() {
-
+	public Album getItemAlbum() {
+		return this.album;
 	}
 	
-	public void setItemRating() {
-
+	public Rating getItemRating() {
+		return this.rating;
 	}
-	public void setItemAlbum() {
 
+	public void setItemId(String itemID) {
+		this.itemID = itemID;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	public void setItemPrice(double price) {
+		this.price = price;
+	}
+	
+	public void setItemRating(Rating rating) {
+		this.rating = rating;
+	}
+	public void setItemAlbum(Album album) {
+		this.album = album;
+	}
+	
+	@Override
+	public String toString(){
+		return this.itemID+" "+this.itemName+" "+this.price+" "+this.rating.getRating();
+	}
+
+	@Override
+	public JSONObject getJSON() {
+		JSONObject retObj = new JSONObject();
+		try {
+			retObj.put(KEY_ITEMID, this.itemID);
+			retObj.put(KEY_ITEMNAME, this.itemName);
+			retObj.put(KEY_PRICE, this.price);
+			retObj.put(KEY_RATING, this.rating.getJSON());
+			retObj.put(KEY_ALBUM, this.album.getJSON());
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return retObj;
+	}
+
+	@Override
+	public void parseFromJSONObject(JSONObject jsonobj) {
+		try {
+			this.itemID = jsonobj.getString(KEY_ITEMID);
+			this.itemName = jsonobj.getString(KEY_ITEMNAME);
+			this.price = jsonobj.getDouble(KEY_PRICE);
+			this.rating = new Rating();
+			this.rating.parseFromJSONObject(jsonobj.getJSONObject(KEY_RATING));
+			this.album = new Album(null);
+			this.album.parseFromJSONObject(jsonobj.getJSONObject(KEY_ALBUM));
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}		
 	}
 }

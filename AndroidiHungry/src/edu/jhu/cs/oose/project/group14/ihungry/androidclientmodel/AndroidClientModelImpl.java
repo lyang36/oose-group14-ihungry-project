@@ -22,35 +22,46 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	private InternetClient internetClient;
 
 	public AndroidClientModelImpl() {
-		Log.v("AndroidCientModelImpl", "Initial");
-
 		internetClient = new InternetClient();
+		Log.v("[Server Info]", CommunicationProtocol.SERVER_IP_ADDRESS+" "+CommunicationProtocol.SERVER_PORT);
 	}
 
 	public String getResponseFromServerT() {
 		Log.v("getResponseFromServerT", "executed");
-		Log.v("[Connect to]", CommunicationProtocol.SERVER_IP_ADDRESS+" "+CommunicationProtocol.SERVER_PORT);
 
 		String a = CommunicationProtocol.construcSendingStr(
 				CommunicationProtocol.FB_SIGN_NAME, CommunicationProtocol.FB_SIGN_PASSWD, 
 				CommunicationProtocol.BUSI_LOGIN, "{\"name\": \"try\"}");
-		Log.v("[String a]",a);
 
 		String responseFromServer = "";
 		try {
 			responseFromServer = internetClient.sendAndGet(a, CONNECTIONTIMEOUT);
-			
-			if(CommunicationProtocol.getRequestFromReceivedStr( responseFromServer ).equals(CommunicationProtocol.NO_SUCH_COMMAND)){
-				Log.v("[Message]","No Such Command");
-				return "No Such Command";
-			}
 
 		} catch (Exception e) {
-			Log.e("[AndroidClientModelImpl: getResponseFromServerT]","Connection Error");
-		//	e.printStackTrace();
+			e.printStackTrace();
 		}
-
+		
 		return responseFromServer;
+		
+	}
+	
+
+	public boolean loginCheck(String username, String password) {
+		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(username), MD5.getMd5(password),
+				CommunicationProtocol.CUS_CHECK_UNAME_EXISTED, "");
+		String responseStr = "";
+		try{
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.FALSE) ){
+			return false;
+		} else if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.TRUE) ){
+			return true;
+		}
+		return false;
 	}
 
 	public ArrayList<Restaurant> retrieveRestaurants(LocationInfo loc) {
@@ -84,5 +95,6 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

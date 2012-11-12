@@ -53,6 +53,9 @@ public class ActivityController extends Activity {
 
 		Log.v("[ActivityController] Test", requestCode + " " + resultCode);
 
+		this.switchSceenOnSwhCode(intent_i, resultCode);
+
+		/*
 		switch (requestCode) {
 		case ActivitySwitchSignals.LOGIN:
 			this.switchSceenOnSwhCode(intent_i, resultCode);
@@ -74,7 +77,7 @@ public class ActivityController extends Activity {
 			break;
 		default:
 			break;
-		}
+		}*/
 	}
 
 	/**

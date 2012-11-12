@@ -1,14 +1,13 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.example.androidihungry.R;
 import com.example.androidihungry.R.layout;
 import com.example.androidihungry.R.menu;
 
-import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ActivitySwitchSignals;
-import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ListMenuItem;
-import edu.jhu.cs.oose.project.group14.ihungry.androidapp.MyListViewAdapter;
+import edu.jhu.cs.oose.project.group14.ihungry.androidapp.*;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -32,6 +31,7 @@ import android.widget.AdapterView.OnItemClickListener;
  */
 public class OrderandRestaurantInfoActivity extends Activity {
 
+	/*  Menu containing many Items  */
 	static final private String[][] menu_info = {
 			{ "i1001", "Chicken with Broccoli", "4.5" },
 			{ "i1002", "Assorted Mixed Vegetable", "4.65" },
@@ -55,6 +55,10 @@ public class OrderandRestaurantInfoActivity extends Activity {
 
 	private MyListViewAdapter list_adapter;
 	private ArrayList<ListMenuItem> menu_t;
+	
+	private String rest_id;
+	private String rest_name;
+	private String rest_addr;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -70,9 +74,9 @@ public class OrderandRestaurantInfoActivity extends Activity {
 		// bundle.getCharSequence("Title") + "@\n"
 		// + bundle.getInt("LatE6") + " : " + bundle.getInt("LonE6"));
 
-		String rest_id = (String) bundle.getCharSequence("rest_id");
-		String rest_name = (String) bundle.getCharSequence("rest_name");
-		String rest_addr = (String) bundle.getCharSequence("rest_addr");
+		rest_id = (String) bundle.getCharSequence("rest_id");
+		rest_name = (String) bundle.getCharSequence("rest_name");
+		rest_addr = (String) bundle.getCharSequence("rest_addr");
 		tv_rest_name.setText(rest_name);
 		tv_rest_addr.setText(rest_addr);
 
@@ -82,8 +86,11 @@ public class OrderandRestaurantInfoActivity extends Activity {
 		// menu_info2));
 		// list_adapter = new MyListViewAdapter(this, menu_info2);
 
+		/* OrderItem {Item, Quantity}  */
+		/* Menu( list of items ) + quantity for each item*/
 		ListMenuItem item1 = new ListMenuItem("Chicken with Broccoli", 4.0,
 				4.5, 0);
+		
 		ListMenuItem item2 = new ListMenuItem("Assorted Mixed Vegetable", 4.4,
 				4.65, 0);
 		ListMenuItem item3 = new ListMenuItem("Shrimp with Lobster Sauce", 4.3,
@@ -118,18 +125,33 @@ public class OrderandRestaurantInfoActivity extends Activity {
 
 	OnClickListener bt_reviewItem_Listener = new OnClickListener() {
 		public void onClick(View v) {
+			/*
 			for (int i = 0; i < menu_t.size(); i++) {
 				ListMenuItem item_t = (ListMenuItem)menu_t.get(i);
 				Log.v("[Order]",
 						item_t.getTitle()+" "+item_t.getQuantity() + "");
 			}
-			Intent intent = new Intent(OrderandRestaurantInfoActivity.this, OrderReviewActivity.class);
-			/*
-			 * Send the order object as JSON to the next activity.
+			*/
+			
+			/* Pass to model to create a Order object
+			 * and Send the Order object as JSON to the next activity.
 			 */
 			
+			// Now test: send Order_Test to OrderReview activity
+			ArrayList<ListMenuItem> orderitems = new ArrayList<ListMenuItem>();
+			for (int i = 0; i< menu_t.size(); i++){
+				ListMenuItem order_item = (ListMenuItem) menu_t.get(i);
+				if(order_item.getQuantity() != 0){
+					orderitems.add(order_item);
+				}
+			}
 			
+			Order_Test order_t = new Order_Test(rest_id, orderitems);
 			
+			Intent intent = new Intent(OrderandRestaurantInfoActivity.this, OrderReviewActivity.class);
+
+			intent.putExtra("order_t", order_t);
+			intent.putExtra("rest_name", rest_name);
 			
 			OrderandRestaurantInfoActivity.this.startActivityForResult(intent, ActivitySwitchSignals.ORDERREVIEW);
 			
@@ -142,7 +164,9 @@ public class OrderandRestaurantInfoActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		if(resultCode == ActivitySwitchSignals.ORDERREVIEWCLOSESWH){
-		//	setResult(ActivitySwitchSignals.RESTAURANTINFOCLOSESWH);
+			Log.v("[RestaurantInfo onActivityResult]", "RestaurantInfo!!");
+
+			setResult(ActivitySwitchSignals.RESTAURANTINFOCLOSESWH);
 			this.finish();
 		}
 	}
@@ -195,3 +219,5 @@ public class OrderandRestaurantInfoActivity extends Activity {
 	}
 
 }
+
+
