@@ -1,18 +1,15 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities;
 
-import java.io.*;
-
 import com.example.androidihungry.R;
 
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ActivitySwitchSignals;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.FileHandler;
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
-import android.widget.*;
 
 /**
  * This activity is responsible for view/activity transition.
@@ -22,12 +19,22 @@ import android.widget.*;
  */
 public class ActivityController extends Activity {
 
-	Intent intent_i;
-
-	@Override
+	private Intent intent_i;
+	private SparseArray<ActivitySwitcher> switchArray;
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		switchArray = new SparseArray<ActivitySwitcher>();
+		//	Map<Integer, ActivitySwitcher> map = new HashMap<Integer, ActivitySwitcher>();
+		switchArray.append( ActivitySwitchSignals.QUIT, 			new FinishSwitcher() );
+		switchArray.append( ActivitySwitchSignals.LOGINSWH, 		new LoginSwitcher() );
+		switchArray.append( ActivitySwitchSignals.MAINSCREENSWH, 	new MainscreenSwitcher() );
+		switchArray.append( ActivitySwitchSignals.NEARBYSWH, 		new NearbySwitcher() );
+		switchArray.append( ActivitySwitchSignals.ABOUTMESWH, 		new AboutmeSwitcher() );
+		switchArray.append( ActivitySwitchSignals.FAVOURITESSWH, 	new FavouriteSwitcher() );
+		switchArray.append( ActivitySwitchSignals.ORDERHISTORYSWH, 	new OrderhistorySwitcher() );
+		
 		/*
 		 * First activity -> login page
 		 * 
@@ -53,73 +60,9 @@ public class ActivityController extends Activity {
 
 		Log.v("[ActivityController] Test", requestCode + " " + resultCode);
 
-		this.switchSceenOnSwhCode(intent_i, resultCode);
-
-		/*
-		switch (requestCode) {
-		case ActivitySwitchSignals.LOGIN:
-			this.switchSceenOnSwhCode(intent_i, resultCode);
-			break;
-		case ActivitySwitchSignals.MAINSCREEN:
-			this.switchSceenOnSwhCode(intent_i, resultCode);
-			break;
-		case ActivitySwitchSignals.NEARBY:
-			this.switchSceenOnSwhCode(intent_i, resultCode);
-			break;
-		case ActivitySwitchSignals.ABOUTME:
-			this.switchSceenOnSwhCode(intent_i, resultCode);
-			break;
-		case ActivitySwitchSignals.FAVOURITES:
-			this.switchSceenOnSwhCode(intent_i, resultCode);
-			break;
-		case ActivitySwitchSignals.ORDERHISTORY:
-			this.switchSceenOnSwhCode(intent_i, resultCode);
-			break;
-		default:
-			break;
-		}*/
-	}
-
-	/**
-	 * Switch to the specific activity based on the switch code.
-	 * 
-	 * @param i
-	 * @param swhCode
-	 */
-	private void switchSceenOnSwhCode(Intent i, int swhCode) {
-		switch (swhCode) {
-		case ActivitySwitchSignals.QUIT:
-			Log.v("[ActivityController]", "Finish");
-			this.finish();
-			break;
-		case ActivitySwitchSignals.LOGINSWH:
-			i = new Intent(getApplicationContext(), LoginActivity.class);
-			startActivityForResult(i, ActivitySwitchSignals.LOGIN);
-			break;
-		case ActivitySwitchSignals.MAINSCREENSWH:
-			i = new Intent(getApplicationContext(), MainScreenActivity.class);
-			startActivityForResult(i, ActivitySwitchSignals.MAINSCREEN);
-			break;
-		case ActivitySwitchSignals.NEARBYSWH:
-			i = new Intent(getApplicationContext(), NearbyActivity.class);
-			startActivityForResult(i, ActivitySwitchSignals.NEARBY);
-			break;
-		case ActivitySwitchSignals.ABOUTMESWH:
-			i = new Intent(getApplicationContext(), AboutmeActivity.class);
-			startActivityForResult(i, ActivitySwitchSignals.ABOUTME);
-			break;
-		case ActivitySwitchSignals.FAVOURITESSWH:
-			i = new Intent(getApplicationContext(), FavouritesActivity.class);
-			startActivityForResult(i, ActivitySwitchSignals.FAVOURITES);
-			break;
-		case ActivitySwitchSignals.ORDERHISTORYSWH:
-			i = new Intent(getApplicationContext(), OrderHistoryActivity.class);
-			startActivityForResult(i, ActivitySwitchSignals.ORDERHISTORY);
-			break;	
-		default:
-			break;
-		}
-
+		ActivitySwitcher switcher = (ActivitySwitcher)(switchArray.get(resultCode));
+		switcher.switchOnCode(this);
+		
 	}
 
 	@Override
@@ -127,5 +70,58 @@ public class ActivityController extends Activity {
 		getMenuInflater().inflate(R.menu.activity_controller, menu);
 		return true;
 	}
-
+	
+	
+	/**
+	 * An abstract class containing one only method switchOnCode().
+	 * @author SuNFloWer
+	 *
+	 */
+	abstract class ActivitySwitcher{
+		abstract void switchOnCode(Activity act);
+	}
+	class FinishSwitcher extends ActivitySwitcher{
+		@Override
+		void switchOnCode(Activity act) {
+			Log.v("[ActivityController]", "Finish");
+			act.finish();
+		}
+	}
+	class LoginSwitcher extends ActivitySwitcher{
+		@Override
+		void switchOnCode(Activity act) {
+			startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), ActivitySwitchSignals.LOGIN);
+		}
+	}
+	class MainscreenSwitcher extends ActivitySwitcher{
+		@Override
+		void switchOnCode(Activity act) {
+			startActivityForResult(new Intent(getApplicationContext(), MainScreenActivity.class), ActivitySwitchSignals.MAINSCREEN);
+		}
+	}
+	class NearbySwitcher extends ActivitySwitcher{
+		@Override
+		void switchOnCode(Activity act) {
+			startActivityForResult(new Intent(getApplicationContext(), NearbyActivity.class), ActivitySwitchSignals.NEARBY);		
+		}
+	}
+	class AboutmeSwitcher extends ActivitySwitcher{
+		@Override
+		void switchOnCode(Activity act) {
+			startActivityForResult(new Intent(getApplicationContext(), AboutmeActivity.class), ActivitySwitchSignals.ABOUTME);		
+		}
+	}
+	class FavouriteSwitcher extends ActivitySwitcher{
+		@Override
+		void switchOnCode(Activity act) {
+			startActivityForResult(new Intent(getApplicationContext(), FavouritesActivity.class), ActivitySwitchSignals.FAVOURITES);
+		}
+	}
+	class OrderhistorySwitcher extends ActivitySwitcher{
+		@Override
+		void switchOnCode(Activity act) {
+			startActivityForResult(new Intent(getApplicationContext(), OrderHistoryActivity.class), ActivitySwitchSignals.ORDERHISTORY);
+		}
+	}
 }
+

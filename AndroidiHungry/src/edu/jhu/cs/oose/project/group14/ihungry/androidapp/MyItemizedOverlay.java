@@ -1,6 +1,6 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidapp;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,9 +23,9 @@ import edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.OrderandRes
  *
  */
 public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
-	private static final int BALLOONBOTTOMOFFSET = 60;
+	private static final int BALLOON_BOTTOM_OFFSET = 60;
 
-	private ArrayList<MyOverlayItem> m_overlays = new ArrayList<MyOverlayItem>();
+	private List<MyOverlayItem> m_overlays = new ArrayList<MyOverlayItem>();
 	private Context c;
 	
 
@@ -96,7 +96,7 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 	protected BalloonOverlayView<MyOverlayItem> createBalloonOverlayView() {
 		// use our custom balloon view with our custom overlay item type:
 		return new BalloonOverlayView<MyOverlayItem>(getMapView().getContext(),
-				getBalloonBottomOffset() + BALLOONBOTTOMOFFSET);
+				getBalloonBottomOffset() + BALLOON_BOTTOM_OFFSET);
 	}
 
 	/*

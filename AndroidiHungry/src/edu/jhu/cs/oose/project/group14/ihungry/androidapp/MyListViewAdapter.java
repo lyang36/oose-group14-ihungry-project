@@ -1,9 +1,12 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidapp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 import com.example.androidihungry.R;
+
+import edu.jhu.cs.oose.project.group14.ihungry.model.Item;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
+import edu.jhu.cs.oose.project.group14.ihungry.model.OrderItem;
 
 import android.app.Activity;
 import android.content.Context;
@@ -40,7 +43,6 @@ public class MyListViewAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	// public ImageLoader imageLoader;
 
-	private String[] info;
 	
 	private TextView title;
 	private TextView rating;
@@ -49,8 +51,9 @@ public class MyListViewAdapter extends BaseAdapter {
 	private TextView quantity;
 	private Button btn_add;
 	private Button btn_minus;
-	private ArrayList<ListMenuItem> menu_items; 
-	
+	//private List<ListMenuItem> menu_items; 
+	private List<OrderItem> menu_order;
+
 
 /*	public MyListViewAdapter(Activity a, ArrayList<HashMap<String, String>> d) {
 		activity = a;
@@ -60,28 +63,27 @@ public class MyListViewAdapter extends BaseAdapter {
 		// imageLoader=new ImageLoader(activity.getApplicationContext());
 	}
 */
-	public MyListViewAdapter(Activity a, String[] info_in) {
+	public MyListViewAdapter(Activity a, List<OrderItem> menu_order_in) {
 		activity = a;
-		info = info_in;
+		menu_order = menu_order_in;
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
-	public MyListViewAdapter(Activity a, ArrayList<ListMenuItem> menu_items_in){
+/*	public MyListViewAdapter(Activity a, ArrayList<ListMenuItem> menu_items_in){
 		activity  = a;
 		menu_items = menu_items_in;
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
-
+*/
+	
 	public int getCount() {
-		return menu_items.size();
-		// return data.size();
+		return menu_order.size();
 	}
 
 	public Object getItem(int position) {
-	//	return position;
-		return menu_items.get(position);
+		return menu_order.get(position);
 	}
 	
 	public TextView getPriceView(int position){
@@ -106,18 +108,18 @@ public class MyListViewAdapter extends BaseAdapter {
 		btn_minus = (Button) vi.findViewById(R.id.btn_minus); // quantity -
 		
 		//title.setText(info[position]);
-		ListMenuItem m_item = (ListMenuItem)menu_items.get(position);
-		title.setText(m_item.title);
-		rating.setText("Rating "+m_item.rating);
-		price.setText("Price "+m_item.price);
-		quantity.setText("Quantity "+m_item.quantity);
+		OrderItem o_item = (OrderItem)menu_order.get(position);
+		Item m_item = (Item)o_item.getItem();
+		title.setText(m_item.getItemName());
+		rating.setText("Rating "+m_item.getItemRating().getRating());
+		price.setText("Price "+m_item.getItemPrice());
+		quantity.setText("Quantity "+o_item.getQuantity());
 		
 		btn_add.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				ListView mListView = (ListView) v.getParent().getParent();
 				final int pos = mListView.getPositionForView((View) v.getParent());
-				ListMenuItem clickItem = (ListMenuItem) mListView.getAdapter().getItem(pos);
-			//	clickItem.setPrice(888);
+				OrderItem clickItem = (OrderItem) mListView.getAdapter().getItem(pos);
 				clickItem.addQuantity(1);
 				((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
 				
@@ -129,8 +131,7 @@ public class MyListViewAdapter extends BaseAdapter {
 			public void onClick(View v) {
 				ListView mListView = (ListView) v.getParent().getParent();
 				final int pos = mListView.getPositionForView((View) v.getParent());
-				ListMenuItem clickItem = (ListMenuItem) mListView.getAdapter().getItem(pos);
-			//	clickItem.setPrice(888);
+				OrderItem clickItem = (OrderItem) mListView.getAdapter().getItem(pos);
 				clickItem.minusQuantity(1);
 				((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
 				

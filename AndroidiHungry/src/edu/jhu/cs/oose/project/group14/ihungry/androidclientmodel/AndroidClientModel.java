@@ -1,7 +1,7 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel;
 
 import edu.jhu.cs.oose.project.group14.ihungry.model.*;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Define the android client side model <b>interfaces</b>.
@@ -26,27 +26,34 @@ public interface AndroidClientModel {
 	 */
 	public boolean loginCheck( String username, String password);
 	
+	
 	/**
 	 * Retrieve a list of restaurants based on the customer's GPS location.
 	 * @param loc LocationInfo
-	 * @return an arraylist of restaurant
+	 * @return a list of restaurant
 	 */
-	public ArrayList<Restaurant> retrieveRestaurants(LocationInfo loc);
+	public List<Restaurant> retrieveRestaurants(LocationInfo loc);
+	
 	
 	/**
 	 * Return a Menu of a specified restaurant.
-	 * @param rest a Restaurant object
+	 * @param restId Restaurant id
 	 * @return a Menu of that Restaurant
 	 */
-	public Menu retrieveMenu(Restaurant rest);
+	public Menu retrieveMenu(String restId);
 	 
+	
 	/**
 	 * Create an order given the info of the customer, restaurant and order-items.
-	 * @param cust Customer info
-	 * @param rest Restaurant info
-	 * @param order an arraylist of order-items
+	 * @param orderId Order id
+	 * @param custId Customer id
+	 * @param restId Restaurant id
+	 * @param status status of order
+	 * @param orderitems a list of orderitems
+	 * @return
 	 */
-	public void createOrder(Customer cust, Restaurant rest, ArrayList<OrderItem> order); 
+	public Order createOrder(String orderId, String custId, String restId, int status, List<OrderItem> orderitems); 
+	
 	
 	/**
 	 * Submit the order to the server for processing.
@@ -63,6 +70,7 @@ public interface AndroidClientModel {
 	 * @return an arraylist of Orders satisfying the requirements
 	 */
 	public ArrayList<Order> retrieveOrders(Customer cust, String status, int count);
+	
 	
 	/**
 	 * This is called frequently by the client requesting status changed orders
