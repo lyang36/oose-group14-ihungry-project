@@ -17,6 +17,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.misc.ObjStringUtil;
  *
  */
 
+@SuppressWarnings("serial")
 public class Icon implements JSONHandler, Serializable{
 	public static final String KEY_ICON = "icon";
 	

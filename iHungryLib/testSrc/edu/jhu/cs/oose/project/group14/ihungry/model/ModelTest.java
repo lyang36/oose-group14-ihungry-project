@@ -32,6 +32,8 @@ public class ModelTest {
 		ContactInfo contact = new ContactInfo("abc dff", "123456687");
 		contact.parseFromJSONObject(contact.getJSON());
 		System.out.println(contact.getJSON().toString());
+		
+		assertEquals(contact.getAddress(), "abc dff");
 	}
 
 	@Test
@@ -43,6 +45,8 @@ public class ModelTest {
 		cus.setContactInfo(contact);
 		cus.parseFromJSONObject(cus.getJSON());
 		System.out.println(cus.getJSON().toString());
+		
+		assertEquals(cus.getAccountInfo().getUname(), "abc");
 	}
 	
 	

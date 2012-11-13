@@ -1,5 +1,6 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
+import java.io.Serializable;
 import java.util.*;
 
 import org.json.JSONException;
@@ -12,7 +13,8 @@ import org.json.JSONArray;
  *
  */
 
-public class Album implements JSONHandler{
+@SuppressWarnings("serial")
+public class Album implements JSONHandler, Serializable{
 	
 	public static final String KEY_ICONLIST = "IconList";
 	
