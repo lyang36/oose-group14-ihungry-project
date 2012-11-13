@@ -1,5 +1,7 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
+import java.io.Serializable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,7 +11,8 @@ import org.json.JSONObject;
  *
  */
 
-public class Rating implements JSONHandler{
+@SuppressWarnings("serial")
+public class Rating implements JSONHandler, Serializable{
 	
 	public static final String KEY_RATING = "Rating";
 	public static final String KEY_NUMOFPEOPLE = "NumOfPeople";
