@@ -9,14 +9,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 
-import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOKeyNames;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOperatorTestUnit;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
-import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtilImpl;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
@@ -66,7 +62,7 @@ public class MessageReactorImplTest {
 				String cmdString = CommunicationProtocol.getRequestFromReceivedStr(msg);
 				System.out.println("SuppliInfo: \n" +
 						CommunicationProtocol.getSupinfoFromReceivedStr(msg));
-				System.out.println(CommunicationProtocol.getSupinfoFromReceivedStr(msg));
+				//System.out.println(CommunicationProtocol.getSupinfoFromReceivedStr(msg));
 				assertEquals(expectedReturnCmd, cmdString);
 			}
 			
@@ -176,5 +172,24 @@ public class MessageReactorImplTest {
 				MD5.getMd5("123"), CommunicationProtocol.CUS_GET_CONTACT,
 				CommunicationProtocol.PROCESS_SUCCEEDED, "");
 		
+	}
+	
+	
+	@Test
+	public void testCustomerFunction(){
+		//test find restaurant
+		LocationInfo loc = new LocationInfo("Test");
+		loc.parseFromJSONObject(loc.getJSON());
+		System.out.println(loc.getJSON().toString());
+		AccountInfo acc = new AccountInfo("lyang", "");
+		
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_FIND_RESTAURANT_IDS,
+				CommunicationProtocol.PROCESS_SUCCEEDED, loc.getJSON().toString());
+		
+		
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_GET_RES_CONTACT,
+				CommunicationProtocol.PROCESS_SUCCEEDED, acc.getJSON().toString());
 	}
 }

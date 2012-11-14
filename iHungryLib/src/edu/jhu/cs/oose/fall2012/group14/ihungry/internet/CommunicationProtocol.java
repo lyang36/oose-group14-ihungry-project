@@ -62,7 +62,7 @@ public class CommunicationProtocol {
 	public static final String FB_SIGN_PASSWD = 			"aed78ba066b3d94e190c215ed7834bac";
 	
 	/**
-	 * find a restaurent by the location, return back AccountInfo (ignore password):
+	 * find a restaurent by the location, return back ListedJSONObj: AccountInfo (ignore password):
 	 * 
 	 */
 	public static final String CUS_FIND_RESTAURANT_IDS = 	"20b56c0a6dac7f00edef0fc8180657e3";
@@ -74,12 +74,12 @@ public class CommunicationProtocol {
 	public static final String CUS_GET_RES_CONTACT = 		"a380f02d85fc20ae1e593541497d6010";
 	
 	/**
-	 * get the restaurent's album by restaurant's AccountInfo (ignore passwd)
+	 * get the restaurent's album by restaurant's ListedJSONObj: AccountInfo (ignore passwd)
 	 */
 	public static final String CUS_GET_RES_ALBUM = 			"afc550fc2d51c2e47fa9051078362ac3";
 	
 	/**
-	 * get the restaurent's menu by retaurant's AccountInfo (ignore passwd)
+	 * get the restaurent's menu by retaurant's ListedJSONObj: AccountInfo (ignore passwd)
 	 */
 	public static final String CUS_GET_MENU		  =			"79907ca0920678ded973e1c7c3fde9d1";
 	
