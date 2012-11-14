@@ -1,19 +1,18 @@
 package edu.jhu.cs.oose.fall2012.group14.ihungry.server;
 
-import org.bson.BSONObject;
 import org.json.JSONObject;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
-import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOKeyNames;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOperator;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.DataBaseOperater;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReactor;
-import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 
@@ -207,7 +206,7 @@ public class MessageReactorImpl implements MessageReactor{
 							@Override
 							public String onTrue() {
 								String bus = dboperator.getBusiness(uname, passwd).toString();
-								Restaurant retbusi = new Restaurant();
+								Restaurant retbusi = new Restaurant(new Menu(), new Album());
 								System.out.println(bus);
 								JSONObject jbus = null;
 								try{
@@ -227,6 +226,15 @@ public class MessageReactorImpl implements MessageReactor{
 						});
 				
 			}
+			
+			
+			else if(commandmesg.contains(CommunicationProtocol.CUS_LOGIN)){
+				returnStringInfo(dboperator.getCustomer(uname, passwd) != null,
+						new BasicDBObject(), CommunicationProtocol.LOGIN_SUCCESS, 
+						CommunicationProtocol.LOGIN_ERROR, null);
+			}
+			
+			
 			
 			
 			//business process a order

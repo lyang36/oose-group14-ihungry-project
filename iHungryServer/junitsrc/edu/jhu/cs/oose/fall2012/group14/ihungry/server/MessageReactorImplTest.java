@@ -19,7 +19,9 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtilImpl;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
 import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 public class MessageReactorImplTest {
@@ -92,11 +94,11 @@ public class MessageReactorImplTest {
 	@Test
 	public void testBusiAccount(){
 		DBOperatorTestUnit.initializeDB();
-		
-		Restaurant busi = new Restaurant();
+		Menu m = new Menu();
+		Album ab = new Album();
 		ContactInfo contact = new ContactInfo("abc dff", "123456687");
 		AccountInfo acc = new AccountInfo("lyang", "123");
-		Restaurant res = new Restaurant();
+		Restaurant res = new Restaurant(m, ab);
 		res.setAccountInfo(acc);
 		res.setContactInfo(contact);
 		res.parseFromJSONObject(res.getJSON());
@@ -109,6 +111,11 @@ public class MessageReactorImplTest {
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_SIGNUP,
 				CommunicationProtocol.PROCESS_FAILED, res.getJSON().toString());
+		
+		//test login
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_LOGIN,
+				CommunicationProtocol.LOGIN_SUCCESS, res.getJSON().toString());
 		
 		//test re-check name existed
 		testCommand(MD5.getNameMd5("lyang"),
@@ -127,4 +134,9 @@ public class MessageReactorImplTest {
 				CommunicationProtocol.PROCESS_SUCCEEDED, "");
 	}
 	
+	
+	@Test
+	public void testCustomerAccount(){
+		
+	}
 }
