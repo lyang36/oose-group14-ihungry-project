@@ -47,7 +47,6 @@ public class NearbyActivity extends MapActivity {
 			{ 39313321, -76617787 }, { 39330855, -76633269 },
 			{ 39329058, -76615716 }, { 39328962, -76609548 } };
 	
-
 	private TapControlledMapView mapView;
 	private MapController mapController;
 	private Location currentLocation;
@@ -70,6 +69,33 @@ public class NearbyActivity extends MapActivity {
 		setContentView(R.layout.activity_nearby);
 
 		/* ############ Map Handler ############ */
+		mapviewConfiguration();
+
+		/* ############ Map Overlays ############ */
+		mapOverlayConfiguration();
+
+		/* ############ My Location Retriever ############ */
+		locationRetrieverHandler();
+		
+		/* ############ Geocoder ############ */
+		geocoder = new Geocoder(this);
+		
+		/* ############ Add some restaurant locations on map ############ */
+		overlayitem2_multi = new ArrayList<MyOverlayItem>();
+		NetworkSearchAddressTask task_search = new NetworkSearchAddressTask();
+		task_search.execute();
+
+		/*
+		 * ##### Hook up button presses to the appropriate event handler. #####
+		 */
+		((ImageButton) findViewById(R.id.imgbtn_refresh))
+				.setOnClickListener(imgbtn_refresh_Listener);
+	}
+	
+	/**
+	 * Configure property and listener of mapview.
+	 */
+	private void mapviewConfiguration(){
 		mapView = (TapControlledMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setSatellite(false);
@@ -84,8 +110,12 @@ public class NearbyActivity extends MapActivity {
 				return true;
 			}
 		});
-
-		/* ############ Map Overlays ############ */
+	}
+	
+	/**
+	 * Configure two mapOverlays.
+	 */
+	private void mapOverlayConfiguration(){
 		mapOverlays = mapView.getOverlays();
 		drawable = getResources().getDrawable(R.drawable.marker);
 		itemizedoverlay = new MyItemizedOverlay(drawable, mapView);
@@ -100,8 +130,12 @@ public class NearbyActivity extends MapActivity {
 		itemizedoverlay2.setShowClose(false);
 		itemizedoverlay2.setShowDisclosure(true);
 		itemizedoverlay2.setSnapToCenter(true);
-
-		/* ############ My Location Retriever ############ */
+	}
+	
+	/**
+	 * Invoke MyLocation class to retrieve my location.
+	 */
+	private void locationRetrieverHandler(){
 		LocationResult locationResult = new LocationResult() {
 			@Override
 			public void gotLocation(Location location) {
@@ -125,27 +159,6 @@ public class NearbyActivity extends MapActivity {
 		};
 		MyLocation myLocation = new MyLocation();
 		myLocation.getLocation(this, locationResult);
-
-		/* ############ Geocoder ############ */
-		geocoder = new Geocoder(this);
-
-		/* ############ (TEST) Connect server ############ */
-	/*	clientModel = new AndroidClientModelImpl();
-		String responseSvr = clientmodel.getResponseFromServerT();
-		Log.v("[Response]", responseSvr);
-	 */
-		
-		/* ############ Add some restaurant locations on map ############ */
-		overlayitem2_multi = new ArrayList<MyOverlayItem>();
-		NetworkSearchAddressTask task_search = new NetworkSearchAddressTask();
-		task_search.execute();
-
-		/*
-		 * ##### Hook up button presses to the appropriate event handler. #####
-		 */
-		((ImageButton) findViewById(R.id.imgbtn_refresh))
-				.setOnClickListener(imgbtn_refresh_Listener);
-
 	}
 
 	/**
@@ -170,7 +183,7 @@ public class NearbyActivity extends MapActivity {
 					Log.v("RestInfo", rest.getContactInfo().getAddress()+" "+ i+" "+ rest.getContactInfo().getRealName()+" "+
 							rest.getAccountInfo().getId());
 					overlayitem2 = getLocationByAddress(
-							rest.getContactInfo().getAddress(), i, rest.getContactInfo().getRealName(),
+							rest.getContactInfo().getAddress().getAddress(), i, rest.getContactInfo().getRealName(),
 							rest.getAccountInfo().getId());
 					if (overlayitem2 != null) {
 						overlayitem2_multi.add(overlayitem2);
@@ -402,3 +415,9 @@ public class NearbyActivity extends MapActivity {
 	}
 
 }
+
+/* ############ (TEST) Connect server ############ */
+/*	clientModel = new AndroidClientModelImpl();
+String responseSvr = clientmodel.getResponseFromServerT();
+Log.v("[Response]", responseSvr);
+*/

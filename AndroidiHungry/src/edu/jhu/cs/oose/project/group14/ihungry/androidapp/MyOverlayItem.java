@@ -12,6 +12,9 @@ import com.google.android.maps.OverlayItem;
 public class MyOverlayItem extends OverlayItem {
 
 	//protected String mImageURL;
+	/**
+	 * restaurantID: the added extra attribute.
+	 */
 	protected String restaurantID;
 	
 	/**
