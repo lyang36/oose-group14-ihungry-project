@@ -45,18 +45,9 @@ import java.util.*;
 
 
 
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
+
+
+
 public class ihungryRestaurantGui extends javax.swing.JFrame {
 	
 	private JPanel panel1;
@@ -73,6 +64,7 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	private JLabel password;
 	private JTextField usernameLogin;
 	private JPanel viewMenu;
+
 	private JButton decline;
 	private JButton accept;
 	private JList list1;
@@ -81,12 +73,16 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	private JTextField orderNoT;
 	private JTextField custNoT;
 	private JPanel subPanel10;
+	
+	private JLabel orderNoL1;
+	private JLabel custNoL1;
+
 	private JScrollBar scrollBar1;
 	private JLabel timeL;
 	private JLabel statusL;
 	private JLabel listL;
-	private JLabel orderNoL1;
-	private JLabel custNoL1;
+	private JLabel orderNoL;
+
 	private JPanel panel4;
 	private JButton prev;
 	private JButton next;
@@ -102,12 +98,14 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	private ArrayList<JTextField> listOfPrice = new ArrayList<JTextField>();
 	private ArrayList<JButton> listOfEdit = new ArrayList<JButton>();
 	private ArrayList<JButton> listOfDelete = new ArrayList<JButton>();
+
 	private String[] columnNames = {"Order No", "List", "Status", "Order Placed Time"};
 	private Object[][] data = new Object[1000][5];
 	private int pointer = 0;
 	private JTable table = new JTable(data, columnNames);
 	private String[] orderDetails = new String[50];
 	private int orderDetailsPointer = 0;
+
 	
 	
 	/*
@@ -464,6 +462,7 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 		{
 			displayCurrentOrder();
 		}
+			
 		{
 			toBeDelivered = new JPanel();
 			jTabbedPane1.addTab("To Be Delivered", null, toBeDelivered, null);

@@ -27,10 +27,12 @@ public class ihungryRestaurantModel {
     ArrayList<String> listOfItemNames, listOfDescription, listOfPrice ;
 	private int itemNo =0;
 	private int indx=0;
+
 	private ArrayList<Order> currOrders = new ArrayList<Order>();
 	private Object[][] data =  new Object[1000][5];
 	private int pointer = 0;
 	
+
 	
 	/*
 	 * Constructor for ihungryVendorController
@@ -73,6 +75,7 @@ public class ihungryRestaurantModel {
 		data[2][2]=o3.getStatus();
 		pointer = 3;
 		setCurrentOrders();
+
 	}
 	
 	
@@ -289,13 +292,13 @@ public class ihungryRestaurantModel {
 		}
 	}
 	
+
 	public void setCurrentOrders(){
 		gui.setCurrentOrders(data,pointer);
 		for(int i=0;i<pointer;i++)
 			for(int j=0;j<5;j++)
 				this.data[i][j]="";
 	}
-	
-	
+
 	
 }
