@@ -18,11 +18,11 @@ public class Album implements JSONHandler<Album>, Serializable{
 	
 	public static final String KEY_ICONLIST = "IconList";
 	
-	private List<Icon> iconList = new ArrayList<Icon>();
+	private ArrayList<Icon> iconList = new ArrayList<Icon>();
 	
-	public Album(){}
+	public Album() {}
 	
-	public Album(List<Icon> iconList){
+	public Album(ArrayList<Icon> iconList){
 		this.iconList = iconList;
 	}
 	

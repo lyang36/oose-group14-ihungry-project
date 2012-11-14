@@ -16,7 +16,6 @@ public class Restaurant extends Person{
 	Menu menu;
 	Album album;
 	
-	
 	public Restaurant(Menu menu_in, Album album_in) {
 	
 		menu = menu_in;

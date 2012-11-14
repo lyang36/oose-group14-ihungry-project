@@ -91,7 +91,7 @@ public class ModelTest {
 		newRating.parseFromJSONObject(newRating.getJSON());
 		assertEquals(newRating.getRating()+"", 54.0/11+"");
 	}
-	/*
+	
 	@Test
 	public void testIcon(){
 		Icon newIcon = new Icon();
@@ -121,27 +121,21 @@ public class ModelTest {
 		
 		newIcon.parseFromJSONObject(newIcon.getJSON());
 		assertEquals(newIcon.getImage(), img1);
-		
-	}*/
-	
-	
-	@Test
-	public void testAlbum(){
-		List<Icon> icons = new ArrayList<Icon>();
-		Album album = new Album(icons);
-	
-		JSONObject jsonobj1 = album.getJSON();
-		
-		System.out.println(album.getJSON());
-		album.parseFromJSONObject(album.getJSON());
-		assertEquals(jsonobj1.toString(), album.getJSON().toString());
-	
+	*/	
 	}
 	
+	/*
 	@Test
-	public void testItem(){
-		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
+	public void testAlbum(){
+		Album album = new Album(5, 10);
 		
+		newRating.updateRating(4);
+		assertEquals(newRating.getRating()+"", 54.0/11+"");
+		assertEquals(newRating.getNumOfPeople(), 11);
+		
+<<<<<<< HEAD
+		System.out.println(newRating.getJSON());
+=======
 		JSONObject jsonobj1 = item.getJSON();
 		System.out.println(jsonobj1.toString());
 		
@@ -198,6 +192,9 @@ public class ModelTest {
 		
 		menu.parseFromJSONObject(menu.getJSON());
 		assertEquals(job1.toString(), menu.getJSON().toString());
+>>>>>>> refs/remotes/origin/master
 		
-	}
+		newRating.parseFromJSONObject(newRating.getJSON());
+		assertEquals(newRating.getRating()+"", 54.0/11+"");
+	}*/
 }
