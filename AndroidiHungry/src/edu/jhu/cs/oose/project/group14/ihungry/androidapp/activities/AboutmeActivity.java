@@ -21,9 +21,11 @@ import android.widget.*;
  */
 public class AboutmeActivity extends Activity {
 	private TextView text_name;
-	private TextView text_gender;
 	private TextView text_phone;
+	private TextView text_secphone;
 	private TextView text_address;
+	private TextView text_email;
+	private TextView text_birthday;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -31,10 +33,12 @@ public class AboutmeActivity extends Activity {
 		setContentView(R.layout.activity_aboutme);
 
 		text_name = (TextView) this.findViewById(R.id.txv_name);
-		text_gender = (TextView) this.findViewById(R.id.txv_gender);
 		text_phone = (TextView) this.findViewById(R.id.txv_phone);
+		text_secphone = (TextView) this.findViewById(R.id.txv_secphone);
 		text_address = (TextView) this.findViewById(R.id.txv_address);
-
+		text_email = (TextView) this.findViewById(R.id.txv_email);
+		text_birthday = (TextView) this.findViewById(R.id.txv_birthday);
+		
 		String readStoredInfo = FileHandler.loadFile(this,
 				FileHandler.f_userinfo);
 		if (!readStoredInfo.equals(null)) {
@@ -44,12 +48,14 @@ public class AboutmeActivity extends Activity {
 				Log.v("[About me]", tokens.length + " " + tokens[i]);
 
 			}
+			
+			text_name.setText(tokens[3]);
+			text_address.setText(tokens[4]);
+			text_phone.setText(tokens[5]);
+			text_secphone.setText(tokens[6]);
+			text_email.setText(tokens[7]);
+			text_birthday.setText(tokens[8]);
 
-			text_name.setText(tokens[2]);
-
-			text_gender.setText(tokens[3]);
-			text_phone.setText(tokens[4]);
-			text_address.setText(tokens[5]);
 		}
 
 	}

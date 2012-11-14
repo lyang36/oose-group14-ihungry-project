@@ -72,9 +72,9 @@ public class OrderandRestaurantInfoActivity extends Activity {
 		// menu_info2));
 		// list_adapter = new MyListViewAdapter(this, menu_info2);
 
-		/* Call ClientModel to retrieve a Menu */
+		/* Call ClientModel to retrieve a Menu given the rest_id */
 		a_model = new AndroidClientModelImpl();
-		menu_original = a_model.retrieveMenu("r000");
+		menu_original = a_model.retrieveMenu(rest_id);
 		
 		
 		for(int i=0; i<menu_original.getItems().size(); i++){
