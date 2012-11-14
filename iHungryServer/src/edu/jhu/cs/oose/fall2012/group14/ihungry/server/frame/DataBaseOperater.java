@@ -7,8 +7,10 @@ import com.mongodb.DBObject;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.ListedJSONObj;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
 import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 
 /**
@@ -88,6 +90,22 @@ public interface DataBaseOperater {
 	 * @return
 	 */
 	public ContactInfo getBusinessContactInfo(AccountInfo acc);
+	
+	/**
+	 * get the album info for the restaurant (ignore passwd)
+	 * @param acc
+	 * @return
+	 */	
+	public Album getBusinessAlbum(AccountInfo acc);
+	
+	
+	/**
+	 * get the menu info for the restaurant (ignore passwd)
+	 * @param acc
+	 * @return
+	 */	
+	public Menu getBusinessMenu(AccountInfo acc);
+	
 	
 	/**
 	 * get the contact info for a give customer account (ignore passwd)

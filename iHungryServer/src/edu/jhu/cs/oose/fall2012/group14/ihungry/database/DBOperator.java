@@ -18,9 +18,11 @@ import com.mongodb.util.JSON;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.ListedJSONObj;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.DataBaseOperater;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
 import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
 import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
@@ -269,6 +271,28 @@ public class DBOperator implements DataBaseOperater{
 		return rc;
 	}
 
-
+	@Override
+	public Album getBusinessAlbum(AccountInfo acc) {
+		Album ra = null;
+		try {
+			ra =  ((new Restaurant(null, null)).parseFromJSONObject(new JSONObject(
+					this.getBusiness_priv(acc.getId()).toString()))).getAlbum();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return ra;
+	}
+	
+	@Override
+	public Menu getBusinessMenu(AccountInfo acc) {
+		Menu rm = null;
+		try {
+			rm =  ((new Restaurant(null, null)).parseFromJSONObject(new JSONObject(
+					this.getBusiness_priv(acc.getId()).toString()))).getMenu();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return rm;
+	}
 
 }

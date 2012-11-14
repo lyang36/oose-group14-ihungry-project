@@ -187,9 +187,18 @@ public class MessageReactorImplTest {
 				MD5.getMd5("123"), CommunicationProtocol.CUS_FIND_RESTAURANT_IDS,
 				CommunicationProtocol.PROCESS_SUCCEEDED, loc.getJSON().toString());
 		
-		
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.CUS_GET_RES_CONTACT,
 				CommunicationProtocol.PROCESS_SUCCEEDED, acc.getJSON().toString());
+		
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_GET_RES_ALBUM,
+				CommunicationProtocol.PROCESS_SUCCEEDED, acc.getJSON().toString());
+		
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_GET_MENU,
+				CommunicationProtocol.PROCESS_SUCCEEDED, acc.getJSON().toString());
+		
+		
 	}
 }
