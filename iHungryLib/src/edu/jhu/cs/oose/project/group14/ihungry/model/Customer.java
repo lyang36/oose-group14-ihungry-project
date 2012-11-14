@@ -10,7 +10,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOKeyNames;
  * @author group14
  *
  */
-public class Customer extends Person implements JSONHandler{
+public class Customer extends Person{
 	public Customer(){
 		
 	}
@@ -21,7 +21,8 @@ public class Customer extends Person implements JSONHandler{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public Customer parseFromJSONObject(JSONObject jsonobj) {
 		super.parseFromJSONObject(jsonobj);
+		return this;
 	}
 }

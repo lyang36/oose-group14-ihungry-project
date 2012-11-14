@@ -10,7 +10,7 @@ import org.json.JSONObject;
  * 
  */
 
-public class Restaurant extends Person implements JSONHandler{
+public class Restaurant extends Person{
 	public static final String KEY_MENU = "Menu";
 	public static final String KEY_ALBUM = "Album";
 	Menu menu;
@@ -59,7 +59,7 @@ public class Restaurant extends Person implements JSONHandler{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public Restaurant parseFromJSONObject(JSONObject jsonobj) {
 		super.parseFromJSONObject(jsonobj);
 		this.album = new Album(null);
 		this.menu = new Menu();
@@ -70,6 +70,6 @@ public class Restaurant extends Person implements JSONHandler{
 			e.printStackTrace();
 		}
 		
-		
+		return this;
 	}
 }

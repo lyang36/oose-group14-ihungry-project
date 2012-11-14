@@ -9,7 +9,7 @@ import org.json.JSONObject;
  * @author group14
  *
  */
-public class ContactInfo implements JSONHandler{
+public class ContactInfo implements JSONHandler<ContactInfo>{
 	
 	public static final String KEY_ICON = "Icon";
 	public static final String KEY_REALNAME = "RealName";
@@ -21,14 +21,14 @@ public class ContactInfo implements JSONHandler{
 	
 	
 	String realName = "";
-	String address = "";
+	LocationInfo address = null;
 	String primPhone = "";
 	String secPhone = "";
 	String email = "";
 	String birthDate = "";
 	Icon icon = null;
 	
-	public ContactInfo( String address, String primPhone){
+	public ContactInfo( LocationInfo address, String primPhone){
 		this.address = address;
 		this.primPhone = primPhone;
 		this.icon = new Icon();
@@ -36,7 +36,7 @@ public class ContactInfo implements JSONHandler{
 	}
 	
 	public ContactInfo( String realName,
-			String address, String primPhone, 
+			LocationInfo address, String primPhone, 
 			String secPhone, String email, 
 			String birthdate,
 			Icon icon ){
@@ -56,7 +56,7 @@ public class ContactInfo implements JSONHandler{
 		this.realName = realName;
 	}
 	
-	public void setAddress(String address){
+	public void setAddress(LocationInfo address){
 		this.address = address;
 	}
 	
@@ -76,7 +76,7 @@ public class ContactInfo implements JSONHandler{
 		return this.icon;
 	}
 	
-	public String getAddress(){
+	public LocationInfo getAddress(){
 		return address;
 	}
 	
@@ -104,7 +104,8 @@ public class ContactInfo implements JSONHandler{
 	public JSONObject getJSON() {
 		JSONObject retObj = new JSONObject();
 		try {
-			retObj.put(KEY_ADDRESS, this.address);
+			//this.address.getJSON().toString();
+			retObj.put(KEY_ADDRESS, this.address.getJSON());
 			retObj.put(KEY_BIRTH, this.birthDate);
 			retObj.put(KEY_EMAIL, this.email);
 			retObj.put(KEY_PRIMEPHONE, this.primPhone);
@@ -118,9 +119,9 @@ public class ContactInfo implements JSONHandler{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public ContactInfo parseFromJSONObject(JSONObject jsonobj) {
 		try {
-			this.address = jsonobj.getString(KEY_ADDRESS);
+			this.address = (new LocationInfo(0, 0)).parseFromJSONObject(jsonobj.getJSONObject(KEY_ADDRESS));
 			this.birthDate = jsonobj.getString(KEY_BIRTH);
 			this.email = jsonobj.getString(KEY_EMAIL);
 			this.icon = new Icon();
@@ -132,6 +133,6 @@ public class ContactInfo implements JSONHandler{
 			e.printStackTrace();
 		}
 
-		
+		return this;
 	}
 }

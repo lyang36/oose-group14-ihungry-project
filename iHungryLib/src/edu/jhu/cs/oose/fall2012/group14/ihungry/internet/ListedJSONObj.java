@@ -15,7 +15,7 @@ import edu.jhu.cs.oose.project.group14.ihungry.model.JSONHandler;
  * @author lyang
  *
  */
-public class ListedJSONObj  implements JSONHandler,Iterable<JSONObject> {
+public class ListedJSONObj  implements JSONHandler<ListedJSONObj>,Iterable<JSONObject> {
 	public static final String KEY_COUNT = "Count"; 
 	ArrayList<JSONObject> array; 
 	
@@ -55,7 +55,7 @@ public class ListedJSONObj  implements JSONHandler,Iterable<JSONObject> {
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public ListedJSONObj parseFromJSONObject(JSONObject jsonobj) {
 		array = new ArrayList<JSONObject>();
 		int n;
 		try {
@@ -67,6 +67,7 @@ public class ListedJSONObj  implements JSONHandler,Iterable<JSONObject> {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return this;
 	}
 
 	@Override
@@ -74,5 +75,5 @@ public class ListedJSONObj  implements JSONHandler,Iterable<JSONObject> {
 		return array.iterator();
 	}
 
-
+	
 }

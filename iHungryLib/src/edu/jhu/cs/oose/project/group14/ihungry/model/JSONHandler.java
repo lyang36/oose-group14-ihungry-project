@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * @author lyang
  *
  */
-public interface JSONHandler {
+public interface JSONHandler<T> {
 	/**
 	 * Return the JSON object represent for this object
 	 */
@@ -17,5 +17,5 @@ public interface JSONHandler {
 	 * Parse an object from the represented object
 	 * @param jsonobj
 	 */
-	public void parseFromJSONObject(JSONObject jsonobj);
+	public T parseFromJSONObject(JSONObject jsonobj);
 }

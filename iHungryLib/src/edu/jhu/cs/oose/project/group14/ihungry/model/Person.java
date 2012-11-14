@@ -9,7 +9,7 @@ import org.json.JSONObject;
  * @author group14
  * 
  */
-abstract public class Person implements JSONHandler{
+abstract public class Person implements JSONHandler<Person>{
 	public static final String KEY_CONTACT = "Contact";
 	
 	AccountInfo account = null;
@@ -55,15 +55,15 @@ abstract public class Person implements JSONHandler{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public Person parseFromJSONObject(JSONObject jsonobj) {
 		account = new AccountInfo();
-		contactinfo = new ContactInfo("", "");
+		contactinfo = new ContactInfo(new LocationInfo(0, 0), "");
 		try {
 			account.parseFromJSONObject(jsonobj);
 			contactinfo.parseFromJSONObject((JSONObject) jsonobj.get(KEY_CONTACT));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+		return this;
 	}
 }

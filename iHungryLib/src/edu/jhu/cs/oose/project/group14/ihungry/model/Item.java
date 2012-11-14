@@ -12,7 +12,7 @@ import org.json.JSONObject;
  * 
  */
 @SuppressWarnings("serial")
-public class Item implements JSONHandler, Serializable{
+public class Item implements JSONHandler<Item>, Serializable{
 	public static final String KEY_ITEMID = "Itemid";
 	public static final String KEY_ITEMNAME = "Itemname";
 	public static final String KEY_PRICE = "Price";
@@ -103,7 +103,7 @@ public class Item implements JSONHandler, Serializable{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public Item parseFromJSONObject(JSONObject jsonobj) {
 		try {
 			this.itemID = jsonobj.getString(KEY_ITEMID);
 			this.itemName = jsonobj.getString(KEY_ITEMNAME);
@@ -116,5 +116,7 @@ public class Item implements JSONHandler, Serializable{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}		
+		
+		return this;
 	}
 }

@@ -12,7 +12,7 @@ import org.json.JSONObject;
  */
 
 @SuppressWarnings("serial")
-public class OrderItem implements JSONHandler, Serializable{
+public class OrderItem implements JSONHandler<OrderItem>, Serializable{
 	public static final String KEY_ITEM = "Item";
 	public static final String KEY_QUANTITY = "Quantity";
 
@@ -66,7 +66,7 @@ public class OrderItem implements JSONHandler, Serializable{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public OrderItem parseFromJSONObject(JSONObject jsonobj) {
 		try {
 			this.item = new Item();
 			this.item.parseFromJSONObject(jsonobj.getJSONObject(KEY_ITEM));
@@ -76,7 +76,7 @@ public class OrderItem implements JSONHandler, Serializable{
 			e.printStackTrace();
 		}	
 		
-		
+		return this;
 		
 	} 
 }
