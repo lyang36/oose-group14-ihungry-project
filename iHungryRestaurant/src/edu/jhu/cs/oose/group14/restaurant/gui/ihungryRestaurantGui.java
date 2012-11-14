@@ -31,6 +31,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.SwingUtilities;
 
+import edu.jhu.cs.oose.group14.restaurant.controller.ihungryRestaurantController;
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModel;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 
@@ -48,6 +49,19 @@ import java.util.*;
 
 
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 public class ihungryRestaurantGui extends javax.swing.JFrame {
 	
 	private JPanel panel1;
@@ -67,6 +81,8 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 
 	private JButton decline;
 	private JButton accept;
+	private JLabel passwordSignUpL;
+	private JLabel unameSignUpL;
 	private JList list1;
 	
 	
@@ -105,6 +121,21 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	private JTable table = new JTable(data, columnNames);
 	private String[] orderDetails = new String[50];
 	private int orderDetailsPointer = 0;
+	private JPanel subPanel2;
+	private JPasswordField confirmPasswordSignUpT;
+	private JPasswordField passwordSignUpT;
+	private JTextField secSignUpT;
+	private JTextField primSignUpT;
+	private JTextField addressSignUpT;
+	private JTextField emailSignUpT;
+	private JTextField unameSignUpT;
+	private JLabel secSignUpL;
+	private JLabel primSignUpL;
+	private JLabel addressSignUpL;
+	private JLabel emailSignUpL;
+	private JLabel confirmpasswordSignUpL;
+	private JPanel signUpPanel;
+	private JButton signUpFinal;
 
 	
 	
@@ -117,7 +148,7 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				ihungryRestaurantGui gui = new ihungryRestaurantGui();
-				ihungryRestaurantModel model = new ihungryRestaurantModel(gui);
+				ihungryRestaurantController control = new ihungryRestaurantController(gui);
 				gui.setLocationRelativeTo(null);
 				gui.setVisible(true);
 			}
@@ -252,6 +283,163 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	}
 	
 	
+	public void displaySignUpGui(){
+		{	
+			panel1.setVisible(false);
+			
+			signUpPanel = new JPanel();
+			getContentPane().add(signUpPanel, BorderLayout.CENTER);
+			GroupLayout signUpPanelLayout = new GroupLayout((JComponent)signUpPanel);
+			signUpPanel.setLayout(signUpPanelLayout);
+			signUpPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+			signUpPanel.setPreferredSize(new java.awt.Dimension(687, 324));
+			{
+				signUpFinal = new JButton();
+				signUpFinal.setText("SignUp");
+			}
+			{
+				subPanel2 = new JPanel();
+				GroupLayout subPanel2Layout = new GroupLayout((JComponent)subPanel2);
+				subPanel2.setLayout(subPanel2Layout);
+				//subPanel2.setTabTitle("SignUp");
+				subPanel2.setBorder(BorderFactory.createTitledBorder("SignUp"));
+				{
+					unameSignUpL = new JLabel();
+					unameSignUpL.setText("Username:");
+				}
+				{
+					passwordSignUpL = new JLabel();
+					passwordSignUpL.setText("Password:");
+				}
+				{
+					confirmpasswordSignUpL = new JLabel();
+					confirmpasswordSignUpL.setText("Confirm Password:");
+				}
+				{
+					emailSignUpL = new JLabel();
+					emailSignUpL.setText("Email:");
+				}
+				{
+					addressSignUpL = new JLabel();
+					addressSignUpL.setText("Address:");
+				}
+				{
+					primSignUpL = new JLabel();
+					primSignUpL.setText("Primary Phone:");
+				}
+				{
+					secSignUpL = new JLabel();
+					secSignUpL.setText("Secondary Phone:");
+				}
+				{
+					secSignUpT = new JTextField();
+				}
+				{
+					primSignUpT = new JTextField();
+				}
+				{
+					addressSignUpT = new JTextField();
+					addressSignUpT.setScrollOffset(1);
+				}
+				{
+					emailSignUpT = new JTextField();
+				}
+				{
+					confirmPasswordSignUpT = new JPasswordField();
+				}
+				{
+					passwordSignUpT = new JPasswordField();
+				}
+				{
+					unameSignUpT = new JTextField();
+				}
+				subPanel2Layout.setVerticalGroup(subPanel2Layout.createSequentialGroup()
+						.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+								.addComponent(unameSignUpL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+								.addComponent(unameSignUpT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addGap(26)
+								.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+										.addComponent(passwordSignUpL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+										.addComponent(passwordSignUpT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addGap(26)
+										.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+												.addComponent(confirmpasswordSignUpL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+												.addComponent(confirmPasswordSignUpT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+												.addGap(20)
+												.addGroup(subPanel2Layout.createParallelGroup()
+														.addGroup(subPanel2Layout.createSequentialGroup()
+																.addComponent(emailSignUpL, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+																.addGroup(subPanel2Layout.createSequentialGroup()
+																		.addComponent(emailSignUpT, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+																		.addGap(16)
+																		.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+																				.addComponent(addressSignUpT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+																				.addComponent(addressSignUpL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
+																				.addGap(18)
+																				.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+																						.addComponent(primSignUpL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+																						.addComponent(primSignUpT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																						.addGap(21)
+																						.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+																								.addComponent(secSignUpL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+																								.addComponent(secSignUpT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
+				subPanel2Layout.setHorizontalGroup(subPanel2Layout.createSequentialGroup()
+						.addGroup(subPanel2Layout.createParallelGroup()
+								.addGroup(subPanel2Layout.createSequentialGroup()
+										.addComponent(unameSignUpL, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE))
+										.addGroup(subPanel2Layout.createSequentialGroup()
+												.addComponent(passwordSignUpL, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE))
+												.addGroup(subPanel2Layout.createSequentialGroup()
+														.addComponent(confirmpasswordSignUpL, GroupLayout.PREFERRED_SIZE, 124, GroupLayout.PREFERRED_SIZE))
+														.addGroup(subPanel2Layout.createSequentialGroup()
+																.addComponent(emailSignUpL, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE))
+																.addGroup(subPanel2Layout.createSequentialGroup()
+																		.addComponent(addressSignUpL, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
+																		.addGroup(subPanel2Layout.createSequentialGroup()
+																				.addComponent(primSignUpL, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE))
+																				.addGroup(subPanel2Layout.createSequentialGroup()
+																						.addComponent(secSignUpL, GroupLayout.PREFERRED_SIZE, 124, GroupLayout.PREFERRED_SIZE)))
+																						.addGap(51)
+																						.addGroup(subPanel2Layout.createParallelGroup()
+																								.addGroup(subPanel2Layout.createSequentialGroup()
+																										.addComponent(secSignUpT, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE))
+																										.addGroup(subPanel2Layout.createSequentialGroup()
+																												.addComponent(primSignUpT, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE))
+																												.addGroup(subPanel2Layout.createSequentialGroup()
+																														.addComponent(addressSignUpT, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE))
+																														.addGroup(subPanel2Layout.createSequentialGroup()
+																																.addComponent(emailSignUpT, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE))
+																																.addGroup(subPanel2Layout.createSequentialGroup()
+																																		.addComponent(confirmPasswordSignUpT, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE))
+																																		.addGroup(subPanel2Layout.createSequentialGroup()
+																																				.addComponent(passwordSignUpT, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE))
+																																				.addGroup(subPanel2Layout.createSequentialGroup()
+																																						.addComponent(unameSignUpT, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE))));
+			}
+
+			signUpPanelLayout.setHorizontalGroup(signUpPanelLayout.createSequentialGroup()
+				.addContainerGap(220, 220)
+				.addGroup(signUpPanelLayout.createParallelGroup()
+				    .addGroup(signUpPanelLayout.createSequentialGroup()
+				        .addComponent(subPanel2, GroupLayout.PREFERRED_SIZE, 388, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 0, Short.MAX_VALUE))
+				    .addGroup(GroupLayout.Alignment.LEADING, signUpPanelLayout.createSequentialGroup()
+				        .addGap(135)
+				        .addComponent(signUpFinal, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 175, Short.MAX_VALUE)))
+				.addContainerGap(178, 178));
+			signUpPanelLayout.setVerticalGroup(signUpPanelLayout.createSequentialGroup()
+				.addContainerGap(65, 65)
+				.addComponent(subPanel2, GroupLayout.PREFERRED_SIZE, 342, GroupLayout.PREFERRED_SIZE)
+				.addGap(43)
+				.addComponent(signUpFinal, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(88, Short.MAX_VALUE));
+		}
+		
+		
+	}
+	
+	
 	/**
 	 * getLogin method returns a reference of the Login Button to the model 
 	 * so that listeners can be setup for the button.
@@ -269,6 +457,10 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	
 	public JTextField getPasswordLogin(){
 		return passwordLogin;
+	}
+	
+	public JButton getSignUp(){
+		return signup;
 	}
 	
 	
@@ -477,7 +669,7 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 			jTabbedPane1.addTab("Order History", null, orderHistory, null);
 		}
 		}
-	
+		
 	}
 
 

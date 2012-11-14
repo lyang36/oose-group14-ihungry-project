@@ -1,4 +1,4 @@
-package edu.jhu.cs.oose.group14.restaurant.model;
+package edu.jhu.cs.oose.group14.restaurant.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.*;
@@ -10,6 +10,8 @@ import javax.swing.event.ListSelectionListener;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.group14.restaurant.gui.ihungryRestaurantGui;
+import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelImpl;
+import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelInterface;
 import edu.jhu.cs.oose.project.group14.ihungry.model.*;
 import java.util.*;
 
@@ -19,7 +21,7 @@ import java.util.*;
  * specific functions.
  */
 
-public class ihungryRestaurantModel {
+public class ihungryRestaurantController {
 	
 	private ihungryRestaurantGui gui;
 	private ihungryRestaurantModelInterface model;
@@ -39,7 +41,7 @@ public class ihungryRestaurantModel {
 	 * Constructor for ihungryVendorController
 	 */
 	
-	public ihungryRestaurantModel(ihungryRestaurantGui gui){
+	public ihungryRestaurantController(ihungryRestaurantGui gui){
 		this.gui = gui;
 		model = new ihungryRestaurantModelImpl();
 		listOfEdit = gui.getEditButton();
