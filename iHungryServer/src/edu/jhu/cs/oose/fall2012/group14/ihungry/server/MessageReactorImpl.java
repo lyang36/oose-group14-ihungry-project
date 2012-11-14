@@ -1,5 +1,6 @@
 package edu.jhu.cs.oose.fall2012.group14.ihungry.server;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mongodb.BasicDBObject;
@@ -13,6 +14,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.DataBaseOperater;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReactor;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
+import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
@@ -327,74 +329,38 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			
 			//business process a order
-			else if(commandmesg.contains(CommunicationProtocol.BUSI_PROCESS_ORDER)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
+			else if(commandmesg.contains(CommunicationProtocol.CUS_FIND_RESTAURANT_IDS)){
+				DBObject cus = dboperator.getCustomer(uname, passwd);
+				returnStringInfo((cus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								LocationInfo loc = new LocationInfo("");
+								try {
+									loc.parseFromJSONObject(new JSONObject(supinfo));
+									
+									
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+								
+								return "";
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
 				
 			}
 			
 			
-			
-			else if(commandmesg.contains(CommunicationProtocol.BUSI_RETRIVE_CHANGED_ORDERS)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-				
-			}else if(commandmesg.contains(CommunicationProtocol.BUSI_RETRIVE_ORDERS)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-				
-			}else if(commandmesg.contains(CommunicationProtocol.BUSI_UPDATE_MENU)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.BUSI_UPLOAD_MENU)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_CHECK_UNAME_EXISTED)){
-				returnStringInfo(dboperator.checkUserUnameExisted(uname),
-						new BasicDBObject(), CommunicationProtocol.TRUE, 
-						CommunicationProtocol.FALSE, null);
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_FIND_RESTAURANT_IDS)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_GET_MENU)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_RETRIVE_ORDER)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_GET_MENU)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_RETRIVE_ORDER)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_SUBMIT_ORDER)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_UPDATE_ORDER)){
-				//TODO
-				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
-			}else{
+			else{
 				internet.sendMsg(CommunicationProtocol.construcSendingStr(
 						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));
 			}
