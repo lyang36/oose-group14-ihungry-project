@@ -14,6 +14,11 @@ import org.junit.Test;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 
+/**
+ * Test the whole model
+ * @author lyang
+ *
+ */
 public class ModelTest {
 
 	@Test
