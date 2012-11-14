@@ -13,8 +13,13 @@ import org.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class Rating implements JSONHandler<Rating>, Serializable{
-	
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_RATING = "Rating";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_NUMOFPEOPLE = "NumOfPeople";
 	
 	private double rating = 0.0;
@@ -41,6 +46,10 @@ public class Rating implements JSONHandler<Rating>, Serializable{
 		return rating;
 	}
 	
+	/**
+	 * Update the rating with a new rating.
+	 * @param rating
+	 */
 	public void updateRating(double rating){
 		//weighted average
 		this.rating = (this.rating*numOfPeople + rating)/(numOfPeople+1);

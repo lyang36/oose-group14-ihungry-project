@@ -14,18 +14,79 @@ import org.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class Order implements JSONHandler<Order>, Serializable{
+	/**
+	 * JSON Key
+	 */
 	public static final String KEY_ORDERID = "Orderid";
+	
+	/**
+	 * JSON Key
+	 */
 	public static final String KEY_CUSTID = "Custid";
+	
+	/**
+	 * JSON Key
+	 */
 	public static final String KEY_RESTID = "Restid";
+	
+	/**
+	 * JSON Key
+	 */
 	public static final String KEY_STATUS = "Status";
+	
+	/**
+	 * JSON Key
+	 */
 	public static final String KEY_ARRAYSIZE = "Arraysize";
+	
+	/**
+	 * JSON Key
+	 */
+	public static final String IS_NEW_TO_RES = "IsNewToRes";
+	
+	/**
+	 * JSON KEY
+	 */
+	public static final String IS_NEW_TO_CUS = "IsNewToCus";
+	
+	/**
+	 * order status under processing (a new order submitted)
+	 */
+	public static final int STATUS_UNDERPROCING = 0x01;
+	
+	/**
+	 * order is confirmed by the restaurant
+	 */
+	public static final int STATUS_CONFIRMED 	= 0x02;
+	
+	
+	/**
+	 * order is rejected by the restaurant
+	 */
+	public static final int STATUS_REJECTED 	= 0x03;
+	
+	
+	/**
+	 * order is finished by the restaurant
+	 */
+	public static final int STATUS_FINISHED 	= 0x04;
+	
+	/**
+	 * order is cancelled by the customer
+	 */
+	public static final int STATUS_CANCELLED 	= 0x05;
+	
 	
 	private String orderId;
 	private String custId;
 	private String restId;
+	private boolean isNewToRes= true;
+	private boolean isNewToCus = false;
 	private int status;
 	private int arraySize;
 	private List<OrderItem> orderItems;
+	
+	
 	
 	public Order (String orderId, String customerId, String restaurantId, int status, List<OrderItem> orderitems){
 		this.orderId = orderId;
@@ -57,6 +118,9 @@ public class Order implements JSONHandler<Order>, Serializable{
 		return this.orderItems;
 	}
 	
+	/**
+	 * test function, will be removed
+	 */
 	public void printOrderItems(){
 		for (int i = 0; i < orderItems.size(); i++) {
 			OrderItem item_t = (OrderItem)orderItems.get(i);
@@ -64,6 +128,10 @@ public class Order implements JSONHandler<Order>, Serializable{
 		}
 	}
 	
+	/**
+	 * 
+	 * @return get total price
+	 */
 	public double getTotalPrice(){
 		double totalPrice = 0;
 		for(int i=0; i<orderItems.size(); i++){
@@ -85,6 +153,8 @@ public class Order implements JSONHandler<Order>, Serializable{
 			jsonobj.put(KEY_RESTID, this.restId);
 			jsonobj.put(KEY_STATUS, this.status);
 			jsonobj.put(KEY_ARRAYSIZE, this.arraySize);
+			jsonobj.put(IS_NEW_TO_CUS, isNewToCus);
+			jsonobj.put(IS_NEW_TO_RES, isNewToRes);
 			
 			for(int i=0; i<this.arraySize; i++){
 				jsonobj.put(i+"", this.orderItems.get(i).getJSON());
@@ -104,7 +174,8 @@ public class Order implements JSONHandler<Order>, Serializable{
 			this.restId = jsonobj.getString(KEY_RESTID);
 			this.status = jsonobj.getInt(KEY_STATUS);
 			this.arraySize = jsonobj.getInt(KEY_ARRAYSIZE);
-			
+			this.isNewToCus = jsonobj.getBoolean(IS_NEW_TO_CUS);
+			this.isNewToRes = jsonobj.getBoolean(IS_NEW_TO_RES);
 			this.orderItems = new ArrayList<OrderItem>();
 			for(int i=0; i<arraySize; i++){
 				OrderItem orderItem = new OrderItem();
@@ -117,5 +188,35 @@ public class Order implements JSONHandler<Order>, Serializable{
 		}	
 		return this;
 		
+	}
+	
+	/**
+	 * server used function: check whether this order is new to the restaurant
+	 * @return
+	 */
+	public boolean checkIsNewToRes(){
+		return isNewToRes;
+	}
+	
+	/**
+	 * server used function: check whether this order is new to the customer
+	 * @return
+	 */
+	public boolean checkIsNewToCus(){
+		return isNewToCus;
+	}
+	
+	/**
+	 * server used function: flip the to Res status
+	 */
+	public void flipToResStatus(){
+		isNewToRes =!isNewToRes;
+	}
+	
+	/**
+	 * server used function: flip the to Cus status
+	 */
+	public void flipToCusStatus(){
+		isNewToCus =!isNewToCus;
 	}
 }

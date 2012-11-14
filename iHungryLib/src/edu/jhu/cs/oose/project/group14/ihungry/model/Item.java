@@ -13,10 +13,25 @@ import org.json.JSONObject;
  */
 @SuppressWarnings("serial")
 public class Item implements JSONHandler<Item>, Serializable{
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ITEMID = "Itemid";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ITEMNAME = "Itemname";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_PRICE = "Price";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_RATING = "Rating";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ALBUM = "Album";
 	
 	private String itemID;

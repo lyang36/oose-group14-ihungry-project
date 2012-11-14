@@ -14,8 +14,13 @@ import org.json.JSONObject;
  */
 @SuppressWarnings("serial")
 public class Menu implements JSONHandler<Menu>,Serializable{
-    
+	/**
+	 * JSON key.
+	 */
     public static final String KEY_REST_ID = "restId";
+    /**
+	 * JSON key.
+	 */
     public static final String KEY_MENU_SIZE = "menuSize";
 
     
@@ -38,31 +43,55 @@ public class Menu implements JSONHandler<Menu>,Serializable{
     	this.restId = restId;
     }
     
+    /**
+     * Get all the items in the menu.
+     * @return all items.
+     */
     public List<Item> getItems(){
         return items;
     }
     
+    /**
+     * Get a item at a specific position.
+     * @param i index
+     * @return item
+     */
     public Item getItemAt(int i){
         return items.get(i);
     }
     
+    /**
+     * Add a list of items to the current menu.
+     * @param items list of items
+     */
     public void addItems(List<Item> items){
         this.items.addAll(items);
     }
     
+    /**
+     * Add an item to the menu.
+     * @param item
+     */
     public void addItem(Item item){
         this.items.add(item);
     }
     
+    /**
+     * Set the item at a specific position.
+     * @param i index
+     * @param item
+     */
     public void setItem(int i, Item item){
         this.items.set(i,item);
     }
     
+    /**
+     * Replace the whole menu with a new menu (a list of items).
+     * @param items new menu (a list of items)
+     */
     public void replaceMenu(List<Item> items){
         this.items = items;
     }
-    
-    
     
     @Override
     public JSONObject getJSON() {

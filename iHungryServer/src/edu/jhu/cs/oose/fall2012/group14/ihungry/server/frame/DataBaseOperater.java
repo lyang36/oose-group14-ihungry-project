@@ -5,6 +5,12 @@ import org.json.JSONObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.ListedJSONObj;
+import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
+import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 
 /**
@@ -70,6 +76,43 @@ public interface DataBaseOperater {
 	 * get the Business
 	 */
 	public DBObject getBusiness(String busiuname, String passwd);
+	
+	
+	/**
+	 * Find business in certain region
+	 * @return ListedJSONObj made by AccountInfo(ignore passwd)
+	 */
+	public ListedJSONObj findBusinessById(LocationInfo loc);
+	
+	/**
+	 * get the contact info for the restaurant (ignore passwd)
+	 * @param acc
+	 * @return
+	 */
+	public ContactInfo getBusinessContactInfo(AccountInfo acc);
+	
+	/**
+	 * get the album info for the restaurant (ignore passwd)
+	 * @param acc
+	 * @return
+	 */	
+	public Album getBusinessAlbum(AccountInfo acc);
+	
+	
+	/**
+	 * get the menu info for the restaurant (ignore passwd)
+	 * @param acc
+	 * @return
+	 */	
+	public Menu getBusinessMenu(AccountInfo acc);
+	
+	
+	/**
+	 * get the contact info for a give customer account (ignore passwd)
+	 * @param acc
+	 * @return
+	 */
+	public ContactInfo getCustomerContactInfo(AccountInfo acc);
 	
 	/**
 	 * get the orders for the user, from newest to the oldest, make them to be unchanged

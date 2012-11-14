@@ -11,10 +11,17 @@ import org.json.JSONObject;
  */
 
 public class Restaurant extends Person{
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_MENU = "Menu";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ALBUM = "Album";
-	Menu menu;
-	Album album;
+	
+	private Menu menu;
+	private Album album;
 	
 	public Restaurant(Menu menu_in, Album album_in) {
 	
@@ -26,7 +33,7 @@ public class Restaurant extends Person{
 	@Override
 	public void setAccountInfo(AccountInfo acc){
 		super.setAccountInfo(acc);
-		menu.setRestId(this.account.getId());
+		menu.setRestId(this.getAccountInfo().getId());
 	}
 
 	public void setMenu(Menu m){

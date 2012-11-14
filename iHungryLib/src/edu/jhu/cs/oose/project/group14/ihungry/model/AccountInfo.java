@@ -15,8 +15,17 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 
 public class AccountInfo implements JSONHandler<AccountInfo>{
 	//account
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ID = "nameId"; //24 length hex string
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_UNAME = "uName";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_PASSWD = "PassWord";
 	
 	private String id = "";
@@ -49,7 +58,24 @@ public class AccountInfo implements JSONHandler<AccountInfo>{
 	public String getPasswd(){
 		return passwd;
 	}
+	
+	/**
+	 * set the md5 passwd
+	 * @param passwd
+	 */
+	public void setPasswd(String passwd){
+		this.passwd = passwd;
+	}
 
+	/**
+	 * set up the username -- plain text
+	 * @param uname
+	 */
+	public void setUserName(String uname){
+		this.uname = uname;
+		this.id = MD5.getNameMd5(uname);
+	}
+	
 	@Override
 	public JSONObject getJSON() {
 		JSONObject retObj = new JSONObject();

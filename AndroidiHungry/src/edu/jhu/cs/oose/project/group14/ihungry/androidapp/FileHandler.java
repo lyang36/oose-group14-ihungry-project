@@ -13,16 +13,21 @@ import android.util.Log;
  *
  */
 public class FileHandler {
+	/**
+	 * File name for "userinfo.txt".
+	 */
 	public static String f_userinfo = "userinfo.txt";
+	/**
+	 * File name for "restLocationCache.txt".
+	 */
 	public static String f_rest_location_cache = "restLocationCache.txt";
-	
 	
 	/**
 	 * Save input string into a file and store in internal storage in Android
 	 * 
 	 * @param fileName
 	 * @param str
-	 * @return
+	 * @return a boolean value whether the saving process succeeds.
 	 */
 	public static boolean saveFile(Context context, String fileName, String str) {
 		boolean saveSucceed = false;
@@ -42,11 +47,11 @@ public class FileHandler {
 	}
 
 	/**
-	 * Read content according to the file name from the internal storage from
-	 * Android
+	 * Read content according to the file name from 
+	 * the internal storage of Android.
 	 * 
 	 * @param fileName
-	 * @return
+	 * @return a String containing the file content.
 	 */
 	public static String loadFile(Context context, String fileName) {
 		String readStr = null;

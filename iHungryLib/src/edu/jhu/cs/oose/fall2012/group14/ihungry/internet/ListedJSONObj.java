@@ -19,7 +19,7 @@ public class ListedJSONObj  implements JSONHandler<ListedJSONObj>,Iterable<JSONO
 	public static final String KEY_COUNT = "Count"; 
 	ArrayList<JSONObject> array; 
 	
-	ListedJSONObj(){
+	public ListedJSONObj(){
 		array = new ArrayList<JSONObject>();
 	}
 	
@@ -51,7 +51,7 @@ public class ListedJSONObj  implements JSONHandler<ListedJSONObj>,Iterable<JSONO
 			e.printStackTrace();
 		}
 		
-		return null;
+		return jso;
 	}
 
 	@Override

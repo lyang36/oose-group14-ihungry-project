@@ -1,6 +1,6 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * An orderRespository contains a list of orders
@@ -13,7 +13,7 @@ public class OrderRespository {
 	public OrderRespository(){
 		
 	}
-	public OrderRespository(ArrayList<Order> orders){
+	public OrderRespository(List<Order> orders){
 		
 	}
 			

@@ -12,6 +12,10 @@ public class CommunicationProtocol {
 	 * basic connection parameters
 	 */
 	public static String SERVER_IP_ADDRESS = "10.164.206.34";//"mantiqueira.sdss.pha.jhu.edu";
+	
+	/**
+	 * the server port
+	 */
 	public static int SERVER_PORT = 12014;
 	
 	/**
@@ -22,30 +26,85 @@ public class CommunicationProtocol {
 	 */
 	public static final int OBJECT_ID_LENGTH = 24;
 	
+	/**
+	 * the length of passwd md5
+	 */
 	public static final int PASSWD_MD5_LENGTH = 32;
+	
+	/**
+	 * the length of command md5
+	 */
 	public static final int COMMAND_MD5_LENGTH = 32;
 
 	
 	
-	
+	/**
+	 * Communication string indicator
+	 */
 	public static final String STRING_STARTER = "&{";
+	/**
+	 * Communication string indicator
+	 */
 	public static final String STRING_ENDER = "}&";
+	/**
+	 * Communication string indicator
+	 */
 	public static final String COMMAND_STARTER = "[";
+	/**
+	 * Communication string indicator
+	 */
 	public static final String COMMAND_ENDER = "]";
+	/**
+	 * Communication string indicator
+	 */
 	public static final String SUPINFO_STARTER = "<";
+	/**
+	 * Communication string indicator
+	 */
 	public static final String SUPINFO_ENDER = ">";
 	
-	
+	/**
+	 * Communication string indicator
+	 */
 	public static final String ENDLN = "\n";
 	
 	/**
-	 * server commands for costumer
+	 * customer login. 
+	 * Input SupInfo: "". 
+	 * <p>Return Command: LOGIN_ERROR/LOGIN_SUCESS 
+	 * <p>Return Supinfo: ""
 	 */
 	public static final String CUS_LOGIN = 						"4976d7ca80f2cb54c1c7d5c87fb0c7ef";
 	
+	/**
+	 * customer get contact. Input SupInfo: "". 
+	 * <p>Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED
+	 * <p>Return Supinfo: Contact.getJSON()
+	 */
 	public static final String CUS_GET_CONTACT = 			"6168ef79939d6726b7c6fdcfa31a6eb9";
+	
+	/**
+	 * customer sign up. <p>
+	 * Input SupInfo: Customer.getJSON() <p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ""
+	 */
 	public static final String CUS_SIGN_UP = 				"c5b5ff973838ac99e7c742e4dd7a5cbd";
+	
+	/**
+	 * customer check username existed. <p>
+	 * Input SupInfo: "" <p>
+	 * Return Command: TRUE/FALSE<p>
+	 * Return Supinfo: ""
+	 */
 	public static final String CUS_CHECK_UNAME_EXISTED = 	"84f9e49f3d924ff032c5ef394aa08bdf";
+	
+	/**
+	 * customer update the contact. <p>
+	 * Input SupInfo: Contact.getJSON() <p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ""
+	 */
 	public static final String CUS_UPDATE_CONTACT = 		"d4cc61b5adfda1a4d189abad44b0f9ed";
 
 	
@@ -55,36 +114,54 @@ public class CommunicationProtocol {
 	 * If there is a ID return processNotSuccessful
 	 */
 	public static final String SIGN_IN_WITH_FACEBOOK = 		"aac875e2a872ef1f5be8b3a5d38926c5";
+	
 	/**
 	 * Used for facebook signin default password and uname
 	 */
 	public static final String FB_SIGN_NAME =				"ddad8792734aebb4cf9a68fd";
+	
+	/**
+	 * Used for facebook signin default password and uname
+	 */
 	public static final String FB_SIGN_PASSWD = 			"aed78ba066b3d94e190c215ed7834bac";
 	
 	/**
-	 * find a restaurent by the location, return back AccountInfo (ignore password):
-	 * 
+	 * find a restaurants by the location <p>
+	 * Input SupInfo: Account.getJSON()  (ignore passwd)<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ListedJSONObj.getJSON()
 	 */
 	public static final String CUS_FIND_RESTAURANT_IDS = 	"20b56c0a6dac7f00edef0fc8180657e3";
 	
 	/**
-	 * return back the contact of an ID
-	 * input should be AccountInfo (without passwd)
+	 * customer get a Res's contact by supply the account of the Res <p>
+	 * Input SupInfo: Account.getJSON()  (ignore passwd)<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ListedJSONObj.getJSON()
 	 */
 	public static final String CUS_GET_RES_CONTACT = 		"a380f02d85fc20ae1e593541497d6010";
 	
 	/**
-	 * get the restaurent's album by restaurant's AccountInfo (ignore passwd)
+	 * customer get a Res's Album by supply the account of the Res <p>
+	 * Input SupInfo: Account.getJSON()  (ignore passwd)<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ListedJSONObj.getJSON()
 	 */
 	public static final String CUS_GET_RES_ALBUM = 			"afc550fc2d51c2e47fa9051078362ac3";
 	
 	/**
-	 * get the restaurent's menu by retaurant's AccountInfo (ignore passwd)
+	 * customer get a Res's Menu by supply the account of the Res <p>
+	 * Input SupInfo: Account.getJSON()  (ignore passwd)<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ListedJSONObj.getJSON()
 	 */
 	public static final String CUS_GET_MENU		  =			"79907ca0920678ded973e1c7c3fde9d1";
 	
 	/**
-	 * submit an order
+	 * customer submit an order <p>
+	 * Input SupInfo: Order.getJSON()  (ignore passwd)<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ""
 	 */
 	public static final String CUS_SUBMIT_ORDER 	  =		"18fc1c45a61ac49fd563875a69fc7fed";
 	
@@ -125,6 +202,7 @@ public class CommunicationProtocol {
 	public static final String BUSI_CHECK_UNAME_EXISTED = 	"aa1c7d9580569252f3ab9d886049e934";
 	public static final String BUSI_UPDATE_CONTACT = 		"5071cf4b162b6e66d3ca5d71321624ad";
 	public static final String BUSI_GET_CONTACT = 			"7a3b457e1544c136e822dfed78cd982e";
+	public static final String BUSI_GET_CUS_CONTACT = 		"1ca24bb6a50f11f694036a6160ef6a2b";
 	
 	/**
 	 * for orders 

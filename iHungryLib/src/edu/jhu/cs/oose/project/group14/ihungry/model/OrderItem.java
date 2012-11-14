@@ -13,7 +13,13 @@ import org.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class OrderItem implements JSONHandler<OrderItem>, Serializable{
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ITEM = "Item";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_QUANTITY = "Quantity";
 
 	private Item item;
@@ -42,10 +48,18 @@ public class OrderItem implements JSONHandler<OrderItem>, Serializable{
 		this.quantity = quantity_in;
 	}
 	
+	/**
+	 * Add quantity by a number: no.
+	 * @param no
+	 */
 	public void addQuantity(int no){
 		this.quantity += no;
 	}
 	
+	/**
+	 * Minus quantity by a number: no.
+	 * @param no
+	 */
 	public void minusQuantity(int no){
 		if(this.quantity - no >= 0){
 			this.quantity -= no;

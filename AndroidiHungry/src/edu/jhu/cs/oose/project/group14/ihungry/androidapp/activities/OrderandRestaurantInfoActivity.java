@@ -108,7 +108,7 @@ public class OrderandRestaurantInfoActivity extends Activity {
 				}
 			}
 			
-			// NEED MODIFYING
+			// Call client model to create an order
 			Order order_t = a_model.createOrder("o001","c003","r009", 1, orderitems);
 			
 			Intent intent = new Intent(OrderandRestaurantInfoActivity.this, OrderReviewActivity.class);

@@ -10,23 +10,42 @@ import org.json.JSONObject;
  *
  */
 public class ContactInfo implements JSONHandler<ContactInfo>{
-	
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ICON = "Icon";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_REALNAME = "RealName";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_EMAIL = "Email";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_PRIMEPHONE = "PrimPhone";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_SECPHONE = "SecPhone";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_BIRTH = "Birth";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ADDRESS = "Address";
 	
-	
-	String realName = "";
-	LocationInfo address = null;
-	String primPhone = "";
-	String secPhone = "";
-	String email = "";
-	String birthDate = "";
-	Icon icon = null;
+	private String realName = "";
+	private LocationInfo address = null;
+	private String primPhone = "";
+	private String secPhone = "";
+	private String email = "";
+	private String birthDate = "";
+	private Icon icon = null;
 	
 	public ContactInfo( LocationInfo address, String primPhone){
 		this.address = address;

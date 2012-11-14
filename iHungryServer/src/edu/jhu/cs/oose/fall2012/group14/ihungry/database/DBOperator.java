@@ -3,6 +3,7 @@ package edu.jhu.cs.oose.fall2012.group14.ihungry.database;
 
 
 import org.bson.types.ObjectId;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mongodb.BasicDBObject;
@@ -11,11 +12,19 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
+import com.mongodb.MongoException;
 import com.mongodb.util.JSON;
 
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.ListedJSONObj;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.DataBaseOperater;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
+import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
+import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 public class DBOperator implements DataBaseOperater{
 	public static final String IS_ORDER_NEW_KEY = "isOderNew";
@@ -209,11 +218,81 @@ public class DBOperator implements DataBaseOperater{
 	}
 
 	
+	@Override
+	public ListedJSONObj findBusinessById(LocationInfo loc) {
+		//TODO write the true algorithm for location search 
+		ListedJSONObj busiAccs = new ListedJSONObj();
+		query = new BasicDBObject();
+		DBCursor cur = queryOnCollection(busiCollection, query);
+		while(cur.hasNext()){
+			JSONObject jbus = null;
+			try {
+				jbus = new JSONObject(cur.next().toString());
+			} catch (MongoException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			AccountInfo acc = new AccountInfo();
+			acc = (new Restaurant(null, null)).parseFromJSONObject(jbus).getAccountInfo();
+			acc.setPasswd("");		//remove the password
+			busiAccs.add(acc.getJSON());
+		}	
+		return busiAccs;
+	}
 	
 	
 	@Override
 	public void close() {
 		mongodb.close();
+	}
+
+	@Override
+	public ContactInfo getBusinessContactInfo(AccountInfo acc) {
+		ContactInfo rc = null;
+		try {
+			rc =  ((new Restaurant(null, null)).parseFromJSONObject(new JSONObject(
+					this.getBusiness_priv(acc.getId()).toString()))).getContactInfo();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return rc;
+	}
+
+	@Override
+	public ContactInfo getCustomerContactInfo(AccountInfo acc) {
+		ContactInfo rc = null;
+		try {
+			rc =  ((new Customer()).parseFromJSONObject(new JSONObject(
+					this.getBusiness_priv(acc.getId()).toString()))).getContactInfo();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return rc;
+	}
+
+	@Override
+	public Album getBusinessAlbum(AccountInfo acc) {
+		Album ra = null;
+		try {
+			ra =  ((new Restaurant(null, null)).parseFromJSONObject(new JSONObject(
+					this.getBusiness_priv(acc.getId()).toString()))).getAlbum();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return ra;
+	}
+	
+	@Override
+	public Menu getBusinessMenu(AccountInfo acc) {
+		Menu rm = null;
+		try {
+			rm =  ((new Restaurant(null, null)).parseFromJSONObject(new JSONObject(
+					this.getBusiness_priv(acc.getId()).toString()))).getMenu();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return rm;
 	}
 
 }
