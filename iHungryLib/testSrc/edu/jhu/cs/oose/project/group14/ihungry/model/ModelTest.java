@@ -29,27 +29,31 @@ public class ModelTest {
 	
 	@Test
 	public void testContact(){
-		ContactInfo contact = new ContactInfo("abc dff", "123456687");
+		ContactInfo contact = new ContactInfo(new LocationInfo("abc dff"), "123456687");
 		contact.parseFromJSONObject(contact.getJSON());
 		System.out.println(contact.getJSON().toString());
+		
+		assertEquals(contact.getAddress().getAddress(), "abc dff");
 	}
 
 	@Test
 	public void testCustomer(){
-		ContactInfo contact = new ContactInfo("abc dff", "123456687");
+		ContactInfo contact = new ContactInfo(new LocationInfo("abc dff"), "123456687");
 		AccountInfo acc = new AccountInfo("abc", "efg");
 		Customer cus = new Customer();
 		cus.setAccountInfo(acc);
 		cus.setContactInfo(contact);
 		cus.parseFromJSONObject(cus.getJSON());
 		System.out.println(cus.getJSON().toString());
+		
+		assertEquals(cus.getAccountInfo().getUname(), "abc");
 	}
 	
 	
 	@Test
 	public void testRestaurant(){
 		//not do menu
-		ContactInfo contact = new ContactInfo("abc dff", "123456687");
+		ContactInfo contact = new ContactInfo(new LocationInfo("abc dff"), "123456687");
 		AccountInfo acc = new AccountInfo("abc", "efg");
 		
 		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());

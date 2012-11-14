@@ -1,17 +1,15 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.*;
 
 import com.example.androidihungry.R;
-import com.example.androidihungry.R.layout;
-import com.example.androidihungry.R.menu;
 
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.*;
+import edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel.*;
+import edu.jhu.cs.oose.project.group14.ihungry.model.*;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -31,30 +29,18 @@ import android.widget.AdapterView.OnItemClickListener;
  */
 public class OrderandRestaurantInfoActivity extends Activity {
 
-	/*  Menu containing many Items  */
-	static final private String[][] menu_info = {
-			{ "i1001", "Chicken with Broccoli", "4.5" },
-			{ "i1002", "Assorted Mixed Vegetable", "4.65" },
-			{ "i1003", "Shrimp with Lobster Sauce", "4.95" },
-			{ "i1004", "Chicken with Cashew Nuts", "5.05" },
-			{ "i1005", "B-B-Q Spare Ribs", "5.25" },
-			{ "i1006", "Skewered Beef", "4.5" },
-			{ "i1007", "Wonton Soup", "1.5" },
-			{ "i1008", "House Special Soup", "5.50" }
-
-	};
-	static final private String[] menu_info2 = { "Chicken with Broccoli",
-			"Assorted Mixed Vegetable", "Shrimp with Lobster Sauce",
-			"Chicken with Cashew Nuts", "B-B-Q Spare Ribs", "Skewered Beef",
-			"Wonton Soup", "House Special Soup" };
-
 	private TextView tv_rest_name;
 	private TextView tv_rest_addr;
 
 	private ListView m_ListView;
 
 	private MyListViewAdapter list_adapter;
-	private ArrayList<ListMenuItem> menu_t;
+	
+	/* Menu and an arraylist of OrderItems */
+	private edu.jhu.cs.oose.project.group14.ihungry.model.Menu menu_original;
+	private List<OrderItem> menu_order = new ArrayList<OrderItem>();
+	private AndroidClientModel a_model;
+	
 	
 	private String rest_id;
 	private String rest_name;
@@ -86,38 +72,22 @@ public class OrderandRestaurantInfoActivity extends Activity {
 		// menu_info2));
 		// list_adapter = new MyListViewAdapter(this, menu_info2);
 
-		/* OrderItem {Item, Quantity}  */
-		/* Menu( list of items ) + quantity for each item*/
-		ListMenuItem item1 = new ListMenuItem("Chicken with Broccoli", 4.0,
-				4.5, 0);
+		/* Call ClientModel to retrieve a Menu given the rest_id */
+		a_model = new AndroidClientModelImpl();
+		menu_original = a_model.retrieveMenu(rest_id);
 		
-		ListMenuItem item2 = new ListMenuItem("Assorted Mixed Vegetable", 4.4,
-				4.65, 0);
-		ListMenuItem item3 = new ListMenuItem("Shrimp with Lobster Sauce", 4.3,
-				4.95, 0);
-		ListMenuItem item4 = new ListMenuItem("Chicken with Cashew Nuts", 4.1,
-				5.05, 0);
-		ListMenuItem item5 = new ListMenuItem("B-B-Q Spare Ribs", 3.95, 5.25, 0);
-		ListMenuItem item6 = new ListMenuItem("Skewered Beef", 4.8, 4.5, 0);
-		ListMenuItem item7 = new ListMenuItem("Wonton Soup", 4.5, 1.5, 0);
-		ListMenuItem item8 = new ListMenuItem("House Special Soup", 4.7, 5.50,
-				0);
-		menu_t = new ArrayList<ListMenuItem>();
-		menu_t.add(item1);
-		menu_t.add(item2);
-		menu_t.add(item3);
-		menu_t.add(item4);
-		menu_t.add(item5);
-		menu_t.add(item6);
-		menu_t.add(item7);
-		menu_t.add(item8);
-
-		list_adapter = new MyListViewAdapter(this, menu_t);
+		
+		for(int i=0; i<menu_original.getItems().size(); i++){
+			Item item = (Item)menu_original.getItemAt(i);
+			OrderItem orderItem = new OrderItem(item, 0); // quantity => 0
+			menu_order.add(orderItem);
+		}
+		list_adapter = new MyListViewAdapter(this, menu_order);
 		m_ListView.setAdapter(list_adapter);
 
+		
 		// Click event for single list row
 		m_ListView.setOnItemClickListener(m_ListViewOnItemClickListener);
-
 		((Button) findViewById(R.id.bt_reviewItem))
 				.setOnClickListener(bt_reviewItem_Listener);
 
@@ -125,28 +95,21 @@ public class OrderandRestaurantInfoActivity extends Activity {
 
 	OnClickListener bt_reviewItem_Listener = new OnClickListener() {
 		public void onClick(View v) {
-			/*
-			for (int i = 0; i < menu_t.size(); i++) {
-				ListMenuItem item_t = (ListMenuItem)menu_t.get(i);
-				Log.v("[Order]",
-						item_t.getTitle()+" "+item_t.getQuantity() + "");
-			}
-			*/
-			
 			/* Pass to model to create a Order object
-			 * and Send the Order object as JSON to the next activity.
+			 * and Send the Order object to the next activity.
 			 */
 			
 			// Now test: send Order_Test to OrderReview activity
-			ArrayList<ListMenuItem> orderitems = new ArrayList<ListMenuItem>();
-			for (int i = 0; i< menu_t.size(); i++){
-				ListMenuItem order_item = (ListMenuItem) menu_t.get(i);
+			List<OrderItem> orderitems = new ArrayList<OrderItem>();
+			for (int i = 0; i< menu_order.size(); i++){
+				OrderItem order_item = (OrderItem) menu_order.get(i);
 				if(order_item.getQuantity() != 0){
 					orderitems.add(order_item);
 				}
 			}
 			
-			Order_Test order_t = new Order_Test(rest_id, orderitems);
+			// NEED MODIFYING
+			Order order_t = a_model.createOrder("o001","c003","r009", 1, orderitems);
 			
 			Intent intent = new Intent(OrderandRestaurantInfoActivity.this, OrderReviewActivity.class);
 
@@ -154,8 +117,6 @@ public class OrderandRestaurantInfoActivity extends Activity {
 			intent.putExtra("rest_name", rest_name);
 			
 			OrderandRestaurantInfoActivity.this.startActivityForResult(intent, ActivitySwitchSignals.ORDERREVIEW);
-			
-			
 			
 		}
 	};
@@ -179,24 +140,9 @@ public class OrderandRestaurantInfoActivity extends Activity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 
-			ListMenuItem clickItem = (ListMenuItem) list_adapter.getItem(position);
+			OrderItem clickItem = (OrderItem) list_adapter.getItem(position);
 			// clickItem.setPrice(999);
 			// list_adapter.notifyDataSetChanged();
-
-			/*
-			 * // ((ImageButton)
-			 * findViewById(R.id.imgbtn_Orderhistory)).setOnClickListener
-			 * (imgbtn_Orderhistory_Listener); Button btn_quantity = (Button)
-			 * view.findViewById(R.id.btn_quantity);
-			 * Log.v("[List View Click Event]"
-			 * ,position+" "+btn_quantity.getText().toString());
-			 * 
-			 * TextView tv_price = list_adapter.getPriceView(position); //
-			 * TextView tv_price = (TextView)view.findViewById(R.id.price);
-			 * tv_price.setText("1111");
-			 * 
-			 * list_adapter.notifyDataSetChanged();
-			 */
 		}
 
 	};
@@ -217,7 +163,4 @@ public class OrderandRestaurantInfoActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-
 }
-
-

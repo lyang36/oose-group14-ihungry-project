@@ -1,6 +1,7 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +13,8 @@ import org.json.JSONArray;
  *
  */
 
-public class Album implements JSONHandler{
+@SuppressWarnings("serial")
+public class Album implements JSONHandler<Album>, Serializable{
 	
 	public static final String KEY_ICONLIST = "IconList";
 	
@@ -62,7 +64,7 @@ public class Album implements JSONHandler{
 	
 		
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj){
+	public Album parseFromJSONObject(JSONObject jsonobj){
 		
 		ArrayList<Icon> newIconList =new ArrayList<Icon>(); 
 		
@@ -79,7 +81,7 @@ public class Album implements JSONHandler{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+		return this;
 	}
 	
 }

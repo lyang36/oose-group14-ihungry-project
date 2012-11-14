@@ -1,14 +1,12 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.*;
 
 import com.example.androidihungry.R;
-import com.example.androidihungry.R.layout;
-import com.example.androidihungry.R.menu;
 
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ActivitySwitchSignals;
-import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ListMenuItem;
+import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ToastDisplay;
+import edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel.*;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -16,10 +14,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.widget.Button;
-import edu.jhu.cs.oose.project.group14.ihungry.androidapp.*;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Item;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
+import edu.jhu.cs.oose.project.group14.ihungry.model.OrderItem;
 
 /**
  * This view shows the detailed ordered items.
@@ -30,19 +29,23 @@ import edu.jhu.cs.oose.project.group14.ihungry.androidapp.*;
 public class OrderReviewActivity extends Activity {
 
 	private WebView webView;
-	private Order_Test order_t;
+	private Order order_t;
+	private AndroidClientModel clientModel;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_order_review);
+		
+		/* Initialize the client model */
+		clientModel = new AndroidClientModelImpl();
 
 		((Button) findViewById(R.id.btn_submit))
 				.setOnClickListener(btn_submit_Listener);
 
 		/* Get bundle info from OrderandRestaurantInfoActivity */
 		Bundle bundle = this.getIntent().getExtras();
-		order_t = (Order_Test) bundle.getSerializable("order_t");
+		order_t = (Order) bundle.getSerializable("order_t");
 		String rest_name = (String) bundle.getCharSequence("rest_name");
 		order_t.printOrderItems();
 		Log.v("OrderReview", rest_name + "");
@@ -61,7 +64,7 @@ public class OrderReviewActivity extends Activity {
 
 	}
 
-	private String makeOrderHTML(String rest_name, Order_Test order_t) {
+	private String makeOrderHTML(String rest_name, Order order_t) {
 		// String HTML_str = "<html><body>Hello, world!</body></html>";
 		String HTML_str = new String(
 				"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
@@ -75,18 +78,18 @@ public class OrderReviewActivity extends Activity {
 						"<body>"
 						+ "<table width=\"301\" border=\"1\">"
 						+ "  <tr>"
-						+ "    <td height=\"30\" width=\"214\">Item Name</td>"
-						+ "    <td height=\"30\" width=\"35\">Price</td>"
-						+ "    <td height=\"30\" width=\"30\">Qty.</td>"
+						+ "    <td height=\"30\" width=\"214\"><b>Item Name</b></td>"
+						+ "    <td height=\"30\" width=\"35\"><b>Price</b></td>"
+						+ "    <td height=\"30\" width=\"30\"><b>Qty.</b></td>"
 						+ "  </tr>");
 
-		ArrayList<ListMenuItem> orderitems = order_t.getOrderItems();
+		List<OrderItem> orderitems = order_t.getOrderItems();
 		for (int i = 0; i < orderitems.size(); i++) {
-			ListMenuItem item = orderitems.get(i);
-			HTML_str = HTML_str.concat(insertRowHTML(item));
+			OrderItem orderItem = (OrderItem) orderitems.get(i);
+			HTML_str = HTML_str.concat(insertRowHTML(orderItem));
 		}
 		HTML_str = HTML_str.concat(getTabletail());
-		HTML_str = HTML_str.concat("<p>Total price: $"
+		HTML_str = HTML_str.concat("<p><b>Total price:</b> $"
 				+ order_t.getTotalPrice() + "</p>");
 		HTML_str = HTML_str.concat(getHTMLtail());
 
@@ -99,11 +102,12 @@ public class OrderReviewActivity extends Activity {
 	 * @param item
 	 * @return
 	 */
-	private String insertRowHTML(ListMenuItem item) {
-
+	private String insertRowHTML(OrderItem order_item) {
+		Item item = (Item)order_item.getItem();
+		
 		return "  <tr>" + "    <td height=\"50\"><font size=\"2\">"
-				+ item.getTitle() + "</font></td>" + "    <td height=\"50\">"
-				+ item.getPrice() + "</td>" + "    <td>" + item.getQuantity()
+				+ item.getItemName() + "</font></td>" + "    <td height=\"50\">"
+				+ item.getItemPrice() + "</td>" + "    <td>" + order_item.getQuantity()
 				+ "</td>" + "  </tr>";
 
 	}
@@ -131,7 +135,9 @@ public class OrderReviewActivity extends Activity {
 			/*
 			 * Submit the order.
 			 */
-
+			clientModel.submitOrder(order_t);
+			ToastDisplay.DisplayToastOnScr(OrderReviewActivity.this, "Order Submitted!");
+			
 			setResult(ActivitySwitchSignals.ORDERREVIEWCLOSESWH);
 
 			finish();

@@ -1,5 +1,7 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
+import java.io.Serializable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,7 +11,8 @@ import org.json.JSONObject;
  *
  */
 
-public class Rating implements JSONHandler{
+@SuppressWarnings("serial")
+public class Rating implements JSONHandler<Rating>, Serializable{
 	
 	public static final String KEY_RATING = "Rating";
 	public static final String KEY_NUMOFPEOPLE = "NumOfPeople";
@@ -58,7 +61,7 @@ public class Rating implements JSONHandler{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public Rating parseFromJSONObject(JSONObject jsonobj) {
 		try {
 			//to convert string into primitive double
 			rating = Double.parseDouble(jsonobj.getString(KEY_RATING));
@@ -66,5 +69,6 @@ public class Rating implements JSONHandler{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return this;
 	}
 }

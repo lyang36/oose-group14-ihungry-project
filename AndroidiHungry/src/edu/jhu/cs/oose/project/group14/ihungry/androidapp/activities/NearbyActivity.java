@@ -1,7 +1,6 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.example.androidihungry.R;
 import com.google.android.maps.GeoPoint;
@@ -17,14 +16,15 @@ import edu.jhu.cs.oose.project.group14.ihungry.androidapp.MyLocation;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.MyOverlayItem;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.MyLocation.*;
 import edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel.*;
+import edu.jhu.cs.oose.project.group14.ihungry.model.*;
 
 import android.location.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.*;
+import android.view.Menu;
 import android.view.View.*;
 import android.widget.*;
 
@@ -37,27 +37,16 @@ import android.widget.*;
  */
 public class NearbyActivity extends MapActivity {
 	static final private int ZOOMTIME = 15;
-	static final private String[][] restaurant_info = {
-			{ "r1000", "New China II", "1030 WEST 41st St, Baltimore, MD 21211" },
-			{ "r1001", "The Carlyle Club",
-					"500 W University Pkwy, Baltimore, MD 21210" },
-			{ "r1002", "Miss Shirley's Cafe",
-					"513 W Cold Spring Ln,Baltimore, MD 21210" },
-			{ "r1003", "One World Cafe",
-					"100 W University Pkwy, Baltimore, MD 21210" },
-			{ "r1004", "SanSoo Kab San",
-					"2101 Maryland Ave, Baltimore, MD 21218" },
-			{ "r1005", "The Food Market", "1017 W 36th St, Baltimore, MD 21211" },
-			{ "r1006", "Tamber's Nifty Fifties Dining",
-					"3327 St. Paul St, Baltimore, MD 21218" },
-			{ "r1007", "Thai Restaurant",
-					"3316 Greenmount Ave, Baltimore, MD 21218" } };
 
+	private AndroidClientModel clientModel;
+	private List<Restaurant> restaurants;
+	
 	static final private int[][] restaurant_locations = {
 			{ 39337482, -76634559 }, { 39337249, -76624322 },
 			{ 39344429, -76631478 }, { 39334798, -76620687 },
 			{ 39313321, -76617787 }, { 39330855, -76633269 },
 			{ 39329058, -76615716 }, { 39328962, -76609548 } };
+	
 
 	private TapControlledMapView mapView;
 	private MapController mapController;
@@ -71,7 +60,7 @@ public class NearbyActivity extends MapActivity {
 	private MyItemizedOverlay itemizedoverlay2;
 	private MyOverlayItem overlayitem;
 	private MyOverlayItem overlayitem2;
-	private ArrayList<MyOverlayItem> overlayitem2_multi;
+	private List<MyOverlayItem> overlayitem2_multi;
 
 	private Geocoder geocoder;
 
@@ -140,19 +129,16 @@ public class NearbyActivity extends MapActivity {
 		/* ############ Geocoder ############ */
 		geocoder = new Geocoder(this);
 
-		/* ############ Connect server ############ */
-		AndroidClientModel clientmodel = new AndroidClientModelImpl();
+		/* ############ (TEST) Connect server ############ */
+	/*	clientModel = new AndroidClientModelImpl();
 		String responseSvr = clientmodel.getResponseFromServerT();
 		Log.v("[Response]", responseSvr);
-
+	 */
+		
 		/* ############ Add some restaurant locations on map ############ */
-		// for (int i = 0; i < restaurant_info.length; i++) {
-		// getLocationByAddress(geocoder, restaurant_info[i][2], i + 1,
-		// restaurant_info[i][1], restaurant_info[i][0]);
-		// }
 		overlayitem2_multi = new ArrayList<MyOverlayItem>();
 		NetworkSearchAddressTask task_search = new NetworkSearchAddressTask();
-		task_search.execute(restaurant_info);
+		task_search.execute();
 
 		/*
 		 * ##### Hook up button presses to the appropriate event handler. #####
@@ -169,21 +155,30 @@ public class NearbyActivity extends MapActivity {
 	 * 
 	 */
 	private class NetworkSearchAddressTask extends
-			AsyncTask<String[], MyOverlayItem, String> {
+			AsyncTask<Void, MyOverlayItem, String> {
 
 		@Override
-		protected String doInBackground(String[]... rest_info) {
+		protected String doInBackground(Void... params) {
 			try {
-				for (int i = 0; i < rest_info.length; i++) {
-					overlayitem2 = getLocationByAddress(geocoder,
-							rest_info[i][2], i, rest_info[i][1],
-							rest_info[i][0]);
+				/* Get a list of restaurants infos */
+				clientModel = new AndroidClientModelImpl();
+				restaurants = clientModel.retrieveRestaurants(new LocationInfo(0,0));
+
+				for (int i = 0; i < restaurants.size(); i++) {
+					Restaurant rest = (Restaurant)restaurants.get(i);
+					
+					Log.v("RestInfo", rest.getContactInfo().getAddress()+" "+ i+" "+ rest.getContactInfo().getRealName()+" "+
+							rest.getAccountInfo().getId());
+					overlayitem2 = getLocationByAddress(
+							rest.getContactInfo().getAddress(), i, rest.getContactInfo().getRealName(),
+							rest.getAccountInfo().getId());
 					if (overlayitem2 != null) {
 						overlayitem2_multi.add(overlayitem2);
 						publishProgress(overlayitem2);
 					}
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 				Log.e("[doInBackground]", "Error");
 			}
 
@@ -207,6 +202,7 @@ public class NearbyActivity extends MapActivity {
 			// addOverlayitemsToMap(overlayitem2_multi);
 		}
 
+
 	}
 
 	/**
@@ -219,7 +215,7 @@ public class NearbyActivity extends MapActivity {
 	 * @param restaurantID
 	 * @return
 	 */
-	public MyOverlayItem getLocationByAddress(Geocoder geocoder,
+	public MyOverlayItem getLocationByAddress(
 			String locationName, int index, String restaurantName,
 			String restaurantID) {
 		Log.v("[Search address]", locationName);
@@ -287,7 +283,7 @@ public class NearbyActivity extends MapActivity {
 	 * 
 	 * @param overlayitems
 	 */
-	private void addOverlayitemsToMap(ArrayList<MyOverlayItem> overlayitems) {
+	private void addOverlayitemsToMap(List<MyOverlayItem> overlayitems) {
 		for (int i = 0; i < overlayitems.size(); i++) {
 			MyOverlayItem overlayitem_one = overlayitems.get(i);
 			itemizedoverlay2.addOverlay(overlayitem_one);

@@ -76,8 +76,8 @@ public class LoginHandler {
 			System.out.println("Exception occured while sending and getting");
 		}*/
 		
-		System.out.println("result is " + result);
-		return result;
+		//System.out.println("result is " + result);
+		return CommunicationProtocol.NO_SUCH_COMMAND;
 	}
 
 }

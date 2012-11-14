@@ -1,5 +1,7 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
+import java.io.Serializable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,7 +11,8 @@ import org.json.JSONObject;
  * @author group14
  * 
  */
-public class Item implements JSONHandler{
+@SuppressWarnings("serial")
+public class Item implements JSONHandler<Item>, Serializable{
 	public static final String KEY_ITEMID = "Itemid";
 	public static final String KEY_ITEMNAME = "Itemname";
 	public static final String KEY_PRICE = "Price";
@@ -100,7 +103,7 @@ public class Item implements JSONHandler{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public Item parseFromJSONObject(JSONObject jsonobj) {
 		try {
 			this.itemID = jsonobj.getString(KEY_ITEMID);
 			this.itemName = jsonobj.getString(KEY_ITEMNAME);
@@ -113,5 +116,7 @@ public class Item implements JSONHandler{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}		
+		
+		return this;
 	}
 }

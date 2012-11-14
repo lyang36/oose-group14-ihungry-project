@@ -2,19 +2,28 @@ package edu.jhu.cs.oose.group14.restaurant.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import javax.swing.WindowConstants;
@@ -23,6 +32,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.SwingUtilities;
 
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModel;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 
 import java.util.*;
 
@@ -32,7 +42,23 @@ import java.util.*;
  *  for ihungry vendor application and few methods to return the swing 
  *  components in the current screen to the model class.
  */
+
+
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 public class ihungryRestaurantGui extends javax.swing.JFrame {
+	
 	private JPanel panel1;
 	private JLabel username;
 	private JPasswordField passwordLogin;
@@ -47,6 +73,22 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	private JLabel password;
 	private JTextField usernameLogin;
 	private JPanel viewMenu;
+	private JButton decline;
+	private JButton accept;
+	private JList list1;
+	
+	
+	private JTextField orderNoT;
+	private JTextField custNoT;
+	private JPanel subPanel10;
+	private JScrollBar scrollBar1;
+	private JLabel timeL;
+	private JLabel statusL;
+	private JLabel listL;
+	private JLabel orderNoL1;
+	private JLabel custNoL1;
+	private JPanel panel4;
+	private JButton prev;
 	private JButton next;
 	private JPanel itemSubPanel;
 	private JLabel price;
@@ -60,6 +102,13 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	private ArrayList<JTextField> listOfPrice = new ArrayList<JTextField>();
 	private ArrayList<JButton> listOfEdit = new ArrayList<JButton>();
 	private ArrayList<JButton> listOfDelete = new ArrayList<JButton>();
+	private String[] columnNames = {"Order No", "List", "Status", "Order Placed Time"};
+	private Object[][] data = new Object[1000][5];
+	private int pointer = 0;
+	private JTable table = new JTable(data, columnNames);
+	private String[] orderDetails = new String[50];
+	private int orderDetailsPointer = 0;
+	
 	
 	/*
 	 * Main method creates an object of ihungryVendorGui class and an object 
@@ -97,6 +146,7 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	
 	public void initGUI() {
 		try {
+			
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("iHungry Vendor");
 			{
@@ -105,7 +155,7 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 				GroupLayout panel1Layout = new GroupLayout((JComponent)panel1);
 				panel1.setLayout(panel1Layout);
 				panel1.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-				panel1.setPreferredSize(new java.awt.Dimension(730, 300));
+				panel1.setPreferredSize(new java.awt.Dimension(687, 324));
 				{
 					subpanel1 = new JPanel();
 					GroupLayout jPanel1Layout = new GroupLayout((JComponent)subpanel1);
@@ -172,31 +222,27 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 				{
 					signupText = new JLabel();
 					signupText.setText("New to iHungry?");
+					signupText.setBounds(150,150,120,29);
 				}
 				{
 					signup = new JButton();
 					signup.setText("Signup");
 				}
-					panel1Layout.setHorizontalGroup(panel1Layout.createSequentialGroup()
-					.addContainerGap(38, 38)
-					.addGroup(panel1Layout.createParallelGroup()
-					    .addGroup(GroupLayout.Alignment.LEADING, panel1Layout.createSequentialGroup()
-					        .addComponent(subpanel1, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
-					        .addGap(0, 98, Short.MAX_VALUE))
-					    .addGroup(GroupLayout.Alignment.LEADING, panel1Layout.createSequentialGroup()
-					        .addGap(0, 297, Short.MAX_VALUE)
-					        .addComponent(signupText, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-					.addComponent(signup, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(93, 93));
 					panel1Layout.setVerticalGroup(panel1Layout.createSequentialGroup()
-					.addContainerGap(23, 23)
-					.addComponent(subpanel1, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-					.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					    .addComponent(signupText, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(signup, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(181, 181));
+						.addContainerGap(23, 23)
+						.addComponent(subpanel1, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+						.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						    .addComponent(signupText, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						    .addComponent(signup, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(181, 181));
+					panel1Layout.setHorizontalGroup(panel1Layout.createSequentialGroup()
+						.addContainerGap(144, 144)
+						.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						    .addComponent(signup, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+						    .addComponent(subpanel1, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
+						    .addComponent(signupText, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(93, 93));
 			}
 			
 			pack();
@@ -286,141 +332,137 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 				}	
 				
 				itemSubPanelLayout.setHorizontalGroup(itemSubPanelLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(itemSubPanelLayout.createParallelGroup()
-					    .addComponent(listOfItemNames.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfItemNames.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfItemNames.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfItemNames.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfItemNames.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
-					.addGap(37)
-					.addGroup(itemSubPanelLayout.createParallelGroup()
-					    .addComponent(listOfDescription.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfDescription.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfDescription.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfDescription.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfDescription.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE))
-					.addGap(39)
-					.addGroup(itemSubPanelLayout.createParallelGroup()
-					    .addComponent(listOfPrice.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfPrice.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfPrice.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfPrice.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfPrice.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE))
-					.addGap(32)
-					.addGroup(itemSubPanelLayout.createParallelGroup()
-					    .addComponent(listOfEdit.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfEdit.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfEdit.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfEdit.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfEdit.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
-					.addGap(25)
-					.addGroup(itemSubPanelLayout.createParallelGroup()
-					    .addComponent(listOfDelete.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfDelete.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfDelete.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfDelete.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
-					    .addComponent(listOfDelete.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED));
+						.addContainerGap()
+						.addGroup(itemSubPanelLayout.createParallelGroup()
+								.addComponent(listOfItemNames.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+								.addComponent(listOfItemNames.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+								.addComponent(listOfItemNames.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+								.addComponent(listOfItemNames.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+								.addComponent(listOfItemNames.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
+								.addGap(37)
+								.addGroup(itemSubPanelLayout.createParallelGroup()
+										.addComponent(listOfDescription.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+										.addComponent(listOfDescription.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+										.addComponent(listOfDescription.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+										.addComponent(listOfDescription.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+										.addComponent(listOfDescription.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE))
+										.addGap(39)
+										.addGroup(itemSubPanelLayout.createParallelGroup()
+												.addComponent(listOfPrice.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+												.addComponent(listOfPrice.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+												.addComponent(listOfPrice.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+												.addComponent(listOfPrice.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+												.addComponent(listOfPrice.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE))
+												.addGap(32)
+												.addGroup(itemSubPanelLayout.createParallelGroup()
+														.addComponent(listOfEdit.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+														.addComponent(listOfEdit.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+														.addComponent(listOfEdit.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+														.addComponent(listOfEdit.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+														.addComponent(listOfEdit.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
+														.addGap(25)
+														.addGroup(itemSubPanelLayout.createParallelGroup()
+																.addComponent(listOfDelete.get(0), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+																.addComponent(listOfDelete.get(1), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+																.addComponent(listOfDelete.get(2), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+																.addComponent(listOfDelete.get(3), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+																.addComponent(listOfDelete.get(4), GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE))
+																.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED));
 				itemSubPanelLayout.setVerticalGroup(itemSubPanelLayout.createParallelGroup()
-					.addGroup(itemSubPanelLayout.createSequentialGroup()
-					    .addGap(12)
-					    .addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					        .addComponent(listOfEdit.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-					        .addComponent(listOfItemNames.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-					        .addComponent(listOfDescription.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-					        .addComponent(listOfPrice.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-					        .addComponent(listOfDelete.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-					    .addGap(38)
-					    .addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE) 
-				            .addComponent(listOfItemNames.get(1), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfDescription.get(1), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfPrice.get(1), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfEdit.get(1), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-					        .addComponent(listOfDelete.get(1),GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-					    .addGap(38)    
-					    .addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE) 
-				            .addComponent(listOfItemNames.get(2), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfDescription.get(2), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfPrice.get(2), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfEdit.get(2), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-					        .addComponent(listOfDelete.get(2),GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-					    .addGap(38) 
-					    .addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE) 
-				            .addComponent(listOfItemNames.get(3), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfDescription.get(3), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfPrice.get(3), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfEdit.get(3), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-					        .addComponent(listOfDelete.get(3),GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-					    .addGap(38) 
-					    .addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE) 
-				            .addComponent(listOfItemNames.get(4), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfDescription.get(4), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfPrice.get(4), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(listOfEdit.get(4), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-					        .addComponent(listOfDelete.get(4),GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-					    .addGap(38) 
-					    .addContainerGap(209, 209)));
+						.addGroup(itemSubPanelLayout.createSequentialGroup()
+								.addGap(12)
+								.addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+										.addComponent(listOfEdit.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+										.addComponent(listOfItemNames.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+										.addComponent(listOfDescription.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+										.addComponent(listOfPrice.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+										.addComponent(listOfDelete.get(0), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+										.addGap(38)
+										.addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE) 
+												.addComponent(listOfItemNames.get(1), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+												.addComponent(listOfDescription.get(1), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+												.addComponent(listOfPrice.get(1), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+												.addComponent(listOfEdit.get(1), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+												.addComponent(listOfDelete.get(1),GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+												.addGap(38)    
+												.addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE) 
+														.addComponent(listOfItemNames.get(2), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+														.addComponent(listOfDescription.get(2), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+														.addComponent(listOfPrice.get(2), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+														.addComponent(listOfEdit.get(2), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+														.addComponent(listOfDelete.get(2),GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+														.addGap(38) 
+														.addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE) 
+																.addComponent(listOfItemNames.get(3), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+																.addComponent(listOfDescription.get(3), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+																.addComponent(listOfPrice.get(3), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+																.addComponent(listOfEdit.get(3), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+																.addComponent(listOfDelete.get(3),GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+																.addGap(38) 
+																.addGroup(itemSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE) 
+																		.addComponent(listOfItemNames.get(4), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(listOfDescription.get(4), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(listOfPrice.get(4), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(listOfEdit.get(4), GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(listOfDelete.get(4),GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+																		.addGap(38) 
+																		.addContainerGap(209, 209)));
 				itemSubPanelLayout.linkSize(SwingConstants.VERTICAL, new Component[] {listOfPrice.get(0), listOfEdit.get(0), listOfDelete.get(0)});
 				itemSubPanelLayout.linkSize(SwingConstants.VERTICAL, new Component[] {listOfItemNames.get(0), listOfDescription.get(0)});
-
+				
+			}
+			{
+				prev = new JButton();
+				prev.setText("Previous");
+				prev.setVisible(false);
 			}
 			{
 				next = new JButton();
 				next.setText("Next");
 			}
 			viewMenuLayout.setHorizontalGroup(viewMenuLayout.createSequentialGroup()
-					.addContainerGap(42, 42)
+					.addContainerGap(99, 99)
 					.addGroup(viewMenuLayout.createParallelGroup()
+							.addComponent(menuFrontMessage, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 673, GroupLayout.PREFERRED_SIZE)
+							.addComponent(itemSubPanel, GroupLayout.Alignment.LEADING, 0, 676, Short.MAX_VALUE)
 							.addGroup(GroupLayout.Alignment.LEADING, viewMenuLayout.createSequentialGroup()
-									.addComponent(menuFrontMessage, GroupLayout.PREFERRED_SIZE, 673, GroupLayout.PREFERRED_SIZE)
-									.addGap(0, 14, Short.MAX_VALUE))
-									.addComponent(itemSubPanel, GroupLayout.Alignment.LEADING, 0, 687, Short.MAX_VALUE)
-									.addGroup(GroupLayout.Alignment.LEADING, viewMenuLayout.createSequentialGroup()
-											.addGap(46)
-											.addComponent(name, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
-											.addGap(74)
-											.addComponent(decription, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
-											.addGap(79)
-											.addComponent(price, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-											.addGap(110)
-											.addComponent(next, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
-											.addGap(0, 37, Short.MAX_VALUE)))
-											.addContainerGap(46, 46));
+									.addGap(46)
+									.addComponent(name, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
+									.addGap(74)
+									.addComponent(decription, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
+									.addGap(79)
+									.addGroup(viewMenuLayout.createParallelGroup()
+											.addGroup(GroupLayout.Alignment.LEADING, viewMenuLayout.createSequentialGroup()
+													.addComponent(price, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+													.addGap(0, 70, Short.MAX_VALUE))
+													.addGroup(GroupLayout.Alignment.LEADING, viewMenuLayout.createSequentialGroup()
+															.addGap(38)
+															.addComponent(prev, 0, 99, Short.MAX_VALUE)))
+															.addGap(29)
+															.addComponent(next, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
+															.addGap(16))));
+			viewMenuLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {next, prev});
 			viewMenuLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {name, decription});
 			viewMenuLayout.setVerticalGroup(viewMenuLayout.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(menuFrontMessage, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-					.addGap(58)
+					.addGap(57)
 					.addGroup(viewMenuLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(name, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
 							.addComponent(decription, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
 							.addComponent(price, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 							.addComponent(itemSubPanel, GroupLayout.PREFERRED_SIZE, 332, GroupLayout.PREFERRED_SIZE)
-							.addGap(17)
-							.addComponent(next, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap(19, Short.MAX_VALUE));
+							.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+							.addGroup(viewMenuLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(prev, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
+									.addComponent(next, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE))
+									.addContainerGap(21, 21));
+			viewMenuLayout.linkSize(SwingConstants.VERTICAL, new Component[] {next, prev});
 			viewMenuLayout.linkSize(SwingConstants.VERTICAL, new Component[] {name, decription});
 		}
 		{
-			currentOrders = new JPanel();
-			jTabbedPane1.addTab("Current Orders", null, currentOrders, null);
-			GroupLayout currentOrdersLayout = new GroupLayout((JComponent)currentOrders);
-			currentOrders.setLayout(currentOrdersLayout);
-			currentOrders.setPreferredSize(new java.awt.Dimension(652, 383));
-			{
-				jButton1 = new JButton();
-				jButton1.setText("Click");
-			}
-			currentOrdersLayout.setHorizontalGroup(currentOrdersLayout.createSequentialGroup()
-					.addContainerGap(99, 99)
-					.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(196, Short.MAX_VALUE));
-			currentOrdersLayout.setVerticalGroup(currentOrdersLayout.createSequentialGroup()
-					.addContainerGap(93, 93)
-					.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(142, Short.MAX_VALUE));
+			displayCurrentOrder();
 		}
 		{
 			toBeDelivered = new JPanel();
@@ -437,6 +479,156 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 		}
 		}
 	
+	}
+
+
+	private void displayCurrentOrder() {
+		
+		// create split pane and add it to the tabbed pane
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		jTabbedPane1.addTab("Current Orders", null, splitPane, null);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setDividerLocation(500);
+		
+		
+		
+		table.setRowHeight(30);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrollPane = new JScrollPane(table);		
+		//setPreferredSize(new Dimension(450, 110));
+		splitPane.setLeftComponent(scrollPane);
+		scrollPane.setPreferredSize(new java.awt.Dimension(483, 312));
+		
+		subPanel10 = new JPanel();
+		splitPane.setRightComponent(subPanel10);
+		GroupLayout subPanel10Layout = new GroupLayout((JComponent)subPanel10);
+		subPanel10.setLayout(subPanel10Layout);
+		{
+			orderNoL1 = new JLabel();
+			orderNoL1.setText("Order No :");
+		}
+		{
+			/*ListModel list1Model = 
+				new DefaultComboBoxModel(
+						new String[] { "Item One", "Item Two" });*/
+			list1 = new JList(orderDetails);
+			//list1.setModel(list1Model);
+		}
+		{
+			accept = new JButton();
+			accept.setText("Accept");
+		}
+		{
+			decline = new JButton();
+			decline.setText("Decline");
+		}
+		{
+			custNoL1 = new JLabel();
+			custNoL1.setText("Cust No :");
+		}
+		{
+			orderNoT = new JTextField();
+		}
+		{
+			custNoT = new JTextField();
+		}
+		subPanel10Layout.setVerticalGroup(subPanel10Layout.createSequentialGroup()
+			.addContainerGap(39, 39)
+			.addGroup(subPanel10Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			    .addComponent(orderNoT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+			    .addComponent(orderNoL1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+			.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+			.addGroup(subPanel10Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			    .addComponent(custNoT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+			    .addComponent(custNoL1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
+			.addGap(23)
+			.addComponent(list1, GroupLayout.PREFERRED_SIZE, 338, GroupLayout.PREFERRED_SIZE)
+			.addGap(27)
+			.addGroup(subPanel10Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			    .addComponent(accept, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+			    .addComponent(decline, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+			.addContainerGap(24, 24));
+		subPanel10Layout.setHorizontalGroup(subPanel10Layout.createSequentialGroup()
+			.addContainerGap(30, 30)
+			.addGroup(subPanel10Layout.createParallelGroup()
+			    .addGroup(subPanel10Layout.createSequentialGroup()
+			        .addGroup(subPanel10Layout.createParallelGroup()
+			            .addComponent(custNoL1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+			            .addGroup(GroupLayout.Alignment.LEADING, subPanel10Layout.createSequentialGroup()
+			                .addComponent(orderNoL1, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+			                .addGap(7)))
+			        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+			        .addGroup(subPanel10Layout.createParallelGroup()
+			            .addComponent(custNoT, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
+			            .addComponent(orderNoT, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE))
+			        .addGap(234))
+			    .addComponent(list1, GroupLayout.Alignment.LEADING, 0, 447, Short.MAX_VALUE)
+			    .addGroup(GroupLayout.Alignment.LEADING, subPanel10Layout.createSequentialGroup()
+			        .addGap(0, 35, Short.MAX_VALUE)
+			        .addComponent(accept, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
+			        .addGap(33)
+			        .addComponent(decline, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
+			        .addGap(191)))
+			.addContainerGap(22, 22));
+		subPanel10Layout.linkSize(SwingConstants.VERTICAL, new Component[] {custNoT, orderNoT});
+		subPanel10Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {custNoT, orderNoT});
+
+	}
+	
+	public void loadDetailPane(Order order){
+		
+	}
+	
+	
+	
+	public JTable getTable(){
+		return table;
+	}
+	
+	public JPanel getSubPanel10(){
+		return subPanel10;
+	}
+	
+	public JTextField getOrderNo(){
+		return orderNoT;
+	}
+	
+	public JTextField getCustNo(){
+		return custNoT;
+	}
+	
+	
+	public Object[][] getCurrentOrders(){
+		return data;
+	}
+	
+	public void setCurrentOrders(Object[][] data, int pointer){
+		
+		for(int i=this.pointer;i<(this.pointer+pointer);i++)
+			for(int j=0;j<data[0].length;j++){
+				//System.out.println(i);
+				//System.out.println(j);
+				//System.out.println(i-this.pointer);
+				this.data[i][j] = data[i-this.pointer][j];
+			}
+		/*for(int i=0;i<pointer;i++)
+			for(int j=0;j<5;j++)
+				this.data[i][j]=data[i][j];*/
+	}
+	
+	public void setSelectedOrderDetails(String[] orderDetails)
+	{
+		
+		list1.setListData(orderDetails);
+		
+	}
+	
+	public int getPointer(){
+		return pointer;
+	}
+	
+	public void setPointer(int pointer){
+		this.pointer=pointer;
 	}
 	
 	
@@ -471,8 +663,8 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	 * @return a reference to a list of ItemName textfield
 	 */
 	
-	public ArrayList<JTextField> getItemNames(){
-		return listOfItemNames;
+	public JTextField getItemNames(int ind){
+		return listOfItemNames.get(ind);
 	}
 	
 	/**
@@ -482,8 +674,8 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	 * @return a reference to a list of Description textfield
 	 */
 	
-	public ArrayList<JTextField> getDescription(){
-		return listOfDescription;
+	public JTextField getDescription(int ind){
+		return listOfDescription.get(ind);
 	
 	}
 	
@@ -494,9 +686,18 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	 * @return a reference to a list of Price textfield
 	 */
 	
-	public ArrayList<JTextField> getPrice(){
-		return listOfPrice;
+	public JTextField getPrice(int ind){
+		return listOfPrice.get(ind);
 	}
+	
+	public JButton getNext(){
+		return next;
+	}
+	
+	public JButton getPrev(){
+		return prev;
+	}
+	
 	
 
 }

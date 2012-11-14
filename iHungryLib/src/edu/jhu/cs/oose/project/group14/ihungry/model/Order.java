@@ -13,7 +13,7 @@ import org.json.JSONObject;
  */
 
 @SuppressWarnings("serial")
-public class Order implements JSONHandler, Serializable{
+public class Order implements JSONHandler<Order>, Serializable{
 	public static final String KEY_ORDERID = "Orderid";
 	public static final String KEY_CUSTID = "Custid";
 	public static final String KEY_RESTID = "Restid";
@@ -97,7 +97,7 @@ public class Order implements JSONHandler, Serializable{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public Order parseFromJSONObject(JSONObject jsonobj) {
 		try {
 			this.orderId = jsonobj.getString(KEY_ORDERID);
 			this.custId = jsonobj.getString(KEY_CUSTID);
@@ -115,6 +115,7 @@ public class Order implements JSONHandler, Serializable{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}	
+		return this;
 		
 	}
 }

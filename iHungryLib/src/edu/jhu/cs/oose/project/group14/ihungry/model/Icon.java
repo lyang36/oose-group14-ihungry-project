@@ -17,7 +17,8 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.misc.ObjStringUtil;
  *
  */
 
-public class Icon implements JSONHandler, Serializable{
+@SuppressWarnings("serial")
+public class Icon implements JSONHandler<Icon>, Serializable{
 	public static final String KEY_ICON = "icon";
 	
 	Image image = null;
@@ -73,14 +74,14 @@ public class Icon implements JSONHandler, Serializable{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public Icon parseFromJSONObject(JSONObject jsonobj) {
 		try {
 			String imgstr = jsonobj.getString(KEY_ICON);
 			this.image = this.stringToImg(imgstr);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+		return this;
 		
 	}
 }

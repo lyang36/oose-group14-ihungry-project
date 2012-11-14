@@ -22,11 +22,11 @@ import android.os.Bundle;
  *
  */
 public class MyLocation {
-    Timer timer1;
-    LocationManager lm;
-    LocationResult locationResult;
-    boolean gps_enabled=false;
-    boolean network_enabled=false;
+    private Timer timer1;
+    private LocationManager lm;
+    private LocationResult locationResult;
+    private boolean gps_enabled=false;
+    private boolean network_enabled=false;
 
     /**
      * Start two listeners: Network and GPS listener to get location.
@@ -127,7 +127,7 @@ public class MyLocation {
     }
 
     /**
-     * An abstract class LocationResult with one abstract method getLocation(Location location).
+     * An abstract class LocationResult with one abstract method gotLocation(Location location).
      * @author SuNFloWer
      *
      */
