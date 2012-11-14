@@ -12,6 +12,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.DataBaseOperater;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReactor;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
@@ -228,6 +229,37 @@ public class MessageReactorImpl implements MessageReactor{
 			}
 			
 			
+			
+			else if(commandmesg.contains(CommunicationProtocol.CUS_CHECK_UNAME_EXISTED)){
+				returnStringInfo(dboperator.checkUserUnameExisted(uname),
+						new BasicDBObject(), CommunicationProtocol.TRUE, 
+						CommunicationProtocol.FALSE, null);
+			}
+			
+			
+			
+			//business signup
+			else if(commandmesg.contains(CommunicationProtocol.CUS_SIGN_UP)){
+				returnStringInfo(!dboperator.checkUserUnameExisted(uname),
+						new BasicDBObject(), CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, new OnJudgeListener(){
+
+							@Override
+							public String onTrue() {
+								DBObject cus;
+								cus = supinfoObj;
+								dboperator.addCustomer(cus);
+								return null;
+							}
+
+							@Override
+							public String onFalse() {
+								return null;
+							}
+					
+				});
+			}
+			
 			else if(commandmesg.contains(CommunicationProtocol.CUS_LOGIN)){
 				returnStringInfo(dboperator.getCustomer(uname, passwd) != null,
 						new BasicDBObject(), CommunicationProtocol.LOGIN_SUCCESS, 
@@ -235,6 +267,63 @@ public class MessageReactorImpl implements MessageReactor{
 			}
 			
 			
+			
+			//business update contact
+			else if(commandmesg.contains(CommunicationProtocol.CUS_UPDATE_CONTACT)){
+				final DBObject cus = dboperator.getCustomer(uname, passwd);
+				returnStringInfo(cus != null,
+						supinfo, 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+
+							@Override
+							public String onTrue() {
+								DBObject cusa = dboperator.getCustomer(uname, passwd);
+								cusa.put(Customer.KEY_CONTACT, supinfoObj);
+								dboperator.addCustomer(cusa);
+								return null;
+							}
+
+							@Override
+							public String onFalse() {
+								return null;	
+							}
+					
+				});
+			}
+			
+			
+			else if(commandmesg.contains(CommunicationProtocol.CUS_GET_CONTACT)){	
+				DBObject cus = dboperator.getCustomer(uname, passwd);
+				//System.out.println(bus);
+				returnStringInfo((cus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								String cus = dboperator.getCustomer(uname, passwd).toString();
+								Customer retcus = new Customer();
+								JSONObject jcus = null;
+								try{
+									 jcus = new JSONObject(cus);
+								}catch(Exception e){
+									e.printStackTrace();
+								}	
+								retcus.parseFromJSONObject(jcus);
+								return retcus.getContactInfo().getJSON().toString();
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
 			
 			
 			//business process a order
