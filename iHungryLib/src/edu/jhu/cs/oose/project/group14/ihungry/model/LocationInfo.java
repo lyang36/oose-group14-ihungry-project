@@ -11,8 +11,17 @@ import org.json.JSONObject;
  */
 
 public class LocationInfo implements JSONHandler<LocationInfo>{
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_STRING_ADDRESS = "str_address";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_LATITUDE = "latitude";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_LONGITUDE = "longitude";
 	
 	

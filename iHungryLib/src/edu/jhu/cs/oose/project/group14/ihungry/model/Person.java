@@ -10,10 +10,14 @@ import org.json.JSONObject;
  * 
  */
 abstract public class Person implements JSONHandler<Person>{
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_CONTACT = "Contact";
 	
-	AccountInfo account = null;
-	ContactInfo contactinfo= null;
+	private AccountInfo account = null;
+	private ContactInfo contactinfo= null;
+	
 	public Person() {
 
 	}
