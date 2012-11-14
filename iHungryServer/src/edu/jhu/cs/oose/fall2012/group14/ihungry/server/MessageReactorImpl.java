@@ -358,7 +358,7 @@ public class MessageReactorImpl implements MessageReactor{
 				returnStringInfo(dboperator.checkUserUnameExisted(uname),
 						new BasicDBObject(), CommunicationProtocol.TRUE, 
 						CommunicationProtocol.FALSE, null);
-			}else if(commandmesg.contains(CommunicationProtocol.CUS_FIND_RESTAURANT)){
+			}else if(commandmesg.contains(CommunicationProtocol.CUS_FIND_RESTAURANT_IDS)){
 				//TODO
 				internet.sendMsg(CommunicationProtocol.construcSendingStr(
 						uname, passwd, CommunicationProtocol.NO_SUCH_COMMAND, supinfo));

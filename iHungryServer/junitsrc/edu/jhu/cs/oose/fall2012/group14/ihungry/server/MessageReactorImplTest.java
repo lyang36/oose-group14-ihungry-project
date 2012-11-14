@@ -22,6 +22,7 @@ import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
 import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
+import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
@@ -97,7 +98,7 @@ public class MessageReactorImplTest {
 		DBOperatorTestUnit.initializeDB();
 		Menu m = new Menu();
 		Album ab = new Album();
-		ContactInfo contact = new ContactInfo("abc dff", "123456687");
+		ContactInfo contact = new ContactInfo(new LocationInfo("abc dff"), "123456687");
 		AccountInfo acc = new AccountInfo("lyang", "123");
 		Restaurant res = new Restaurant(m, ab);
 		res.setAccountInfo(acc);
@@ -124,7 +125,7 @@ public class MessageReactorImplTest {
 				CommunicationProtocol.TRUE, res.getJSON().toString());
 		
 		//test update contact info
-		contact = new ContactInfo("abc dff", "4444433");
+		contact = new ContactInfo(new LocationInfo("abc dff"), "4444433");
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_UPDATE_CONTACT,
 				CommunicationProtocol.PROCESS_SUCCEEDED, contact.getJSON().toString());
@@ -138,7 +139,7 @@ public class MessageReactorImplTest {
 	
 	@Test
 	public void testCustomerAccount(){
-		ContactInfo contact = new ContactInfo("abc dff", "123456687");
+		ContactInfo contact = new ContactInfo(new LocationInfo("abc dff"), "123456687");
 		AccountInfo acc = new AccountInfo("lyang", "123");
 		Customer cus = new Customer();
 		cus.setAccountInfo(acc);
@@ -165,7 +166,7 @@ public class MessageReactorImplTest {
 		
 		
 		//test update contact info
-		contact = new ContactInfo("gggg dff", "4444433");
+		contact = new ContactInfo(new LocationInfo("abc dff"), "4444433");
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.CUS_UPDATE_CONTACT,
 				CommunicationProtocol.PROCESS_SUCCEEDED, contact.getJSON().toString());
