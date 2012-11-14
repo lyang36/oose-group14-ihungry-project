@@ -84,7 +84,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		
 		/* Assume below is Generated on the server side */
 		ContactInfo cInfo = new ContactInfo("Shang Zhao",
-				"Johns Hopkins University, Baltimore, MD, 21218",
+				new LocationInfo("Johns Hopkins University, Baltimore, MD, 21218"),
 				"911-911-9999", "443-343-1111", "szhao12@jhu.edu",
 				"1989-12-11", new Icon());
 		AccountInfo aInfo = new AccountInfo("szhao12", "12345");
@@ -112,16 +112,15 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	public Customer signupForNewUser(String username, String password,
 			String realname, String address, String primphone, String secphone,
 			String email, String birthday, Icon icon) {
+		
 		AccountInfo ainfo = new AccountInfo(username, password);
-		ContactInfo cinfo = new ContactInfo(realname, address, primphone,
+		ContactInfo cinfo = new ContactInfo(realname, new LocationInfo(address), primphone,
 				secphone, email, birthday, icon);
-
 		Customer customer = new Customer();
 		customer.setContactInfo(cinfo);
 		customer.setAccountInfo(ainfo);
-		
 		/* Send the customer info to the server. */
-		/* If success received, return true. 
+		/* If success received, return the customer object. 
 		 * Else return null. */
 		return customer;
 	}
@@ -162,7 +161,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 
 		AccountInfo acc1 = new AccountInfo("newchina", "");
 		ContactInfo contact1 = new ContactInfo("New China II",
-				"1030 WEST 41st St, Baltimore, MD 21211", "445-685-6652", "",
+				new LocationInfo("1030 WEST 41st St, Baltimore, MD 21211"), "445-685-6652", "",
 				"", "", icon);
 		Restaurant rest1 = new Restaurant(menu, album);
 		rest1.setAccountInfo(acc1);
@@ -170,7 +169,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 
 		AccountInfo acc2 = new AccountInfo("carlyleclub", "");
 		ContactInfo contact2 = new ContactInfo("The Carlyle Club",
-				"500 W University Pkwy, Baltimore, MD 21210", "", "", "", "",
+				new LocationInfo("500 W University Pkwy, Baltimore, MD 21210"), "", "", "", "",
 				icon);
 		Restaurant rest2 = new Restaurant(menu, album);
 		rest2.setAccountInfo(acc2);
@@ -292,12 +291,14 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	}
 
 	public List<Order> retrieveOrders(String custId, String status, int count) {
+		// TODO Auto-generated method stub
 		/*
 		 * 1. Generate a sending message to be sent to the server with Customer,
 		 * status and count
 		 */
 		/* 2. Call internetClient.sendAndGet to get response from server */
 		/* 3. If valid => parse the information to List<Order> object */
+		
 		return null;
 	}
 

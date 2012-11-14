@@ -43,7 +43,6 @@ public class MyListViewAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	// public ImageLoader imageLoader;
 
-	
 	private TextView title;
 	private TextView rating;
 	private TextView price;
@@ -55,14 +54,6 @@ public class MyListViewAdapter extends BaseAdapter {
 	private List<OrderItem> menu_order;
 
 
-/*	public MyListViewAdapter(Activity a, ArrayList<HashMap<String, String>> d) {
-		activity = a;
-		data = d;
-		inflater = (LayoutInflater) activity
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		// imageLoader=new ImageLoader(activity.getApplicationContext());
-	}
-*/
 	public MyListViewAdapter(Activity a, List<OrderItem> menu_order_in) {
 		activity = a;
 		menu_order = menu_order_in;
@@ -70,30 +61,39 @@ public class MyListViewAdapter extends BaseAdapter {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
-/*	public MyListViewAdapter(Activity a, ArrayList<ListMenuItem> menu_items_in){
-		activity  = a;
-		menu_items = menu_items_in;
-		inflater = (LayoutInflater) activity
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	}
-*/
-	
+	/**
+	 * Return the total number of rows in the list (size of menu_order).
+	 */
 	public int getCount() {
 		return menu_order.size();
 	}
 
+	/**
+	 * Return the item at a specific position.
+	 */
 	public Object getItem(int position) {
 		return menu_order.get(position);
 	}
 	
+	/**
+	 * Get the TextView for displaying price.
+	 * @param position
+	 * @return
+	 */
 	public TextView getPriceView(int position){
 		return price;
 	}
 
+	/**
+	 * Display the Item id at one specific position.
+	 */
 	public long getItemId(int position) {
 		return position;
 	}
 
+	/**
+	 * This function is responsible for displaying info on the list and handles button tapping events.
+	 */
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi=convertView;
         if(convertView==null)
@@ -134,100 +134,10 @@ public class MyListViewAdapter extends BaseAdapter {
 				OrderItem clickItem = (OrderItem) mListView.getAdapter().getItem(pos);
 				clickItem.minusQuantity(1);
 				((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
-				
-	
 			}
 		});	
 				
-		/*	View vi = convertView;
-		final ViewHolder holder;
-		if (convertView == null) {
-			vi = inflater.inflate(R.layout.list_item_simple, null);
-			holder = new ViewHolder();
-		
-			holder.title = (TextView) vi.findViewById(R.id.title); // title
-			holder.rating = (TextView) vi.findViewById(R.id.rating); // rating
-			holder.price = (TextView) vi.findViewById(R.id.price); // price
-			holder.thumb_image = (ImageView) vi.findViewById(R.id.list_image); // thumb
-																				// image
-			holder.btn_quantity = (Button) vi.findViewById(R.id.btn_quantity); // quantity
-			vi.setTag(holder);																
-		}else{
-			holder = (ViewHolder)vi.getTag();
-		}
-
-		// HashMap<String, String> song = new HashMap<String, String>();
-		// song = data.get(position);
-		
-		Log.v("[Adapter getView]", position + " ");
-		// Setting all values in listview
-		
-		holder.title.setText(info[position]);
-	//	holder.btn_quantity.setOnTouchListener(new OnTouchListener() {
-		holder.btn_quantity.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-			//	ListView mListView = (ListView) v.getParent().getParent();
-			//	final int pos = mListView.getPositionForView((View) v.getParent());
-				final int pos = (Integer)v.getTag();
-				Log.v("[Adapter getView on click] clicked", pos + "");
-				ToastDisplay.DisplayToastOnScr(v.getContext(), "Tap " + pos);
-		
-				ViewHolder holder_new = (ViewHolder)mListView.getTag(pos);
-				TextView price_found = holder_new.price;
-			//	TextView price_found = (TextView) con_view.findViewById(R.id.price);
-				price_found.setText("9999");
-				
-				//ViewHolder holdernew = (ViewHolder)getItem(pos);
-	//			ViewHolder holder_new = (ViewHolder)v.getTag();
-			//	ViewHolder holdernew = (ViewHolder) mListView.getTag();
-			//	TextView price_found = holdernew.price;
-			//	price_found.setText("9999");
-	//			holder_new.price.setText("9999");
-	
-				
-			//	holder.price.setText("9999");
-			}
-		});		
-		
-		holder.btn_quantity.setTag(position);
-		holder.price.setTag(position);
-		
-		//	holder.btn_quantity.setTag(info.)
-		
-		*/
-		
-		
 		return vi;
 	}
 
 }
-
-/*		int firstPosition = mListView.getFirstVisiblePosition()
-- mListView.getHeaderViewsCount();
-int wantedChild = pos - firstPosition;
-if (wantedChild < 0 || wantedChild >= mListView.getChildCount()) {
-Log.w("[Adapter getView on click]child",
-	"Unable to get view for desired position, because it's not being displayed on screen.");
-} else {
-
-// View con_view = (View)mListView.getItemAtPosition(pos);
-View con_view = (View) mListView.getChildAt(pos);
-// View con_view =
-// (View)mListView.getAdapter().getItem(pos);
-
-TextView price_found = (TextView) con_view
-	.findViewById(R.id.price);
-price_found.setText("9999");
-}*/
-
-// View con_view = (View)mListView.getItemAtPosition(pos);
-//View con_view = (View) mListView.getChildAt(pos-mListView.getHeaderViewsCount());
-// View con_view =
-// (View)mListView.getAdapter().getItem(pos);
-
-//View con_view = (View) mListView.getChildAt(pos);
-// title.setText(song.get(CustomizedListView.KEY_TITLE));
-// artist.setText(song.get(CustomizedListView.KEY_ARTIST));
-// duration.setText(song.get(CustomizedListView.KEY_DURATION));
-// imageLoader.DisplayImage(song.get(CustomizedListView.KEY_THUMB_URL),
-// thumb_image);

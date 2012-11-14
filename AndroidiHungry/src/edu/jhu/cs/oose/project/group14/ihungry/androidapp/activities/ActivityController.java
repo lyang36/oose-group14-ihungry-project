@@ -53,7 +53,7 @@ public class ActivityController extends Activity {
 		FileHandler.saveFile( this,
 				FileHandler.f_userinfo,
 				aInfo.getUname()+"||"+ aInfo.getPasswd()+"||"+ aInfo.getId()+"||"+
-				cInfo.getRealName()+"||"+cInfo.getAddress()+"||"+cInfo.getPrimPhone()+"||"+
+				cInfo.getRealName()+"||"+cInfo.getAddress().getAddress()+"||"+cInfo.getPrimPhone()+"||"+
 				cInfo.getSecPhone()+"||"+cInfo.getEmail()+"||"+cInfo.getBirthDate());
 		// "szhao12||12345||Shang Zhao||Male||911-911-9119||Johns Hopkins University, Baltimore, MD, 21218"
 		

@@ -27,7 +27,6 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 
 	private List<MyOverlayItem> m_overlays = new ArrayList<MyOverlayItem>();
 	private Context c;
-	
 
 	public MyItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(boundCenterBottom(defaultMarker), mapView);
@@ -35,11 +34,18 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 		populate();
 	}
 
+	/**
+	 * Add an MyOverlayItem to the List m_overlays and then populate on the overlay (or the map).
+	 * @param overlay
+	 */
 	public void addOverlay(MyOverlayItem overlay) {
 		m_overlays.add(overlay);
 		populate();
 	}
 
+	/**
+	 * Delete all the overlay items on the overlay and then populate on the overlay (or the map).
+	 */
 	public void clear() {
 		m_overlays.clear();
 		setLastFocusedIndex(-1);
@@ -57,7 +63,7 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 	}
 
 	/**
-	 * Triggered when user taps on a balloon. 
+	 * Triggered when user taps on a balloon => OrderandRestaurantInfoActivity would appear.
 	 * 
 	 */
 	@Override
@@ -89,7 +95,7 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 	}
 	
 	/**
-	 * Reconstruct a BalloonOverlayView with a customized offset.
+	 * Reconstruct a BalloonOverlayView with a customized offset value.
 	 * 
 	 */
 	@Override
