@@ -61,12 +61,46 @@ public class CommunicationProtocol {
 	public static final String FB_SIGN_NAME =				"ddad8792734aebb4cf9a68fd";
 	public static final String FB_SIGN_PASSWD = 			"aed78ba066b3d94e190c215ed7834bac";
 	
-	public static final String CUS_FIND_RESTAURANT = 		"20b56c0a6dac7f00edef0fc8180657e3";
+	/**
+	 * find a restaurent by the location, return back AccountInfo (ignore password):
+	 * 
+	 */
+	public static final String CUS_FIND_RESTAURANT_IDS = 	"20b56c0a6dac7f00edef0fc8180657e3";
+	
+	/**
+	 * return back the contact of an ID
+	 * input should be AccountInfo (without passwd)
+	 */
+	public static final String CUS_GET_RES_CONTACT = 		"a380f02d85fc20ae1e593541497d6010";
+	
+	/**
+	 * get the restaurent's album by restaurant's AccountInfo (ignore passwd)
+	 */
 	public static final String CUS_GET_RES_ALBUM = 			"afc550fc2d51c2e47fa9051078362ac3";
+	
+	/**
+	 * get the restaurent's menu by retaurant's AccountInfo (ignore passwd)
+	 */
 	public static final String CUS_GET_MENU		  =			"79907ca0920678ded973e1c7c3fde9d1";
+	
+	/**
+	 * submit an order
+	 */
 	public static final String CUS_SUBMIT_ORDER 	  =		"18fc1c45a61ac49fd563875a69fc7fed";
+	
+	/**
+	 * update an existed order
+	 */
 	public static final String CUS_UPDATE_ORDER 	  =		"13ac2330ef57b95dc1bfe48f45f054c5";
+	
+	/**
+	 * retrive all orders
+	 */
 	public static final String CUS_RETRIVE_ORDER  =			"428966c09b471f152472f221d30476c6";
+	
+	/**
+	 * retrive changed order
+	 */
 	public static final String CUS_RETRIVE_CHANGED_ORDER = 	"bd472871498f04ffee93a6c6c3980b0e";
 	
 	
