@@ -34,6 +34,10 @@ public class Menu implements JSONHandler,Serializable{
         
     }
     
+    public void setRestId(String restId){
+    	this.restId = restId;
+    }
+    
     public List<Item> getItems(){
         return items;
     }

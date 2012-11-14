@@ -16,12 +16,18 @@ public class Restaurant extends Person implements JSONHandler{
 	Menu menu;
 	Album album;
 	
-	public Restaurant(){}
 	
 	public Restaurant(Menu menu_in, Album album_in) {
 	
 		menu = menu_in;
 		album = album_in;
+		
+	}
+	
+	@Override
+	public void setAccountInfo(AccountInfo acc){
+		super.setAccountInfo(acc);
+		menu.setRestId(this.account.getId());
 	}
 
 	public void setMenu(Menu m){
