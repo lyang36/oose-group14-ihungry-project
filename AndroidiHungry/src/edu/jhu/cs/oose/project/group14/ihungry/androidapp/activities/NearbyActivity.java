@@ -129,11 +129,12 @@ public class NearbyActivity extends MapActivity {
 		/* ############ Geocoder ############ */
 		geocoder = new Geocoder(this);
 
-		/* ############ Connect server ############ */
-		clientModel = new AndroidClientModelImpl();
-		//String responseSvr = clientmodel.getResponseFromServerT();
-		//Log.v("[Response]", responseSvr);
-
+		/* ############ (TEST) Connect server ############ */
+	/*	clientModel = new AndroidClientModelImpl();
+		String responseSvr = clientmodel.getResponseFromServerT();
+		Log.v("[Response]", responseSvr);
+	 */
+		
 		/* ############ Add some restaurant locations on map ############ */
 		overlayitem2_multi = new ArrayList<MyOverlayItem>();
 		NetworkSearchAddressTask task_search = new NetworkSearchAddressTask();
@@ -160,8 +161,9 @@ public class NearbyActivity extends MapActivity {
 		protected String doInBackground(Void... params) {
 			try {
 				/* Get a list of restaurants infos */
+				clientModel = new AndroidClientModelImpl();
 				restaurants = clientModel.retrieveRestaurants(new LocationInfo(0,0));
-				
+
 				for (int i = 0; i < restaurants.size(); i++) {
 					Restaurant rest = (Restaurant)restaurants.get(i);
 					
@@ -176,6 +178,7 @@ public class NearbyActivity extends MapActivity {
 					}
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 				Log.e("[doInBackground]", "Error");
 			}
 

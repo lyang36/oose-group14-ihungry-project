@@ -4,6 +4,8 @@ import com.example.androidihungry.R;
 
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ActivitySwitchSignals;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.FileHandler;
+import edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel.*;
+import edu.jhu.cs.oose.project.group14.ihungry.model.*;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +23,8 @@ public class ActivityController extends Activity {
 
 	private Intent intent_i;
 	private SparseArray<ActivitySwitcher> switchArray;
+	private AndroidClientModel clientModel;
+	private Customer myCust;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,10 +45,18 @@ public class ActivityController extends Activity {
 		 * If have username and pwd , then auto fill the blank Otherwise, leave
 		 * the blank empty (User will prompt to sign up)
 		 */
+		clientModel = new AndroidClientModelImpl();
+		myCust = clientModel.getCustomerInfo("szhao12", "12345");
+		AccountInfo aInfo = myCust.getAccountInfo();
+		ContactInfo cInfo = myCust.getContactInfo();
+		
 		FileHandler.saveFile( this,
 				FileHandler.f_userinfo,
-				"szhao12||12345||Shang Zhao||Male||911-911-9119||Johns Hopkins University, Baltimore, MD, 21218");
-
+				aInfo.getUname()+"||"+ aInfo.getPasswd()+"||"+ aInfo.getId()+"||"+
+				cInfo.getRealName()+"||"+cInfo.getAddress()+"||"+cInfo.getPrimPhone()+"||"+
+				cInfo.getSecPhone()+"||"+cInfo.getEmail()+"||"+cInfo.getBirthDate());
+		// "szhao12||12345||Shang Zhao||Male||911-911-9119||Johns Hopkins University, Baltimore, MD, 21218"
+		
 		// Load the first Screen / Activity
 		intent_i = new Intent(getApplicationContext(), LoginActivity.class);
 		startActivityForResult(intent_i, ActivitySwitchSignals.LOGIN);
