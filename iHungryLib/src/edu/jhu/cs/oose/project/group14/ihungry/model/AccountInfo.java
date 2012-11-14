@@ -15,8 +15,17 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 
 public class AccountInfo implements JSONHandler<AccountInfo>{
 	//account
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ID = "nameId"; //24 length hex string
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_UNAME = "uName";
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_PASSWD = "PassWord";
 	
 	private String id = "";

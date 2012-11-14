@@ -15,14 +15,16 @@ import org.json.JSONArray;
 
 @SuppressWarnings("serial")
 public class Album implements JSONHandler<Album>, Serializable{
-	
+	/**
+	 * JSON key.
+	 */
 	public static final String KEY_ICONLIST = "IconList";
 	
-	private ArrayList<Icon> iconList = new ArrayList<Icon>();
+	private List<Icon> iconList = new ArrayList<Icon>();
 	
 	public Album() {}
 	
-	public Album(ArrayList<Icon> iconList){
+	public Album(List<Icon> iconList){
 		this.iconList = iconList;
 	}
 	
@@ -44,7 +46,7 @@ public class Album implements JSONHandler<Album>, Serializable{
 	@Override
 	public JSONObject getJSON() {
 		JSONObject iconListObject = new JSONObject();
-		ArrayList<String> str = new ArrayList<String>();
+		List<String> str = new ArrayList<String>();
 		JSONArray list = new JSONArray();
 		try{
 			for(int i=0;i<iconList.size();i++){
@@ -66,7 +68,7 @@ public class Album implements JSONHandler<Album>, Serializable{
 	@Override
 	public Album parseFromJSONObject(JSONObject jsonobj){
 		
-		ArrayList<Icon> newIconList =new ArrayList<Icon>(); 
+		List<Icon> newIconList =new ArrayList<Icon>(); 
 		
 		try {
 			JSONArray list =  (JSONArray) jsonobj.get(KEY_ICONLIST);
