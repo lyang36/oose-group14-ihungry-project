@@ -75,14 +75,17 @@ public class SignupActivity extends Activity {
 
 			Log.v("[Customer info]",username+"||"+password+"||"+realname+"||"+address+"||"+primphone+
 					"||"+secphone+"||"+email+"||"+birthday+"||");
-			ContactInfo cinfo = new ContactInfo(realname, address, primphone, secphone, email, birthday, new Icon());
-			AccountInfo ainfo = new AccountInfo(username, password);
-			Customer customer = new Customer();
-			customer.setContactInfo(cinfo);
-			customer.setAccountInfo(ainfo);
-			clientModel.signupForNewUser(customer);
 			
-			ToastDisplay.DisplayToastOnScr(SignupActivity.this, "Signup clicked!");
+			/* Call client model to sign up for a new user */
+			Customer signup_result = clientModel.signupForNewUser(username, password, realname, address, 
+					primphone, secphone, email, birthday, new Icon());
+			
+			if(signup_result == null){
+				ToastDisplay.DisplayToastOnScr(SignupActivity.this, "Signup failed!");
+			} else{
+				ToastDisplay.DisplayToastOnScr(SignupActivity.this, "Signup successfully!");
+			}
+
 			
 		//	setResult(ActivitySwitchSignals.ORDERREVIEWCLOSESWH);
 

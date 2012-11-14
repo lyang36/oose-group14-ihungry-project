@@ -1,6 +1,7 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel;
 
 import edu.jhu.cs.oose.project.group14.ihungry.model.*;
+
 import java.util.*;
 
 /**
@@ -26,14 +27,23 @@ public interface AndroidClientModel {
 	 */
 	public boolean loginCheck( String username, String password);
 	
-	
+
 	/**
 	 * Submit the information of the customer to the client.
-	 * @param customer
-	 * @return a boolean value whether the signup is successful on the server side.
+	 * @param username
+	 * @param password
+	 * @param realname
+	 * @param address
+	 * @param primphone
+	 * @param secphone
+	 * @param email
+	 * @param birthday
+	 * @param icon
+	 * @return a Customer object: if success, return Customer; else return null.
 	 */
-	public boolean signupForNewUser( Customer customer );
-	
+	public Customer signupForNewUser(String username, String password,
+			String realname, String address, String primphone, String secphone,
+			String email, String birthday, Icon icon);	
 	
 	/**
 	 * Return the Customer object info from the server.

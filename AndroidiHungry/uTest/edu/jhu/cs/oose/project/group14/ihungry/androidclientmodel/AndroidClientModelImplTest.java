@@ -3,6 +3,8 @@ package edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 import junit.framework.TestCase;
 import edu.jhu.cs.oose.project.group14.ihungry.model.*;
 
@@ -36,13 +38,63 @@ public class AndroidClientModelImplTest extends TestCase {
 		assertTrue(responseSvr1, condition);
 	}
 	
+	/**
+	 * Test if the server replies correct info based on different username and password.
+	 */
 	public void testLoginCheck() {
 		Boolean responseSvr2 = clientmodel.loginCheck("lyang", "1234");
 
 		System.out.println(responseSvr2);
 		assertEquals(responseSvr2, (Boolean)true);
 	}
+	
+	
+	/**
+	 * Test if the correct Customer info is returned.
+	 */
+	public void testGetCustomerInfo(){
+		Customer myCustInfo = clientmodel.getCustomerInfo("szhao12", "12345");
+		
+		ContactInfo cInfo = new ContactInfo("Shang Zhao",
+				"Johns Hopkins University, Baltimore, MD, 21218",
+				"911-911-9999", "443-343-1111", "szhao12@jhu.edu",
+				"1989-12-11", new Icon());
+		AccountInfo aInfo = new AccountInfo("szhao12", "12345");
+		Customer customer = new Customer();
+		customer.setAccountInfo(aInfo);
+		customer.setContactInfo(cInfo);
+		String responseFromServer = customer.getJSON().toString();
+		
+		assertEquals( responseFromServer, myCustInfo.getJSON().toString());
+		
+	}
 
+	
+	public void testSignupForNewUser(){
+		String username = "szhao12";
+		String password = "12345";
+		String realname = "Shang Zhao";
+		String address = "Johns Hopkins University";
+		String primphone = "111-222-4444";
+		String secphone = "333-444-5555";
+		String email = "szhao12@jhu.edu";
+		String birthday = "1989-12-11";
+		Icon icon = new Icon();
+		Customer signupresult = clientmodel.signupForNewUser(username,
+				password, realname, address, primphone,
+				secphone, email, birthday, icon);
+		
+		AccountInfo ainfo = new AccountInfo(username, password);
+		ContactInfo cinfo = new ContactInfo(realname, address, primphone,
+				secphone, email, birthday, icon);
+		Customer customer = new Customer();
+		customer.setContactInfo(cinfo);
+		customer.setAccountInfo(ainfo);
+		
+		assertEquals(customer.getJSON(), signupresult.getJSON());
+		
+		
+	}
 	/*
 	public void testRetrieveRestaurants() {
 		fail("Not yet implemented");
