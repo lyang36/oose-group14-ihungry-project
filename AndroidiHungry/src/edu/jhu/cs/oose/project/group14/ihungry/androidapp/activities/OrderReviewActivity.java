@@ -5,6 +5,8 @@ import java.util.*;
 import com.example.androidihungry.R;
 
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ActivitySwitchSignals;
+import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ToastDisplay;
+import edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel.*;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -28,11 +30,15 @@ public class OrderReviewActivity extends Activity {
 
 	private WebView webView;
 	private Order order_t;
+	private AndroidClientModel clientModel;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_order_review);
+		
+		/* Initialize the client model */
+		clientModel = new AndroidClientModelImpl();
 
 		((Button) findViewById(R.id.btn_submit))
 				.setOnClickListener(btn_submit_Listener);
@@ -72,9 +78,9 @@ public class OrderReviewActivity extends Activity {
 						"<body>"
 						+ "<table width=\"301\" border=\"1\">"
 						+ "  <tr>"
-						+ "    <td height=\"30\" width=\"214\">Item Name</td>"
-						+ "    <td height=\"30\" width=\"35\">Price</td>"
-						+ "    <td height=\"30\" width=\"30\">Qty.</td>"
+						+ "    <td height=\"30\" width=\"214\"><b>Item Name</b></td>"
+						+ "    <td height=\"30\" width=\"35\"><b>Price</b></td>"
+						+ "    <td height=\"30\" width=\"30\"><b>Qty.</b></td>"
 						+ "  </tr>");
 
 		List<OrderItem> orderitems = order_t.getOrderItems();
@@ -83,7 +89,7 @@ public class OrderReviewActivity extends Activity {
 			HTML_str = HTML_str.concat(insertRowHTML(orderItem));
 		}
 		HTML_str = HTML_str.concat(getTabletail());
-		HTML_str = HTML_str.concat("<p>Total price: $"
+		HTML_str = HTML_str.concat("<p><b>Total price:</b> $"
 				+ order_t.getTotalPrice() + "</p>");
 		HTML_str = HTML_str.concat(getHTMLtail());
 
@@ -97,7 +103,7 @@ public class OrderReviewActivity extends Activity {
 	 * @return
 	 */
 	private String insertRowHTML(OrderItem order_item) {
-		Item item = order_item.getItem();
+		Item item = (Item)order_item.getItem();
 		
 		return "  <tr>" + "    <td height=\"50\"><font size=\"2\">"
 				+ item.getItemName() + "</font></td>" + "    <td height=\"50\">"
@@ -129,7 +135,9 @@ public class OrderReviewActivity extends Activity {
 			/*
 			 * Submit the order.
 			 */
-
+			clientModel.submitOrder(order_t);
+			ToastDisplay.DisplayToastOnScr(OrderReviewActivity.this, "Order Submitted!");
+			
 			setResult(ActivitySwitchSignals.ORDERREVIEWCLOSESWH);
 
 			finish();
