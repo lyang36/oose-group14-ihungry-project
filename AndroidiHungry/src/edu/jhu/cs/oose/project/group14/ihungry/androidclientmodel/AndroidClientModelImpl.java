@@ -75,7 +75,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	}
 
 	public Customer getCustomerInfo( String username, String password){
-		ContactInfo cInfo = new ContactInfo("Shang Zhao", "Johns Hopkins University, Baltimore, MD, 21218", "911-911-9999", " ", "szhao12@jhu.edu","1989-12-11", new Icon());
+		ContactInfo cInfo = new ContactInfo("Shang Zhao", "Johns Hopkins University, Baltimore, MD, 21218", "911-911-9999", "443-343-1111", "szhao12@jhu.edu","1989-12-11", new Icon());
 		AccountInfo aInfo = new AccountInfo("szhao12", "12345");
 		Customer customer = new Customer();
 		customer.setAccountInfo(aInfo);
@@ -96,6 +96,13 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		myCustInfo.parseFromJSONObject(c_obj);
 		
 		return myCustInfo;
+	}
+	
+	public boolean signupForNewUser( Customer customer ){
+		// TODO Auto-generated method stub
+
+		
+		return false;
 	}
 	
 	public ContactInfo getRestaurantInfo( String restId ){

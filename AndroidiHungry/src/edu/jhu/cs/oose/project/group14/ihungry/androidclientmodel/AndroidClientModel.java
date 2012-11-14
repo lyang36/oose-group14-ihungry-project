@@ -28,6 +28,14 @@ public interface AndroidClientModel {
 	
 	
 	/**
+	 * Submit the information of the customer to the client.
+	 * @param customer
+	 * @return a boolean value whether the signup is successful on the server side.
+	 */
+	public boolean signupForNewUser( Customer customer );
+	
+	
+	/**
 	 * Return the Customer object info from the server.
 	 * @param username
 	 * @param password
