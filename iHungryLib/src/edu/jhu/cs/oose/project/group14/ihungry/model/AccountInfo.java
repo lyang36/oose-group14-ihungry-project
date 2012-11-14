@@ -13,7 +13,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
  *
  */
 
-public class AccountInfo implements JSONHandler{
+public class AccountInfo implements JSONHandler<AccountInfo>{
 	//account
 	public static final String KEY_ID = "nameId"; //24 length hex string
 	public static final String KEY_UNAME = "uName";
@@ -64,7 +64,7 @@ public class AccountInfo implements JSONHandler{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public AccountInfo parseFromJSONObject(JSONObject jsonobj) {
 		try {
 			this.id = jsonobj.getString(KEY_ID);
 			this.passwd = jsonobj.getString(KEY_PASSWD);
@@ -73,5 +73,6 @@ public class AccountInfo implements JSONHandler{
 			e.printStackTrace();
 		}
 		
+		return this;
 	}
 }

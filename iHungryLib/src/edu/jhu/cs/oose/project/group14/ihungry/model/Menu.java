@@ -13,7 +13,7 @@ import org.json.JSONObject;
  *
  */
 @SuppressWarnings("serial")
-public class Menu implements JSONHandler,Serializable{
+public class Menu implements JSONHandler<Menu>,Serializable{
     
     public static final String KEY_REST_ID = "restId";
     public static final String KEY_MENU_SIZE = "menuSize";
@@ -83,7 +83,7 @@ public class Menu implements JSONHandler,Serializable{
     
     
     @Override
-    public void parseFromJSONObject(JSONObject jsonobj) {
+    public Menu parseFromJSONObject(JSONObject jsonobj) {
         try {
             //this.restId = jsonobj.getString("restId");
             this.restId = jsonobj.getString(KEY_REST_ID);
@@ -99,7 +99,7 @@ public class Menu implements JSONHandler,Serializable{
         } catch (JSONException e) {
             e.printStackTrace();
         }    
-        
+        return this;
     }
         
 }

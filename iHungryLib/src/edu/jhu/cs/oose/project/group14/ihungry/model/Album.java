@@ -14,7 +14,7 @@ import org.json.JSONArray;
  */
 
 @SuppressWarnings("serial")
-public class Album implements JSONHandler, Serializable{
+public class Album implements JSONHandler<Album>, Serializable{
 	
 	public static final String KEY_ICONLIST = "IconList";
 	
@@ -64,7 +64,7 @@ public class Album implements JSONHandler, Serializable{
 	
 		
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj){
+	public Album parseFromJSONObject(JSONObject jsonobj){
 		
 		ArrayList<Icon> newIconList =new ArrayList<Icon>(); 
 		
@@ -81,7 +81,7 @@ public class Album implements JSONHandler, Serializable{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+		return this;
 	}
 	
 }

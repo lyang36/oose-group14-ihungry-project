@@ -12,7 +12,7 @@ import org.json.JSONObject;
  */
 
 @SuppressWarnings("serial")
-public class Rating implements JSONHandler, Serializable{
+public class Rating implements JSONHandler<Rating>, Serializable{
 	
 	public static final String KEY_RATING = "Rating";
 	public static final String KEY_NUMOFPEOPLE = "NumOfPeople";
@@ -61,7 +61,7 @@ public class Rating implements JSONHandler, Serializable{
 	}
 
 	@Override
-	public void parseFromJSONObject(JSONObject jsonobj) {
+	public Rating parseFromJSONObject(JSONObject jsonobj) {
 		try {
 			//to convert string into primitive double
 			rating = Double.parseDouble(jsonobj.getString(KEY_RATING));
@@ -69,5 +69,6 @@ public class Rating implements JSONHandler, Serializable{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return this;
 	}
 }
