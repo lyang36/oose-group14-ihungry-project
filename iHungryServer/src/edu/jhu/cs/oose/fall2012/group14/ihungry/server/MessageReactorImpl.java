@@ -393,6 +393,65 @@ public class MessageReactorImpl implements MessageReactor{
 				
 			}
 			
+	
+			//business process a order
+			else if(commandmesg.contains(CommunicationProtocol.CUS_GET_RES_ALBUM)){
+				DBObject cus = dboperator.getCustomer(uname, passwd);
+				returnStringInfo((cus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								try{
+									AccountInfo acc = (new AccountInfo()).
+										parseFromJSONObject(new JSONObject(supinfo));
+									return dboperator.getBusinessAlbum(acc).getJSON().toString();
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+								return "";
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
+			
+			//business process a order
+			else if(commandmesg.contains(CommunicationProtocol.CUS_GET_MENU)){
+				DBObject cus = dboperator.getCustomer(uname, passwd);
+				returnStringInfo((cus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								try{
+									AccountInfo acc = (new AccountInfo()).
+										parseFromJSONObject(new JSONObject(supinfo));
+									return dboperator.getBusinessMenu(acc).getJSON().toString();
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+								return "";
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
 			
 			else{
 				internet.sendMsg(CommunicationProtocol.construcSendingStr(
