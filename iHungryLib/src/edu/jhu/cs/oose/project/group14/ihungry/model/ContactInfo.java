@@ -122,7 +122,7 @@ public class ContactInfo implements JSONHandler{
 		try {
 			this.address = jsonobj.getString(KEY_ADDRESS);
 			this.birthDate = jsonobj.getString(KEY_BIRTH);
-			this.email = jsonobj.getString(KEY_BIRTH);
+			this.email = jsonobj.getString(KEY_EMAIL);
 			this.icon = new Icon();
 			this.icon.parseFromJSONObject(jsonobj.getJSONObject(KEY_ICON));
 			this.primPhone = jsonobj.getString(KEY_PRIMEPHONE);
