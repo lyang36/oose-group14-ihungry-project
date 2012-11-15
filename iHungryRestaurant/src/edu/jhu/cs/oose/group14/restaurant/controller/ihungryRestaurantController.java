@@ -111,7 +111,8 @@ public class ihungryRestaurantController {
 			String password = new String(gui.getPasswordLogin().getText());
 			Restaurant restInfo = null;
 			
-			if (model.loginCheck(username,password))
+			//check for errors in login
+			/*if (model.loginCheck(username,password))
 				if (model.attemptLogin(username,password))
 					restInfo = model.getRestaurantInfo(username,password);
 				else
@@ -123,7 +124,7 @@ public class ihungryRestaurantController {
 			{
 				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username already exists.</FONT></HTML>");	
 				JOptionPane.showMessageDialog(null,errorFields);
-			}
+			}*/
 				
 			//display the restaurant info fetched from server
 			gui.displayOrderGui();
