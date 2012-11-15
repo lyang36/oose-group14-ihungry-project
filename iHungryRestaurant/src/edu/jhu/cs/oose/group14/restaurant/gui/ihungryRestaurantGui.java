@@ -32,7 +32,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.SwingUtilities;
 
 import edu.jhu.cs.oose.group14.restaurant.controller.ihungryRestaurantController;
-import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModel;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 
 import java.util.*;
@@ -43,6 +42,7 @@ import java.util.*;
  *  for ihungry vendor application and few methods to return the swing 
  *  components in the current screen to the model class.
  */
+
 
 
 
@@ -671,7 +671,12 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 		}
 		
 	}
-
+	
+	/*
+	 * This method is called to display the current orders tab. CurrentOrders
+	 * tab is a split pane with the list of pending orders on one side and details
+	 * of the currently selected order on the right side.
+	 */
 
 	private void displayCurrentOrder() {
 		
@@ -681,8 +686,6 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerLocation(500);
 		
-		
-		
 		table.setRowHeight(30);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(table);		
@@ -690,6 +693,7 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 		splitPane.setLeftComponent(scrollPane);
 		scrollPane.setPreferredSize(new java.awt.Dimension(483, 312));
 		
+		//create a panel with a JList which shows the Order list
 		subPanel10 = new JPanel();
 		splitPane.setRightComponent(subPanel10);
 		GroupLayout subPanel10Layout = new GroupLayout((JComponent)subPanel10);
@@ -793,19 +797,21 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 		return data;
 	}
 	
+	/*
+	 * This method appends the new orders fetched from server to the existing list.
+	 */
+	
 	public void setCurrentOrders(Object[][] data, int pointer){
 		
 		for(int i=this.pointer;i<(this.pointer+pointer);i++)
 			for(int j=0;j<data[0].length;j++){
-				//System.out.println(i);
-				//System.out.println(j);
-				//System.out.println(i-this.pointer);
 				this.data[i][j] = data[i-this.pointer][j];
 			}
-		/*for(int i=0;i<pointer;i++)
-			for(int j=0;j<5;j++)
-				this.data[i][j]=data[i][j];*/
 	}
+	
+	/*
+	 * This method is called to populate the list with the Order details. 
+	 */
 	
 	public void setSelectedOrderDetails(String[] orderDetails)
 	{

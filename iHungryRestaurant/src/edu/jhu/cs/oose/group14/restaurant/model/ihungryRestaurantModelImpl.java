@@ -22,12 +22,15 @@ import edu.jhu.cs.oose.project.group14.ihungry.model.Rating;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterface {
-	static private final int CONNECTIONTIMEOUT = 5000;
+	
+	private static final int CONNECTIONTIMEOUT = 5000;
 	private InternetClient internetClient;
+	
 	
 	public ihungryRestaurantModelImpl() {
 		internetClient = new InternetClient();
 	}
+	
 	
 	public String getResponseFromServer() {
 		
@@ -47,6 +50,7 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		
 	}
 	
+	
 	public boolean loginCheck( String username, String password){
 		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(username), MD5.getMd5(password),
 				CommunicationProtocol.BUSI_CHECK_UNAME_EXISTED, "");
@@ -54,7 +58,8 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		try{
 			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
 		}catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("Exception Occured");
 		}
 		
 		if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.FALSE) ){
@@ -68,6 +73,7 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 
 	
 	public boolean attemptLogin( String username, String password){
+		
 		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(username), MD5.getMd5(password),
 				CommunicationProtocol.BUSI_LOGIN, "");
 		String responseStr = "";
@@ -86,9 +92,11 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		return false;
 	}
 	
+	
 	public boolean signupForNewUser( Restaurant restaurant ){
 		return true;
 	}
+	
 	
 	public Restaurant getRestaurantInfo( String username, String password){
 		/*Item i1 = new Item("I001","Pizza",4.45,new Rating(0,0),new Album());
@@ -103,18 +111,16 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		
 		restInfo.setAccountInfo(aInfo);
 		restInfo.setContactInfo(cInfo);
-		String responseFromServer = restInfo.getJSON().toString();
-		
-		/* -----------> transmitting from server ----------->  */
-		
-		/* <----------- received by client <-----------  */
-		
+		String responseFromServer = restInfo.getJSON().toString();*/
+
 		return null;
 	}
+	
 	
 	public List<Order> retreiveOrders(String restId, int status, int count){
 		return null;
 	}
+	
 	
 	public List<Order> retrieveChangedOrders(String restId){
 		return null;

@@ -7,7 +7,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.group14.restaurant.gui.ihungryRestaurantGui;
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelImpl;
@@ -30,7 +29,6 @@ public class ihungryRestaurantController {
     private ArrayList<String> listOfItemNames, listOfDescription, listOfPrice ;
 	private int itemNo =0;
 	private int indx=0;
-
 	private ArrayList<Order> currOrders = new ArrayList<Order>();
 	private Object[][] data =  new Object[1000][5];
 	private int pointer = 0;
@@ -52,7 +50,7 @@ public class ihungryRestaurantController {
 		this.gui.getLogin().addActionListener(new LoginListener());
 		this.gui.getSignUp().addActionListener(new SignUpListener());
 		
-		
+		//some sample data
 		Item i1 = new Item("I001","Pizza",4.45,new Rating(0,0),new Album());
 		Item i2 = new Item("I002","Pizza Big",7.30,new Rating(0,0),new Album());
 		Item i3 = new Item("I003","Burger",2.25,new Rating(0,0),new Album());
@@ -81,6 +79,16 @@ public class ihungryRestaurantController {
 		data[2][1]=o3.getCustID();
 		data[2][2]=o3.getStatus();
 		pointer = 3;
+		
+		/*listOfItemNames.add("Pizza");
+		listOfItemNames.add("Pizza Big");
+		listOfItemNames.add("Burger");
+		listOfDescription.add("Garden Fresh Pizza");
+		listOfDescription.add("Garden Fresh Pizza Big");
+		listOfDescription.add("Veggie Burger");
+		listOfPrice.add(Double.toString(4.45));
+		listOfPrice.add(Double.toString(7.30));
+		listOfPrice.add(Double.toString(2.30));*/
 		setCurrentOrders();
 
 	}
@@ -134,6 +142,7 @@ public class ihungryRestaurantController {
 		}
 	}
 	
+	
 	/**
 	 * SIgnUpListener class implements the actionPerformed method checking for
 	 * the user credentials and allowing the user to log into the application.
@@ -151,8 +160,19 @@ public class ihungryRestaurantController {
 		}
 	}
 	
-	
+	/**
+	 * SelectionListener class implements ListSelection Listener. Gives 
+	 * implementation for the valueChanged method.
+	 * 
+	 * @author parkavi
+	 *
+	 */
 	public class SelectionListener implements ListSelectionListener{
+		
+		/*
+		 * This method will populate the JList with the details of the currently selected order.
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
 		
 		public void valueChanged(ListSelectionEvent e){
 			
@@ -255,6 +275,14 @@ public class ihungryRestaurantController {
 		}
 	}
 	
+	/**
+	 * NextButtonListener class implements the actionPerformed method and 
+	 * populates the textfields to show the next set of menu items.
+	 * 
+	 * @author parkavi
+	 *
+	 */
+	
 	class NextButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 				
@@ -307,6 +335,15 @@ public class ihungryRestaurantController {
 		}
 	}
 	
+	
+	/**
+	 * PrevButtonListener class implements the actionPerformed method and 
+	 * populates the textfields to show the previous set of menu items.
+	 * 
+	 * @author parkavi
+	 *
+	 */
+	
 	class PrevButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			indx = indx - 1;
@@ -329,7 +366,10 @@ public class ihungryRestaurantController {
 		}
 	}
 	
-
+	/*
+	 * This method is called to update the list of pending orders.
+	 */
+	
 	public void setCurrentOrders(){
 		gui.setCurrentOrders(data,pointer);
 		for(int i=0;i<pointer;i++)
