@@ -58,6 +58,7 @@ public class Menu implements JSONHandler<Menu>,Serializable{
      */
     public Item getItemAt(int i){
         return items.get(i);
+        
     }
     
     /**
@@ -66,6 +67,7 @@ public class Menu implements JSONHandler<Menu>,Serializable{
      */
     public void addItems(List<Item> items){
         this.items.addAll(items);
+        this.menuSize = this.items.size();
     }
     
     /**
@@ -74,6 +76,7 @@ public class Menu implements JSONHandler<Menu>,Serializable{
      */
     public void addItem(Item item){
         this.items.add(item);
+        this.menuSize = this.items.size();
     }
     
     /**

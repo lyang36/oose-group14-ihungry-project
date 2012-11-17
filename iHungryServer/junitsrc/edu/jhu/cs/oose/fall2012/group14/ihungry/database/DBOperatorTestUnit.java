@@ -4,8 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import com.mongodb.BasicDBObject;
@@ -15,9 +19,18 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
+import com.mongodb.util.JSON;
 
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.ListedJSONObj;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
+import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
+import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
+import edu.jhu.cs.oose.project.group14.ihungry.model.OrderItem;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 
@@ -63,6 +76,161 @@ public class DBOperatorTestUnit {
 		
 	}
 	
+	
+	@Test 
+	public void testCustomerFuncitons(){
+		initializeDB();
+		DBOperator dboperator = new DBOperator();
+		dboperator.connectToDB();
+		ContactInfo contact = new ContactInfo(new LocationInfo("good place"), "1234");
+		AccountInfo acc = new AccountInfo("lyang", "abc");
+		Customer cus = new Customer();
+		cus.setContactInfo(contact);
+		cus.setAccountInfo(acc);
+		dboperator.addCustomer(cus);
+		
+		assertEquals(dboperator.checkUserUnameExisted(acc), true);
+		System.out.println("Check cus uname not existed succeeded");
+		
+		System.out.println("Testing Add customer!");
+		cus = dboperator.getCustomer(acc);
+		assertEquals(cus.getAccountInfo().getUname(), acc.getUname());
+
+		dboperator.close();
+		
+	}
+	
+	
+	@Test
+	public void testBusnessFunctions(){
+		DBOperator dboperator = new DBOperator();
+		dboperator.connectToDB();
+		ContactInfo contact = new ContactInfo(new LocationInfo("good place"), "1234");
+		AccountInfo acc = new AccountInfo("No1Res", "abc");
+		Restaurant bus = new Restaurant(new Menu(), new Album());
+		bus.setContactInfo(contact);
+		bus.setAccountInfo(acc);
+		dboperator.addBusiness(bus);
+		
+		assertEquals(dboperator.checkBusiUnameExisted(acc), true);
+		System.out.println("Check busi uname not existed succeeded");
+		
+		System.out.println("Testing Add Restaurant!");
+		bus = dboperator.getBusiness(acc);
+		assertEquals(bus.getAccountInfo().getUname(), acc.getUname());
+		dboperator.close();
+	}
+	
+	@Test
+	public void testOrderFunctions(){
+		Order order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+		
+		DBOperator dboperator = new DBOperator();
+		dboperator.connectToDB();
+		AccountInfo acc = new AccountInfo("lyang", "abc");
+		AccountInfo busiAcc = new AccountInfo("No1Res", "abc");
+		
+		
+		System.out.println("Testing submit an order!");
+		dboperator.submitOrder(order);
+		
+		System.out.println("Retrive new order by business");
+		ListedJSONObj retord = dboperator.getChangedBusiOrders(busiAcc);
+		System.out.println(retord.getJSON().toString());
+		try {
+			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_RES)), 
+					true);
+			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_CUS)), 
+					false);
+		} catch (JSONException e1) {
+			fail();
+			e1.printStackTrace();
+		}
+		
+		//business update orders
+		System.out.println("Testing update an order by business!");
+		order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("No1Res"), Order.STATUS_CONFIRMED, new ArrayList<OrderItem>());
+		dboperator.busiUpdateOrder(order);
+		retord = dboperator.getBusiOrders(busiAcc, 0, 10);
+		System.out.println(retord.getJSON().toString());
+		try {
+			assertEquals((retord.getJSON().getJSONObject("0").getInt(Order.KEY_STATUS)), 
+					Order.STATUS_CONFIRMED);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			fail();
+	
+		}
+		
+		//user get new orders
+		retord = dboperator.getChangedUserOrders(acc);
+		System.out.println(retord.getJSON().toString());
+		try {
+			assertEquals((retord.getJSON().getJSONObject("0").getInt(Order.KEY_STATUS)), 
+					Order.STATUS_CONFIRMED);
+			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_CUS)), 
+					true);
+			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_RES)), 
+				false);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			fail();
+
+		}
+		
+		
+		System.out.println("Testing update an order by user!");
+		dboperator.userUpdateOrder(order);
+		retord = dboperator.getUserOrders(acc, 0, 10);
+		System.out.println(retord.getJSON().toString());
+		try {
+			assertEquals((retord.getJSON().getJSONObject("0").getInt(Order.KEY_STATUS)), 
+					Order.STATUS_CONFIRMED);
+			
+			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_CUS)), 
+					false);
+			
+			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_RES)), 
+					true);
+		} catch (JSONException e) {
+			fail();
+			e.printStackTrace();
+		}
+		
+		
+		System.out.println("Retrive new order by business");
+		retord = dboperator.getChangedBusiOrders(busiAcc);
+		System.out.println(retord.getJSON().toString());
+		try {
+			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_RES)), 
+					true);
+			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_CUS)), 
+					false);
+		} catch (JSONException e1) {
+			fail();
+			e1.printStackTrace();
+		}
+		
+		System.out.println("Retrive new order by business again -- should be none");
+		retord = dboperator.getChangedBusiOrders(busiAcc);
+		System.out.println(retord.getJSON().toString());
+		try {
+			assertEquals(retord.getJSON().getInt("Count"), 0);
+
+		} catch (JSONException e1) {
+			fail();
+			e1.printStackTrace();
+		}
+		
+		
+		dboperator.close();
+		
+	}
+	
+	
+	
 	@Test
 	public void test() {
 		DBOperator dboperator = new DBOperator();
@@ -72,80 +240,23 @@ public class DBOperatorTestUnit {
 		DBObject busobj = new BasicDBObject();
 		md5names = MD5.getNameMd5("No1Res");
 		md5passwd = MD5.getMd5("123456");
+		AccountInfo acc = new AccountInfo("No1Res", "123456");
 		busobj.put(AccountInfo.KEY_ID, md5names);
 		busobj.put(AccountInfo.KEY_UNAME, "No1Res");
 		busobj.put(AccountInfo.KEY_PASSWD, md5passwd);
 		
 		try {
-			assertEquals(dboperator.checkBusiUnameExisted(MD5.getNameMd5("fjlkjalk")), false);
+			assertEquals(dboperator.checkBusiUnameExisted( new AccountInfo("1111", "123456")), false);
 			System.out.println("Check busi uname not existed succeeded");
 			
-			assertEquals(dboperator.checkUserUnameExisted(MD5.getNameMd5("fjlkjalk")), false);
+			assertEquals(dboperator.checkUserUnameExisted(acc), false);
 			System.out.println("Check user uname not existed succeeded");
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("check not existed");
 		}
+		dboperator.close();
 		
-/*		
-		dboperator.addBusiness(busobj);
-		try {
-			String gn = (String) dboperator.getBusiness(md5names, md5passwd).get(DBOKeyNames.BUS_KEY_ID); 
-			System.out.println(gn);
-			assertEquals(gn, md5names);
-			System.out.println("Add and get Business succeeded!");
-			
-			assertEquals(dboperator.checkBusiUnameExisted(md5names), true);
-			System.out.println("Check busi uname existed succeeded");
-			
-			busobj.put(DBOKeyNames.BUS_KEY_EMAIL, "11@2212.com");
-			dboperator.addBusiness(busobj);
-			 gn = (String) dboperator.getBusiness(md5names, md5passwd).get(DBOKeyNames.BUS_KEY_EMAIL); 
-			System.out.println(gn);
-			assertEquals(gn, "11@2212.com");
-			System.out.println("Change Business succeeded!");
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail("busi");
-		}
-		
-		
-		DBObject cusobj = new BasicDBObject();
-		md5names = MD5.getNameMd5("lyang");
-		md5passwd = MD5.getMd5("123456");
-		cusobj.put(DBOKeyNames.CUS_KEY_ID, md5names);
-		cusobj.put(DBOKeyNames.CUS_KEY_REALNAME, "Lin Yang");
-		cusobj.put(DBOKeyNames.CUS_KEY_PASSWD, md5passwd);
-		cusobj.put(DBOKeyNames.CUS_KEY_EMAIL, "333@ppp.com");
-		cusobj.put(DBOKeyNames.CUS_KEY_PRIMEPHONE, "123-456-7890");
-		cusobj.put(DBOKeyNames.CUS_KEY_UNAME, "lyang");
-		dboperator.addCustomer(cusobj);
-		
-		try {
-			String gn = (String) dboperator.getCustomer(md5names, md5passwd).get(DBOKeyNames.CUS_KEY_ID); 
-			System.out.println(gn);
-			assertEquals(gn, md5names);
-			System.out.println("Add and get customer succeeded!");
-			
-			assertEquals(dboperator.checkUserUnameExisted(md5names), true);
-			System.out.println("Check user uname existed succeeded");
-			
-			
-			cusobj.put(DBOKeyNames.BUS_KEY_EMAIL, "888@2212.com");
-			dboperator.addCustomer(cusobj);
-			 gn = (String) dboperator.getCustomer(md5names, md5passwd).get(DBOKeyNames.CUS_KEY_EMAIL); 
-			System.out.println(gn);
-			assertEquals(gn, "888@2212.com");
-			System.out.println("Change Customer succeeded!");
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail("user");
-		}
-	*/ 	
 	}
 		
 	

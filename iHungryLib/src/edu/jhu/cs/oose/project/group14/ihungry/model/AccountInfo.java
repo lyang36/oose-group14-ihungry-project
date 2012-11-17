@@ -38,6 +38,7 @@ public class AccountInfo implements JSONHandler<AccountInfo>{
 	
 	/**
 	 * uname and password are plain text
+	 * the password will be MD5 hashed to store
 	 * @param username
 	 * @param password
 	 */
@@ -47,25 +48,47 @@ public class AccountInfo implements JSONHandler<AccountInfo>{
 		this.passwd = MD5.getMd5(password);
 	}
 	
+	
+	/**
+	 * get the id of this account. The id is the nameMd5 of the uname
+	 * @return
+	 */
 	public String getId(){
 		return id;
 	}
 	
+	/**
+	 * 
+	 * @return the plaintext of the uname
+	 */
 	public String getUname(){
 		return uname;
 	}
 	
+	/**
+	 * 
+	 * @return the MD5 hash of the passwd
+	 */
 	public String getPasswd(){
 		return passwd;
 	}
 	
 	/**
-	 * set the md5 passwd
+	 * set the md5 passwd, the passwd is directly set to the internal passwd field
 	 * @param passwd
 	 */
 	public void setPasswd(String passwd){
 		this.passwd = passwd;
 	}
+	
+	/**
+	 * set the MD5 version of id
+	 * @param id
+	 */
+	public void setId(String id){
+		this.id = id;
+	}
+
 
 	/**
 	 * set up the username -- plain text
@@ -75,6 +98,7 @@ public class AccountInfo implements JSONHandler<AccountInfo>{
 		this.uname = uname;
 		this.id = MD5.getNameMd5(uname);
 	}
+	
 	
 	@Override
 	public JSONObject getJSON() {
@@ -101,4 +125,5 @@ public class AccountInfo implements JSONHandler<AccountInfo>{
 		
 		return this;
 	}
+	
 }

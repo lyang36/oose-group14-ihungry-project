@@ -1,6 +1,7 @@
 package edu.jhu.cs.oose.project.group14.ihungry.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.*;
 
 import org.json.JSONException;
@@ -33,6 +34,12 @@ public class Order implements JSONHandler<Order>, Serializable{
 	 * JSON Key
 	 */
 	public static final String KEY_STATUS = "Status";
+	
+	
+	/**
+	 * JSON Key -- time in miliseconds
+	 */
+	public static final String KEY_TIME = "Time";
 	
 	/**
 	 * JSON Key
@@ -85,8 +92,12 @@ public class Order implements JSONHandler<Order>, Serializable{
 	private int status;
 	private int arraySize;
 	private List<OrderItem> orderItems;
+	private long timemilisecs;
 	
 	
+	public Order(JSONObject jobj){
+		this.parseFromJSONObject(jobj);
+	}
 	
 	public Order (String orderId, String customerId, String restaurantId, int status, List<OrderItem> orderitems){
 		this.orderId = orderId;
@@ -94,8 +105,21 @@ public class Order implements JSONHandler<Order>, Serializable{
 		this.restId = restaurantId;
 		this.status = status;
 		this.orderItems = orderitems;
-		
 		this.arraySize = orderitems.size();
+		
+		/**
+		 * create time stamp
+		 */
+		Calendar rightNow = Calendar.getInstance();
+		long militime = rightNow.getTimeInMillis();
+		this.timemilisecs = militime;
+	}
+	
+	/**
+	 * @return the time of this object created in milisecond
+	 */
+	public long getTime(){
+		return this.timemilisecs;
 	}
 	
 	public String getOrderID(){
@@ -155,6 +179,7 @@ public class Order implements JSONHandler<Order>, Serializable{
 			jsonobj.put(KEY_ARRAYSIZE, this.arraySize);
 			jsonobj.put(IS_NEW_TO_CUS, isNewToCus);
 			jsonobj.put(IS_NEW_TO_RES, isNewToRes);
+			jsonobj.put(KEY_TIME, this.timemilisecs);
 			
 			for(int i=0; i<this.arraySize; i++){
 				jsonobj.put(i+"", this.orderItems.get(i).getJSON());
@@ -177,6 +202,7 @@ public class Order implements JSONHandler<Order>, Serializable{
 			this.isNewToCus = jsonobj.getBoolean(IS_NEW_TO_CUS);
 			this.isNewToRes = jsonobj.getBoolean(IS_NEW_TO_RES);
 			this.orderItems = new ArrayList<OrderItem>();
+			this.timemilisecs = jsonobj.getLong(KEY_TIME);
 			for(int i=0; i<arraySize; i++){
 				OrderItem orderItem = new OrderItem();
 				orderItem.parseFromJSONObject(jsonobj.getJSONObject(i+""));
@@ -214,9 +240,25 @@ public class Order implements JSONHandler<Order>, Serializable{
 	}
 	
 	/**
+	 * set the to Restaurant status
+	 * @param bool
+	 */
+	public void setToResStatus(boolean st){
+		isNewToRes = st;
+	}
+	
+	/**
 	 * server used function: flip the to Cus status
 	 */
 	public void flipToCusStatus(){
 		isNewToCus =!isNewToCus;
+	}
+	
+	/**
+	 * set the to Customer status
+	 * @param bool
+	 */
+	public void setToCusStatus(boolean st){
+		isNewToCus = st;
 	}
 }

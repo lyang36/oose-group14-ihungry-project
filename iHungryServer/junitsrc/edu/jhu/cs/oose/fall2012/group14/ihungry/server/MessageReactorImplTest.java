@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,12 +15,17 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOperatorTestUnit;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.OrderQuerier;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
 import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Icon;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Item;
 import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
+import edu.jhu.cs.oose.project.group14.ihungry.model.OrderItem;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 public class MessageReactorImplTest {
@@ -130,8 +136,39 @@ public class MessageReactorImplTest {
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_GET_CONTACT,
 				CommunicationProtocol.PROCESS_SUCCEEDED, "");
+		
+		//test update album info
+		Album album = new Album();
+		album.addPhoto(new Icon());
+		album.addPhoto(new Icon());
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_UPDATE_ALBUM,
+				CommunicationProtocol.PROCESS_SUCCEEDED, album.getJSON().toString());
+		
+		//test get album
+		System.out.println("Test Busi get album");
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_GET_ALBUM,
+				CommunicationProtocol.PROCESS_SUCCEEDED, "");
+		
+		
+		Menu menu = new Menu();
+		menu.setRestId(MD5.getNameMd5("lyang"));
+		menu.addItem(new Item());
+		menu.addItem(new Item());
+		System.out.println(menu.getJSON().toString());
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_UPDATE_MENU,
+				CommunicationProtocol.PROCESS_SUCCEEDED, menu.getJSON().toString());
+		
+		//test get album
+		System.out.println("Test Busi get menu");
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_GET_MENU,
+				CommunicationProtocol.PROCESS_SUCCEEDED, "");
+		
 	}
-	
+/*	
 	
 	@Test
 	public void testCustomerAccount(){
@@ -201,4 +238,82 @@ public class MessageReactorImplTest {
 		
 		
 	}
+	
+	
+	@Test
+	public void testOrderFunctions(){
+		//test find restaurant
+		LocationInfo loc = new LocationInfo("Test");
+		loc.parseFromJSONObject(loc.getJSON());
+		System.out.println(loc.getJSON().toString());
+		AccountInfo acc = new AccountInfo("lyang", "");
+		
+		Menu m = new Menu();
+		Album ab = new Album();
+		ContactInfo contact = new ContactInfo(new LocationInfo("abc dff"), "123456687");
+		AccountInfo busiacc = new AccountInfo("lyang", "123");
+		Restaurant res = new Restaurant(m, ab);
+		res.setAccountInfo(busiacc);
+		res.setContactInfo(contact);
+		
+		Order order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("lyang"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+		
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_SUBMIT_ORDER,
+				CommunicationProtocol.PROCESS_SUCCEEDED, order.getJSON().toString());
+		
+		
+		order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("lyang"), Order.STATUS_CANCELLED, new ArrayList<OrderItem>());
+		
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_UPDATE_ORDER,
+				CommunicationProtocol.PROCESS_SUCCEEDED, order.getJSON().toString());
+		
+		System.out.println("Customer try to retrive orders");
+		OrderQuerier querier = new OrderQuerier();
+		querier.setCusID(MD5.getNameMd5("lyang"));
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_RETRIVE_ORDER,
+				CommunicationProtocol.PROCESS_SUCCEEDED, querier.getJSON().toString());
+		
+		
+		System.out.println("Customer try to retrive changed orders, should be zero");
+
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER,
+				CommunicationProtocol.PROCESS_SUCCEEDED, "");
+		
+		System.out.println("Business try to retrive changed orders -- 1 changed");
+		querier = new OrderQuerier();
+		querier.setCusID(MD5.getNameMd5("lyang"));
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_RETRIVE_CHANGED_ORDERS,
+				CommunicationProtocol.PROCESS_SUCCEEDED, querier.getJSON().toString());
+		
+		System.out.println("Business try to retrive changed orders -- 0 changed");
+		querier.setCusID(MD5.getNameMd5("lyang"));
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_RETRIVE_CHANGED_ORDERS,
+				CommunicationProtocol.PROCESS_SUCCEEDED, querier.getJSON().toString());
+		
+		
+		System.out.println("Business update an order");
+		order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("lyang"), Order.STATUS_CONFIRMED, new ArrayList<OrderItem>());
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_PROCESS_ORDER,
+				CommunicationProtocol.PROCESS_SUCCEEDED, order.getJSON().toString());
+		
+		System.out.println("Customer try to retrive changed orders, should be 1");
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER,
+				CommunicationProtocol.PROCESS_SUCCEEDED, "");
+		
+		
+
+	}
+	
+	*/
 }

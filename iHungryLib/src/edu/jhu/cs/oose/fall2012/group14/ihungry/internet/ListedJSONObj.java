@@ -22,7 +22,11 @@ public class ListedJSONObj  implements JSONHandler<ListedJSONObj>,Iterable<JSONO
 	public ListedJSONObj(){
 		array = new ArrayList<JSONObject>();
 	}
-	
+
+	public ListedJSONObj(ArrayList<JSONObject> arr){
+		this.array = arr;
+	}
+
 	public void add(JSONObject obj){
 		array.add(obj);
 	}

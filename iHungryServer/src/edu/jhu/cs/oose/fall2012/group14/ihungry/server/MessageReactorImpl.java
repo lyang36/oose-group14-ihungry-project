@@ -12,6 +12,8 @@ import com.mongodb.util.JSON;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOperator;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.ListedJSONObj;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.OrderQuerier;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.DataBaseOperater;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReactor;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
@@ -20,6 +22,7 @@ import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
 import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 
@@ -29,10 +32,11 @@ public class MessageReactorImpl implements MessageReactor{
 	
 	int threadnum = 0;
 	boolean isStopping = false;
-	DBOperator dboperator;
+	DataBaseOperater dboperator;
 	String uname, passwd, supinfo, commandmesg;
 	InternetUtil internet = null;
-	DBObject supinfoObj;
+	JSONObject supinfoObj;
+	AccountInfo inputAcc;
 	
 	//judge whether something is true or not
 	interface OnJudgeListener{
@@ -131,14 +135,23 @@ public class MessageReactorImpl implements MessageReactor{
 		uname = CommunicationProtocol.getUnameFromReceivedStr(input);
 		passwd = CommunicationProtocol.getPasswdFromReceivedStr(input);
 		supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(input);
+	    inputAcc = new AccountInfo();
+		inputAcc.setId(uname);
+		inputAcc.setPasswd(passwd);
+		//System.out.println("<<><>>" + inputAcc.getJSON().toString());
 		this.internet = internet;
-		supinfoObj = (DBObject) JSON.parse(supinfo);
+		try {
+			if(supinfo!=null && supinfo.length() > 0)
+				supinfoObj = new JSONObject(supinfo);
+		} catch (JSONException e2) {
+			e2.printStackTrace();
+		}
 		try {
 			System.out.println(commandmesg);
 			
 			//for business login
 			if(commandmesg.contains(CommunicationProtocol.BUSI_LOGIN)){
-				returnStringInfo(dboperator.getBusiness(uname, passwd) != null,
+				returnStringInfo(dboperator.getBusiness(inputAcc) != null,
 						new BasicDBObject(), CommunicationProtocol.LOGIN_SUCCESS, 
 						CommunicationProtocol.LOGIN_ERROR, null);
 			}
@@ -146,7 +159,7 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//check whether business username is existed
 			else if(commandmesg.contains(CommunicationProtocol.BUSI_CHECK_UNAME_EXISTED)){
-				returnStringInfo(dboperator.checkBusiUnameExisted(uname),
+				returnStringInfo(dboperator.checkBusiUnameExisted(inputAcc),
 						new BasicDBObject(), CommunicationProtocol.TRUE, 
 						CommunicationProtocol.FALSE, null);
 			}
@@ -154,14 +167,19 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//business signup
 			else if(commandmesg.contains(CommunicationProtocol.BUSI_SIGNUP)){
-				returnStringInfo(!dboperator.checkBusiUnameExisted(uname),
+				System.out.println(">>>>"+inputAcc.getJSON().toString());
+				returnStringInfo(!dboperator.checkBusiUnameExisted(inputAcc),
 						new BasicDBObject(), CommunicationProtocol.PROCESS_SUCCEEDED, 
 						CommunicationProtocol.PROCESS_FAILED, new OnJudgeListener(){
 
 							@Override
 							public String onTrue() {
-								DBObject bus;
-								bus = supinfoObj;
+								Restaurant bus = new Restaurant(null, null);
+								try {
+									bus.parseFromJSONObject(new JSONObject(supinfoObj.toString()));
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
 								dboperator.addBusiness(bus);
 								return null;
 							}
@@ -177,7 +195,7 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//business update contact
 			else if(commandmesg.contains(CommunicationProtocol.BUSI_UPDATE_CONTACT)){
-				final DBObject bus = dboperator.getBusiness(uname, passwd);
+				final Restaurant bus = dboperator.getBusiness(inputAcc);
 				returnStringInfo(bus != null,
 						supinfo, 
 						CommunicationProtocol.PROCESS_SUCCEEDED, 
@@ -186,8 +204,10 @@ public class MessageReactorImpl implements MessageReactor{
 
 							@Override
 							public String onTrue() {
-								DBObject busa = dboperator.getBusiness(uname, passwd);
-								busa.put(Restaurant.KEY_CONTACT, supinfoObj);
+								Restaurant busa = dboperator.getBusiness(inputAcc);
+								busa.setContactInfo((new ContactInfo(null, null)).
+										parseFromJSONObject(supinfoObj));
+		
 								dboperator.addBusiness(busa);
 								return null;
 							}
@@ -201,9 +221,62 @@ public class MessageReactorImpl implements MessageReactor{
 			}
 			
 			
+			
+			//business update contact
+			else if(commandmesg.contains(CommunicationProtocol.BUSI_UPDATE_ALBUM)){
+				final Restaurant bus = dboperator.getBusiness(inputAcc);
+				returnStringInfo(bus != null,
+						supinfo, 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+
+							@Override
+							public String onTrue() {
+								Restaurant busa = dboperator.getBusiness(inputAcc);
+								busa.setAlbum((new Album()).
+										parseFromJSONObject(supinfoObj));
+								dboperator.addBusiness(busa);
+								return null;
+							}
+
+							@Override
+							public String onFalse() {
+								return null;	
+							}
+					
+				});
+			}
+			
+			//business update contact
+			else if(commandmesg.contains(CommunicationProtocol.BUSI_UPDATE_MENU)){
+				final Restaurant bus = dboperator.getBusiness(inputAcc);
+				returnStringInfo(bus != null,
+						supinfo, 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+
+							@Override
+							public String onTrue() {
+								Restaurant busa = dboperator.getBusiness(inputAcc);
+								busa.setMenu((new Menu()).
+										parseFromJSONObject(supinfoObj));
+								dboperator.addBusiness(busa);
+								return null;
+							}
+
+							@Override
+							public String onFalse() {
+								return null;	
+							}
+					
+				});
+			}
+			
 			//business get contact
 			else if(commandmesg.contains(CommunicationProtocol.BUSI_GET_CONTACT)){	
-				DBObject bus = dboperator.getBusiness(uname, passwd);
+				Restaurant bus = dboperator.getBusiness(inputAcc);
 				//System.out.println(bus);
 				returnStringInfo((bus != null),
 						"", 
@@ -212,7 +285,7 @@ public class MessageReactorImpl implements MessageReactor{
 						new OnJudgeListener(){
 							@Override
 							public String onTrue() {
-								String bus = dboperator.getBusiness(uname, passwd).toString();
+								String bus = dboperator.getBusiness(inputAcc).getJSON().toString();
 								Restaurant retbusi = new Restaurant(new Menu(), new Album());
 								System.out.println(bus);
 								JSONObject jbus = null;
@@ -235,9 +308,71 @@ public class MessageReactorImpl implements MessageReactor{
 			}
 			
 			
+			else if(commandmesg.contains(CommunicationProtocol.BUSI_GET_ALBUM)){	
+				Restaurant bus = dboperator.getBusiness(inputAcc);
+				//System.out.println(bus);
+				returnStringInfo((bus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								String bus = dboperator.getBusiness(inputAcc).getJSON().toString();
+								Restaurant retbusi = new Restaurant(new Menu(), new Album());
+								JSONObject jbus = null;
+								try{
+									 jbus = new JSONObject(bus);
+								}catch(Exception e){
+									e.printStackTrace();
+								}	
+								retbusi.parseFromJSONObject(jbus);
+								return retbusi.getAlbum().getJSON().toString();
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
+			else if(commandmesg.contains(CommunicationProtocol.BUSI_GET_MENU)){	
+				Restaurant bus = dboperator.getBusiness(inputAcc);
+				//System.out.println(bus);
+				returnStringInfo((bus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								String bus = dboperator.getBusiness(inputAcc).getJSON().toString();
+								Restaurant retbusi = new Restaurant(new Menu(), new Album());
+								JSONObject jbus = null;
+								try{
+									 jbus = new JSONObject(bus);
+								}catch(Exception e){
+									e.printStackTrace();
+								}	
+								retbusi.parseFromJSONObject(jbus);
+								return retbusi.getMenu().getJSON().toString();
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
 			
 			else if(commandmesg.contains(CommunicationProtocol.CUS_CHECK_UNAME_EXISTED)){
-				returnStringInfo(dboperator.checkUserUnameExisted(uname),
+				returnStringInfo(dboperator.checkUserUnameExisted(inputAcc),
 						new BasicDBObject(), CommunicationProtocol.TRUE, 
 						CommunicationProtocol.FALSE, null);
 			}
@@ -246,14 +381,14 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//business signup
 			else if(commandmesg.contains(CommunicationProtocol.CUS_SIGN_UP)){
-				returnStringInfo(!dboperator.checkUserUnameExisted(uname),
+				returnStringInfo(!dboperator.checkUserUnameExisted(inputAcc),
 						new BasicDBObject(), CommunicationProtocol.PROCESS_SUCCEEDED, 
 						CommunicationProtocol.PROCESS_FAILED, new OnJudgeListener(){
 
 							@Override
 							public String onTrue() {
-								DBObject cus;
-								cus = supinfoObj;
+								Customer cus = new Customer();
+								cus.parseFromJSONObject(supinfoObj);
 								dboperator.addCustomer(cus);
 								return null;
 							}
@@ -267,7 +402,7 @@ public class MessageReactorImpl implements MessageReactor{
 			}
 			
 			else if(commandmesg.contains(CommunicationProtocol.CUS_LOGIN)){
-				returnStringInfo(dboperator.getCustomer(uname, passwd) != null,
+				returnStringInfo(dboperator.getCustomer(inputAcc) != null,
 						new BasicDBObject(), CommunicationProtocol.LOGIN_SUCCESS, 
 						CommunicationProtocol.LOGIN_ERROR, null);
 			}
@@ -276,7 +411,7 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//business update contact
 			else if(commandmesg.contains(CommunicationProtocol.CUS_UPDATE_CONTACT)){
-				final DBObject cus = dboperator.getCustomer(uname, passwd);
+				final Customer cus = dboperator.getCustomer(inputAcc);
 				returnStringInfo(cus != null,
 						supinfo, 
 						CommunicationProtocol.PROCESS_SUCCEEDED, 
@@ -285,8 +420,11 @@ public class MessageReactorImpl implements MessageReactor{
 
 							@Override
 							public String onTrue() {
-								DBObject cusa = dboperator.getCustomer(uname, passwd);
-								cusa.put(Customer.KEY_CONTACT, supinfoObj);
+								Customer cusa = dboperator.getCustomer(inputAcc);
+								//cusa.put(Customer.KEY_CONTACT, supinfoObj);
+								cusa.setContactInfo(new ContactInfo(null,null).parseFromJSONObject(
+											supinfoObj));
+
 								dboperator.addCustomer(cusa);
 								return null;
 							}
@@ -301,7 +439,7 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			
 			else if(commandmesg.contains(CommunicationProtocol.CUS_GET_CONTACT)){	
-				DBObject cus = dboperator.getCustomer(uname, passwd);
+				Customer cus = dboperator.getCustomer(inputAcc);
 				//System.out.println(bus);
 				returnStringInfo((cus != null),
 						"", 
@@ -310,7 +448,7 @@ public class MessageReactorImpl implements MessageReactor{
 						new OnJudgeListener(){
 							@Override
 							public String onTrue() {
-								String cus = dboperator.getCustomer(uname, passwd).toString();
+								String cus = dboperator.getCustomer(inputAcc).getJSON().toString();
 								Customer retcus = new Customer();
 								JSONObject jcus = null;
 								try{
@@ -334,7 +472,7 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//business process a order
 			else if(commandmesg.contains(CommunicationProtocol.CUS_FIND_RESTAURANT_IDS)){
-				DBObject cus = dboperator.getCustomer(uname, passwd);
+				Customer cus = dboperator.getCustomer(inputAcc);
 				returnStringInfo((cus != null),
 						"", 
 						CommunicationProtocol.PROCESS_SUCCEEDED, 
@@ -343,15 +481,10 @@ public class MessageReactorImpl implements MessageReactor{
 							@Override
 							public String onTrue() {
 								LocationInfo loc = new LocationInfo("");
-								try {
 									//System.out.println(supinfo);
-									loc.parseFromJSONObject(new JSONObject(supinfo));
-									JSONObject jret = dboperator.findBusinessById(loc).getJSON();
-									return jret.toString();
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-								return "";
+								loc.parseFromJSONObject(supinfoObj);
+								JSONObject jret = dboperator.findBusinessById(loc).getJSON();
+								return jret.toString();
 							}
 		
 							@Override
@@ -366,7 +499,7 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//business process a order
 			else if(commandmesg.contains(CommunicationProtocol.CUS_GET_RES_CONTACT)){
-				DBObject cus = dboperator.getCustomer(uname, passwd);
+				Customer cus = dboperator.getCustomer(inputAcc);
 				returnStringInfo((cus != null),
 						"", 
 						CommunicationProtocol.PROCESS_SUCCEEDED, 
@@ -374,14 +507,9 @@ public class MessageReactorImpl implements MessageReactor{
 						new OnJudgeListener(){
 							@Override
 							public String onTrue() {
-								try{
-									AccountInfo acc = (new AccountInfo()).
-										parseFromJSONObject(new JSONObject(supinfo));
-									return dboperator.getBusinessContactInfo(acc).getJSON().toString();
-								}catch(Exception e){
-									e.printStackTrace();
-								}
-								return "";
+								AccountInfo acc = (new AccountInfo()).
+									parseFromJSONObject(supinfoObj);
+								return dboperator.getBusinessContactInfo(acc).getJSON().toString();
 							}
 		
 							@Override
@@ -396,7 +524,7 @@ public class MessageReactorImpl implements MessageReactor{
 	
 			//business process a order
 			else if(commandmesg.contains(CommunicationProtocol.CUS_GET_RES_ALBUM)){
-				DBObject cus = dboperator.getCustomer(uname, passwd);
+				Customer cus = dboperator.getCustomer(inputAcc);
 				returnStringInfo((cus != null),
 						"", 
 						CommunicationProtocol.PROCESS_SUCCEEDED, 
@@ -404,14 +532,9 @@ public class MessageReactorImpl implements MessageReactor{
 						new OnJudgeListener(){
 							@Override
 							public String onTrue() {
-								try{
-									AccountInfo acc = (new AccountInfo()).
-										parseFromJSONObject(new JSONObject(supinfo));
-									return dboperator.getBusinessAlbum(acc).getJSON().toString();
-								}catch(Exception e){
-									e.printStackTrace();
-								}
-								return "";
+								AccountInfo acc = (new AccountInfo()).
+									parseFromJSONObject(supinfoObj);
+								return dboperator.getBusinessAlbum(acc).getJSON().toString();
 							}
 		
 							@Override
@@ -426,7 +549,7 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//business process a order
 			else if(commandmesg.contains(CommunicationProtocol.CUS_GET_MENU)){
-				DBObject cus = dboperator.getCustomer(uname, passwd);
+				Customer cus = dboperator.getCustomer(inputAcc);
 				returnStringInfo((cus != null),
 						"", 
 						CommunicationProtocol.PROCESS_SUCCEEDED, 
@@ -434,13 +557,32 @@ public class MessageReactorImpl implements MessageReactor{
 						new OnJudgeListener(){
 							@Override
 							public String onTrue() {
-								try{
-									AccountInfo acc = (new AccountInfo()).
-										parseFromJSONObject(new JSONObject(supinfo));
-									return dboperator.getBusinessMenu(acc).getJSON().toString();
-								}catch(Exception e){
-									e.printStackTrace();
-								}
+								AccountInfo acc = (new AccountInfo()).
+									parseFromJSONObject(supinfoObj);
+								return dboperator.getBusinessMenu(acc).getJSON().toString();
+
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
+			//business process a order
+			else if(commandmesg.contains(CommunicationProtocol.CUS_SUBMIT_ORDER)){
+				Customer cus = dboperator.getCustomer(inputAcc);
+				returnStringInfo((cus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								dboperator.submitOrder(new Order(supinfoObj));
 								return "";
 							}
 		
@@ -452,6 +594,171 @@ public class MessageReactorImpl implements MessageReactor{
 						});
 				
 			}
+			
+			//business process a order
+			else if(commandmesg.contains(CommunicationProtocol.CUS_UPDATE_ORDER)){
+				Customer cus = dboperator.getCustomer(inputAcc);
+				returnStringInfo((cus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								dboperator.userUpdateOrder(new Order(supinfoObj));
+								return "";
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
+			//retrive orders
+			else if(commandmesg.contains(CommunicationProtocol.CUS_RETRIVE_ORDER)){
+				Customer cus = dboperator.getCustomer(inputAcc);
+				returnStringInfo((cus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								OrderQuerier querier = new OrderQuerier();
+								querier.parseFromJSONObject(supinfoObj);
+								ListedJSONObj obj = null;
+								System.out.println(querier.getJSON().toString());
+								if(querier.getStatus() == -1){
+									obj = dboperator.getUserOrders(inputAcc, querier.getStartIndex()
+										, querier.getEndIndex());
+								}else{
+									obj = dboperator.getUserOrders(inputAcc, querier.getStatus(), 
+											querier.getStartIndex(), querier.getEndIndex());
+								}
+								return obj.getJSON().toString();
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+						
+			//retrive changed orders
+			else if(commandmesg.contains(CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER)){
+				Customer cus = dboperator.getCustomer(inputAcc);
+				returnStringInfo((cus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								ListedJSONObj obj = null;
+								obj = dboperator.getChangedUserOrders(inputAcc);
+								return obj.getJSON().toString();
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
+			
+			//retrive orders
+			else if(commandmesg.contains(CommunicationProtocol.BUSI_RETRIVE_ORDERS)){
+				Restaurant bus = dboperator.getBusiness(inputAcc);
+				returnStringInfo((bus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								OrderQuerier querier = new OrderQuerier();
+								querier.parseFromJSONObject(supinfoObj);
+								ListedJSONObj obj = null;
+								System.out.println(querier.getJSON().toString());
+								if(querier.getStatus() == -1){
+									obj = dboperator.getBusiOrders(inputAcc, querier.getStartIndex()
+										, querier.getEndIndex());
+								}else{
+									obj = dboperator.getBusiOrders(inputAcc, querier.getStatus(), 
+											querier.getStartIndex(), querier.getEndIndex());
+								}
+								return obj.getJSON().toString();
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
+			
+			//retrive changed orders
+			else if(commandmesg.contains(CommunicationProtocol.BUSI_RETRIVE_CHANGED_ORDERS)){
+				Restaurant bus = dboperator.getBusiness(inputAcc);
+				returnStringInfo((bus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								ListedJSONObj obj = null;
+								obj = dboperator.getChangedBusiOrders(inputAcc);
+								return obj.getJSON().toString();
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
+			
+			
+			//business process a order
+			else if(commandmesg.contains(CommunicationProtocol.BUSI_PROCESS_ORDER)){
+				Restaurant bus = dboperator.getBusiness(inputAcc);
+				returnStringInfo((bus != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								dboperator.busiUpdateOrder(new Order(supinfoObj));
+								return "";
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
 			
 			else{
 				internet.sendMsg(CommunicationProtocol.construcSendingStr(
@@ -473,7 +780,7 @@ public class MessageReactorImpl implements MessageReactor{
 
 	@Override
 	public void setOperater(DataBaseOperater operater) {
-		
+		this.dboperator = operater;
 	}
 
 }

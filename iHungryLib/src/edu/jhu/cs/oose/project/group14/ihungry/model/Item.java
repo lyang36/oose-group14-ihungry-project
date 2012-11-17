@@ -47,7 +47,13 @@ public class Item implements JSONHandler<Item>, Serializable{
 		this.rating = rating;
 	}
 */	
-	public Item(){}
+	public Item(){
+		this.itemID = "1";
+		this.album = new Album();
+		this.itemName = "item";
+		this.price = 12.33;
+		this.rating = new Rating();
+	}
 	
 	public Item(String itemId, String itemName, double price, Rating rating, Album album ) {
 		this.itemID = itemId;
