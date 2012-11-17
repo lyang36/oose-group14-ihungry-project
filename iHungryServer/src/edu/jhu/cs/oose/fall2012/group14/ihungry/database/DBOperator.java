@@ -2,6 +2,8 @@ package edu.jhu.cs.oose.fall2012.group14.ihungry.database;
 
 
 
+import java.util.ArrayList;
+
 import org.bson.types.ObjectId;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +29,6 @@ import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 public class DBOperator implements DataBaseOperater{
-	public static final String IS_ORDER_NEW_KEY = "isOderNew";
 	
 	DB myDB;
     private Mongo mongodb = null;	//mongo db
@@ -98,8 +99,8 @@ public class DBOperator implements DataBaseOperater{
 	}
 	
 	@Override
-	public boolean checkUserUnameExisted(String uname) {
-		if(getCustomer_priv(uname) != null){
+	public boolean checkUserUnameExisted(AccountInfo acc) {
+		if(getCustomer_priv(acc.getId()) != null){
 			return true;
 		}
 		return false;
@@ -108,112 +109,316 @@ public class DBOperator implements DataBaseOperater{
 
 	
 	@Override
-	public boolean checkBusiUnameExisted(String uname) {
-		if(getBusiness_priv(uname) != null){
+	public boolean checkBusiUnameExisted(AccountInfo acc) {
+		if(getBusiness_priv(acc.getId()) != null){
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public DBObject getCustomer(String uname, String passwd) {
+	public Customer getCustomer(AccountInfo acc) {
+		String uname = acc.getId();
+		String passwd = acc.getPasswd();
 		query = new BasicDBObject();
 		query.put(AccountInfo.KEY_ID, uname);
 		query.put(AccountInfo.KEY_PASSWD, passwd);
 		DBCursor cur = queryOnCollection(cusCollection, query);
 		if(cur.hasNext()){
-			return cur.next();
+			JSONObject retj = null;
+			try {
+				retj = new JSONObject(cur.next().toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			Customer cus = new Customer();
+			cus.parseFromJSONObject(retj);
+			return cus;
 		}		
 		return null;
 	}
-
-	@Override
-	public DBObject getBusiness(String busiuname, String passwd) {
-		query = new BasicDBObject();
-		query.put(AccountInfo.KEY_ID, busiuname);
-		query.put(AccountInfo.KEY_PASSWD, passwd);
-		DBCursor cur = queryOnCollection(busiCollection, query);
-		if(cur.hasNext()){
-			return cur.next();
-		}		
-		return null;
-	}
-
-	@Override
-	public DBObject getUserOrders(String uname, String passwd, int startInd,
-			int endInd) {	
-		return null;
-	}
-
-	@Override
-	public DBObject getUserOrders(String uname, String passwd, int status,
-			int startInd, int endInd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public DBObject getChangedUserOrders(String uname, String passwd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public DBObject getBusiOrders(String uname, String passwd, int startInd,
-			int endInd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public DBObject getBusiOrders(String uname, String passwd, int status,
-			int startInd, int endInd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public DBObject getChangedBusiOrders(String uname, String passwd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void updateOrder(DBObject o) {
-		//o.put(IS_ORDER_NEW_KEY, true);		
-		//orderCollection.update(q, o);
-	}
-
-	@Override
-	public void addOrder(DBObject o) {
-		o.put(IS_ORDER_NEW_KEY, true);		
-		orderCollection.insert(o);
-		
-	}
-
-
 	
-	@Override
-	public void addCustomer(DBObject cus) {
-		if(checkUserUnameExisted((String) cus.get(AccountInfo.KEY_ID))){
-			DBObject origin = getCustomer_priv((String) cus.get(AccountInfo.KEY_ID));
-			ObjectId id = (ObjectId) origin.get(DBOKeyNames.OBJ_KEY_ID);
-			cus.put(DBOKeyNames.OBJ_KEY_ID, id);
-			cusCollection.update(origin, cus);
+	private boolean checkValidUser(AccountInfo acc){
+		if(getCustomer(acc) == null){
+			return false;
 		}else{
-			cusCollection.insert(cus);
+			return true;
+		}
+	}
+	
+	
+	private boolean checkValidBusi(AccountInfo acc){
+		if(getBusiness(acc) == null){
+			return false;
+		}else{
+			return true;
 		}
 	}
 
 	@Override
-	public void addBusiness(DBObject bus) {
-		if(checkBusiUnameExisted((String) bus.get(AccountInfo.KEY_ID))){
-			DBObject origin = getBusiness_priv((String) bus.get(AccountInfo.KEY_ID));
+	public Restaurant getBusiness(AccountInfo acc) {
+		query = (BasicDBObject) JSON.parse(acc.getJSON().toString());
+		query.removeField(AccountInfo.KEY_UNAME);
+		DBCursor cur = queryOnCollection(busiCollection, query);
+		if(cur.hasNext()){
+			JSONObject retj = null;
+			try {
+				retj = new JSONObject(cur.next().toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			Restaurant bus = new Restaurant(null, null);
+			bus.parseFromJSONObject(retj);
+			return bus;
+		}		
+		return null;
+	}
+
+
+	@Override
+	public ListedJSONObj getUserOrders(AccountInfo acc, int startInd,
+			int endInd) {	
+		ListedJSONObj retjson = new ListedJSONObj();
+		if(checkValidUser(acc)){
+			query = new BasicDBObject();
+			query.put(Order.KEY_CUSTID, acc.getId());
+			DBCursor cur =orderCollection.find(query);
+			cur.skip(startInd).limit(endInd - startInd + 1);
+			
+			while(cur.hasNext()){
+				try {
+					DBObject ordobj = cur.next();
+					JSONObject jordr = new JSONObject(ordobj.toString());
+					Order corder = new Order(jordr);
+					corder.parseFromJSONObject(jordr);
+					retjson.add(jordr);
+					if(corder.checkIsNewToCus()){
+						corder.flipToCusStatus();
+						cusCollection.findAndModify(ordobj, 
+								(DBObject)JSON.parse(corder.getJSON().toString()));
+					}
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		return retjson;
+	}
+
+	@Override
+	public ListedJSONObj getUserOrders(AccountInfo acc, int status,
+			int startInd, int endInd) {
+		ListedJSONObj retjson = new ListedJSONObj();
+		if(checkValidUser(acc)){
+			query = new BasicDBObject();
+			query.put(Order.KEY_CUSTID, acc.getId());
+			query.put(Order.KEY_STATUS, status);
+			DBCursor cur =orderCollection.find(query);
+			cur.skip(startInd).limit(endInd - startInd + 1);
+			while(cur.hasNext()){
+				try {
+					DBObject ordobj = cur.next();
+					JSONObject jordr = new JSONObject(ordobj.toString());
+					Order corder = new Order(jordr);
+					corder.parseFromJSONObject(jordr);
+					retjson.add(jordr);
+					if(corder.checkIsNewToCus()){
+						corder.flipToCusStatus();
+						cusCollection.findAndModify(ordobj, 
+								(DBObject)JSON.parse(corder.getJSON().toString()));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return retjson;
+	}
+
+	@Override
+	public ListedJSONObj getChangedUserOrders(AccountInfo acc) {
+		ListedJSONObj retjson = new ListedJSONObj();
+		if(checkValidUser(acc)){
+			query = new BasicDBObject();
+			query.put(Order.KEY_CUSTID, acc.getId());
+			query.put(Order.IS_NEW_TO_CUS, true);
+			DBCursor cur =orderCollection.find(query);
+			while(cur.hasNext()){
+				try {
+					DBObject ordobj = cur.next();
+					JSONObject jordr = new JSONObject(ordobj.toString());
+					Order corder = new Order(jordr);
+					corder.parseFromJSONObject(jordr);
+					retjson.add(jordr);
+					if(corder.checkIsNewToCus()){
+						corder.flipToCusStatus();
+						cusCollection.findAndModify(ordobj, 
+								(DBObject)JSON.parse(corder.getJSON().toString()));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return retjson;
+	}
+
+	@Override
+	public ListedJSONObj getBusiOrders(AccountInfo acc, int startInd,
+			int endInd) {
+		ListedJSONObj retjson = new ListedJSONObj();
+		if(checkValidBusi(acc)){
+			query = new BasicDBObject();
+			query.put(Order.KEY_RESTID, acc.getId());
+			DBCursor cur =orderCollection.find(query);
+			cur.skip(startInd).limit(endInd - startInd + 1);
+			
+			while(cur.hasNext()){
+				try {
+					DBObject ordobj = cur.next();
+					JSONObject jordr = new JSONObject(ordobj.toString());
+					Order corder = new Order(jordr);
+					corder.parseFromJSONObject(jordr);
+					retjson.add(jordr);
+					if(corder.checkIsNewToRes()){
+						corder.flipToResStatus();
+						cusCollection.findAndModify(ordobj, 
+								(DBObject)JSON.parse(corder.getJSON().toString()));
+					}
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		return retjson;
+	}
+
+	
+	@Override
+	public ListedJSONObj getBusiOrders(AccountInfo acc, int status,
+			int startInd, int endInd) {
+		ListedJSONObj retjson = new ListedJSONObj();
+		if(checkValidBusi(acc)){
+			query = new BasicDBObject();
+			query.put(Order.KEY_RESTID, acc.getId());
+			query.put(Order.KEY_STATUS, status);
+			DBCursor cur =orderCollection.find(query);
+			cur.skip(startInd).limit(endInd - startInd + 1);
+			while(cur.hasNext()){
+				try {
+					DBObject ordobj = cur.next();
+					JSONObject jordr = new JSONObject(ordobj.toString());
+					Order corder = new Order(jordr);
+					corder.parseFromJSONObject(jordr);
+					retjson.add(jordr);
+					if(corder.checkIsNewToRes()){
+						corder.flipToResStatus();
+						orderCollection.findAndModify(ordobj, 
+								(DBObject)JSON.parse(corder.getJSON().toString()));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return retjson;
+	}
+
+	@Override
+	public ListedJSONObj getChangedBusiOrders(AccountInfo acc) {
+		ListedJSONObj retjson = new ListedJSONObj();
+		if(checkValidBusi(acc)){
+			query = new BasicDBObject();
+			query.put(Order.KEY_RESTID, acc.getId());
+			query.put(Order.IS_NEW_TO_RES, true);
+			DBCursor cur =orderCollection.find(query);
+			while(cur.hasNext()){
+				try {
+					DBObject ordobj = cur.next();
+					
+					JSONObject jordr = new JSONObject(ordobj.toString());
+					Order corder = new Order(jordr);
+					corder.parseFromJSONObject(jordr);
+					retjson.add(jordr);
+					if(corder.checkIsNewToRes()){
+						corder.flipToResStatus();
+						System.out.println("Order Changed to" + corder.getJSON().toString());
+						orderCollection.findAndModify(ordobj, 
+								(DBObject)JSON.parse(corder.getJSON().toString()));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return retjson;
+	}
+
+	@Override
+	public void userUpdateOrder(Order o) {
+		query = new BasicDBObject();
+		query.put(Order.KEY_ORDERID, o.getOrderID());
+		o.setToResStatus(true);
+		o.setToCusStatus(false);
+		DBObject neworder = new BasicDBObject();
+		neworder = (DBObject) JSON.parse(o.getJSON().toString());
+		orderCollection.findAndModify(query, neworder);
+	}
+
+	@Override
+	public void busiUpdateOrder(Order o) {
+		o.setToCusStatus(true);
+		o.setToResStatus(false);
+		query = new BasicDBObject();
+		query.put(Order.KEY_ORDERID, o.getOrderID());
+		DBObject neworder = new BasicDBObject();
+		neworder = (DBObject) JSON.parse(o.getJSON().toString());
+		orderCollection.findAndModify(query, neworder);
+	}
+
+	@Override
+	public void submitOrder(Order o) {
+		o.setToCusStatus(false);
+		o.setToResStatus(true);
+		DBObject neworder = new BasicDBObject();
+		neworder = (DBObject) JSON.parse(o.getJSON().toString());
+		orderCollection.insert(neworder);
+	}
+
+	
+
+	
+	@Override
+	public void addCustomer(Customer cus) {
+		DBObject newcus = new BasicDBObject();
+		newcus = (DBObject) JSON.parse(cus.getJSON().toString());
+		
+		if(checkUserUnameExisted(cus.getAccountInfo())){
+			DBObject origin = getCustomer_priv(cus.getAccountInfo().getId());
 			ObjectId id = (ObjectId) origin.get(DBOKeyNames.OBJ_KEY_ID);
-			bus.put(DBOKeyNames.OBJ_KEY_ID, id);
-			busiCollection.update(origin, bus);
+			newcus.put(DBOKeyNames.OBJ_KEY_ID, id);
+			cusCollection.update(origin, newcus);
 		}else{
-			busiCollection.insert(bus);
+			cusCollection.insert(newcus);
+		}
+	}
+
+	@Override
+	public void addBusiness(Restaurant bus) {
+		DBObject newbus = new BasicDBObject();
+		newbus = (DBObject) JSON.parse(bus.getJSON().toString());
+		if(checkBusiUnameExisted(bus.getAccountInfo())){
+			DBObject origin = getBusiness_priv(bus.getAccountInfo().getId());
+			ObjectId id = (ObjectId) origin.get(DBOKeyNames.OBJ_KEY_ID);
+			newbus.put(DBOKeyNames.OBJ_KEY_ID, id);
+			busiCollection.update(origin, newbus);
+		}else{
+			busiCollection.insert(newbus);
 		}
 	}
 

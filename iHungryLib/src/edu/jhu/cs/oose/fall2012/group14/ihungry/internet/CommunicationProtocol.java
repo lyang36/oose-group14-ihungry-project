@@ -159,19 +159,25 @@ public class CommunicationProtocol {
 	
 	/**
 	 * customer submit an order <p>
-	 * Input SupInfo: Order.getJSON()  (ignore passwd)<p>
+	 * Input SupInfo: Order.getJSON()<p>
 	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
 	 * Return Supinfo: ""
 	 */
 	public static final String CUS_SUBMIT_ORDER 	  =		"18fc1c45a61ac49fd563875a69fc7fed";
 	
 	/**
-	 * update an existed order
+	 * customer submit an order <p>
+	 * Input SupInfo: Order.getJSON()<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ""
 	 */
 	public static final String CUS_UPDATE_ORDER 	  =		"13ac2330ef57b95dc1bfe48f45f054c5";
 	
 	/**
-	 * retrive all orders
+	 * customer submit an order <p>
+	 * Input SupInfo: OrderQuerier.getJSON()<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ListedJSONObj of Orders
 	 */
 	public static final String CUS_RETRIVE_ORDER  =			"428966c09b471f152472f221d30476c6";
 	
@@ -203,6 +209,10 @@ public class CommunicationProtocol {
 	public static final String BUSI_UPDATE_CONTACT = 		"5071cf4b162b6e66d3ca5d71321624ad";
 	public static final String BUSI_GET_CONTACT = 			"7a3b457e1544c136e822dfed78cd982e";
 	public static final String BUSI_GET_CUS_CONTACT = 		"1ca24bb6a50f11f694036a6160ef6a2b";
+	public static final String BUSI_UPDATE_MENU	=			"19a3a67078a026f331d721ed28c98101";
+	public static final String BUSI_UPDATE_ALBUM = 			"3042ae4410fb6416fc3b7e6a9a37cff9";
+	public static final String BUSI_GET_ALBUM	=			"441f01e2dd032971c771f1e2ab1f38e1";
+	public static final String BUSI_GET_MENU	=			"29d179daa3216ed25541f28c4a7401c3";
 	
 	/**
 	 * for orders 
@@ -210,11 +220,7 @@ public class CommunicationProtocol {
 	public static final String BUSI_RETRIVE_ORDERS = 		"ad467bd4668f00f1ec3ce32df7c2ebfa";
 	public static final String BUSI_RETRIVE_CHANGED_ORDERS ="536dbc9b3cd19e1485b3fd0926e26b44";
 	public static final String BUSI_PROCESS_ORDER = 		"8ef14e8985c487bb0025e9c4a6ae8d0a";
-	public static final String BUSI_UPLOAD_MENU	=			"ede53d1160437918f486bad4a7625f68";
-	public static final String BUSI_UPDATE_MENU	=			"19a3a67078a026f331d721ed28c98101";
-	public static final String BUSI_UPDATE_ALBUM = 			"3042ae4410fb6416fc3b7e6a9a37cff9";
-	public static final String BUSI_GET_ALBUM	=			"441f01e2dd032971c771f1e2ab1f38e1";
-	
+
 	
 	
 	
