@@ -58,7 +58,7 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		try{
 			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
 		}catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			System.out.println("Exception Occured");
 		}
 		
@@ -93,8 +93,31 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 	}
 	
 	
-	public boolean signupForNewUser( Restaurant restaurant ){
-		return true;
+	public boolean signupForNewUser(Restaurant restaurant){
+		
+		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(restaurant.getAccountInfo().getUname()), MD5.getMd5(restaurant.getAccountInfo().getPasswd()),
+				CommunicationProtocol.BUSI_SIGNUP, restaurant.getJSON().toString());
+		String responseStr = "";
+		
+		try
+		{
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+		}
+		catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_SUCCEEDED) )
+		{
+			return true;
+		} 
+		else if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_FAILED) )
+		{
+			return false;
+		}
+		
+		return false;
 	}
 	
 	
@@ -124,5 +147,34 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 	
 	public List<Order> retrieveChangedOrders(String restId){
 		return null;
+	}
+	
+	
+	public boolean updateMenu(AccountInfo accinfo, Menu menu){
+		
+		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(accinfo.getUname()), MD5.getMd5(accinfo.getPasswd()),
+				CommunicationProtocol.BUSI_UPDATE_MENU, menu.getJSON().toString());
+		String responseStr = "";
+		
+		try
+		{
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+		}
+		catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_SUCCEEDED) )
+		{
+			return true;
+		} 
+		else if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_FAILED) )
+		{
+			return false;
+		}
+		
+		return false;
+		
 	}
 }

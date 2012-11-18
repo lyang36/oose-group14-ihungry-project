@@ -2,6 +2,7 @@ package edu.jhu.cs.oose.group14.restaurant.model;
 
 import java.util.List;
 
+import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
@@ -69,6 +70,8 @@ public interface ihungryRestaurantModelInterface {
 	 * @return an arraylist of Orders satisfying the requirements
 	 */
 	public List<Order> retrieveChangedOrders(String restId);
+	
+	public boolean updateMenu(AccountInfo accinfo, Menu menu);
 	
 	
 	
