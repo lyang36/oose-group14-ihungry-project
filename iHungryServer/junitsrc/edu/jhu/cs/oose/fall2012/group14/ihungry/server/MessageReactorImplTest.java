@@ -168,7 +168,7 @@ public class MessageReactorImplTest {
 				CommunicationProtocol.PROCESS_SUCCEEDED, "");
 		
 	}
-/*	
+
 	
 	@Test
 	public void testCustomerAccount(){
@@ -315,5 +315,5 @@ public class MessageReactorImplTest {
 
 	}
 	
-	*/
+	
 }

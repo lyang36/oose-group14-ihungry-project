@@ -20,6 +20,7 @@ class doComms implements Runnable {
     	this.server = server;
     	this.reactor = reactor;
     	internet = new InternetUtilImpl();
+
     	try {
 			internet.setSocket(server);
 		} catch (IOException e) {
@@ -67,7 +68,8 @@ public class Server implements ServerModel{
 			  try {
 				msreactor = msreactor.getClass().newInstance();
 				
-				DBOperator op = null;
+				DBOperator op = new DBOperator();
+				op.connectToDB();
 				msreactor.setOperater(op);
 			} catch (InstantiationException e) {
 				e.printStackTrace();

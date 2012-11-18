@@ -151,8 +151,9 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			//for business login
 			if(commandmesg.contains(CommunicationProtocol.BUSI_LOGIN)){
+				
 				returnStringInfo(dboperator.getBusiness(inputAcc) != null,
-						new BasicDBObject(), CommunicationProtocol.LOGIN_SUCCESS, 
+						supinfo, CommunicationProtocol.LOGIN_SUCCESS, 
 						CommunicationProtocol.LOGIN_ERROR, null);
 			}
 			
@@ -160,7 +161,7 @@ public class MessageReactorImpl implements MessageReactor{
 			//check whether business username is existed
 			else if(commandmesg.contains(CommunicationProtocol.BUSI_CHECK_UNAME_EXISTED)){
 				returnStringInfo(dboperator.checkBusiUnameExisted(inputAcc),
-						new BasicDBObject(), CommunicationProtocol.TRUE, 
+						supinfo, CommunicationProtocol.TRUE, 
 						CommunicationProtocol.FALSE, null);
 			}
 			
@@ -169,7 +170,7 @@ public class MessageReactorImpl implements MessageReactor{
 			else if(commandmesg.contains(CommunicationProtocol.BUSI_SIGNUP)){
 				System.out.println(">>>>"+inputAcc.getJSON().toString());
 				returnStringInfo(!dboperator.checkBusiUnameExisted(inputAcc),
-						new BasicDBObject(), CommunicationProtocol.PROCESS_SUCCEEDED, 
+						supinfo, CommunicationProtocol.PROCESS_SUCCEEDED, 
 						CommunicationProtocol.PROCESS_FAILED, new OnJudgeListener(){
 
 							@Override
@@ -768,9 +769,10 @@ public class MessageReactorImpl implements MessageReactor{
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
+				//System.out.println("dfafadf>>>>>" + commandmesg);
 				internet.sendMsg(CommunicationProtocol.construcSendingStr(
-						CommunicationProtocol.getUnameFromReceivedStr(commandmesg), 
-						CommunicationProtocol.getPasswdFromReceivedStr(commandmesg), 
+						uname, 
+						passwd, 
 						CommunicationProtocol.PROCESS_FAILED, ""));
 			} catch (Exception e1) {
 				e1.printStackTrace();
