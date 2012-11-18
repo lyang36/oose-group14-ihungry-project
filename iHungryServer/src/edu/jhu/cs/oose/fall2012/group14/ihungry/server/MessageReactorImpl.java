@@ -153,8 +153,21 @@ public class MessageReactorImpl implements MessageReactor{
 			if(commandmesg.contains(CommunicationProtocol.BUSI_LOGIN)){
 				
 				returnStringInfo(dboperator.getBusiness(inputAcc) != null,
-						supinfo, CommunicationProtocol.LOGIN_SUCCESS, 
-						CommunicationProtocol.LOGIN_ERROR, null);
+						"", CommunicationProtocol.LOGIN_SUCCESS, 
+						CommunicationProtocol.LOGIN_ERROR, new OnJudgeListener(){
+
+					@Override
+					public String onTrue() {
+						Restaurant bus = dboperator.getBusiness(inputAcc);
+						return bus.getJSON().toString();
+					}
+
+					@Override
+					public String onFalse() {
+						return null;
+					}
+			
+		});
 			}
 			
 			
@@ -404,8 +417,21 @@ public class MessageReactorImpl implements MessageReactor{
 			
 			else if(commandmesg.contains(CommunicationProtocol.CUS_LOGIN)){
 				returnStringInfo(dboperator.getCustomer(inputAcc) != null,
-						new BasicDBObject(), CommunicationProtocol.LOGIN_SUCCESS, 
-						CommunicationProtocol.LOGIN_ERROR, null);
+						"", CommunicationProtocol.LOGIN_SUCCESS, 
+						CommunicationProtocol.LOGIN_ERROR, new OnJudgeListener(){
+
+					@Override
+					public String onTrue() {
+						Customer cus = dboperator.getCustomer(inputAcc);
+						return cus.getJSON().toString();
+					}
+
+					@Override
+					public String onFalse() {
+						return null;
+					}
+			
+		});
 			}
 			
 			
