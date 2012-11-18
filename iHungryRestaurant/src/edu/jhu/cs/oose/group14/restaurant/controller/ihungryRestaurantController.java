@@ -157,6 +157,7 @@ public class ihungryRestaurantController {
 			if (model.loginCheck(username,password))
 				if (model.attemptLogin(username,password))
 				{
+					System.out.println("successfully logged in");
 					restaurant = model.getRestaurantInfo(username,password);
 					//populate listOfItemNames,listOfDescription,listOfPrice from the retrieved Restaurant object
 					populateMenuFields();
@@ -174,12 +175,12 @@ public class ihungryRestaurantController {
 				}
 				else
 				{
-					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username or password is incorrect.</FONT></HTML>");	
+					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Password is incorrect.</FONT></HTML>");	
 					JOptionPane.showMessageDialog(null,errorFields);
 				}
 			else
 			{
-				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username already exists.</FONT></HTML>");	
+				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username does not exists.</FONT></HTML>");	
 				JOptionPane.showMessageDialog(null,errorFields);
 			}
 		}

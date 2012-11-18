@@ -63,8 +63,10 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		}
 		
 		if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.FALSE) ){
+			System.out.println("username doesn't exists");
 			return false;
 		} else if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.TRUE) ){
+			System.out.println("username exists");
 			return true;
 		}
 		
@@ -84,8 +86,10 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		}
 		
 		if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.LOGIN_SUCCESS) ){
+			System.out.println("logged in");
 			return true;
 		} else if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.LOGIN_ERROR) ){
+			System.out.println("not logged in because of some password or username mistake");
 			return false;
 		}
 		
@@ -135,6 +139,8 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		restInfo.setAccountInfo(aInfo);
 		restInfo.setContactInfo(cInfo);
 		String responseFromServer = restInfo.getJSON().toString();*/
+		
+		//Restaurant newRestaurant = new Restaurant();
 
 		return null;
 	}
