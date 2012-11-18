@@ -12,6 +12,9 @@ import edu.jhu.cs.oose.group14.restaurant.gui.ihungryRestaurantGui;
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelImpl;
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelInterface;
 import edu.jhu.cs.oose.project.group14.ihungry.model.*;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Icon;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
+
 import java.util.*;
 
 /**
@@ -32,6 +35,7 @@ public class ihungryRestaurantController {
 	private ArrayList<Order> currOrders = new ArrayList<Order>();
 	private Object[][] data =  new Object[1000][5];
 	private int pointer = 0;
+	private Restaurant restaurant;
 	
 
 	
@@ -42,18 +46,18 @@ public class ihungryRestaurantController {
 	public ihungryRestaurantController(ihungryRestaurantGui gui){
 		this.gui = gui;
 		model = new ihungryRestaurantModelImpl();
-		listOfEdit = gui.getEditButton();
-	    listOfDelete = gui.getDeleteButton();
+		listOfEdit = gui.getOrderGui().getEditButton();
+	    listOfDelete = gui.getOrderGui().getDeleteButton();
 	    listOfItemNames = new ArrayList<String>();
 	    listOfDescription = new ArrayList<String>();
 	    listOfPrice = new ArrayList<String>();
-		this.gui.getLogin().addActionListener(new LoginListener());
-		this.gui.getSignUp().addActionListener(new SignUpListener());
+		this.gui.getLoginGui().getLogin().addActionListener(new LoginListener());
+		this.gui.getLoginGui().getSignUp().addActionListener(new SignUpListener());
 		
 		//some sample data
-		Item i1 = new Item("I001","Pizza",4.45,new Rating(0,0),new Album());
-		Item i2 = new Item("I002","Pizza Big",7.30,new Rating(0,0),new Album());
-		Item i3 = new Item("I003","Burger",2.25,new Rating(0,0),new Album());
+		Item i1 = new Item("I001","Pizza","Small Pizza",4.45,new Rating(0,0),new Album());
+		Item i2 = new Item("I002","Pizza Big","Big Pizza",7.30,new Rating(0,0),new Album());
+		Item i3 = new Item("I003","Burger","Burger",2.25,new Rating(0,0),new Album());
 		ArrayList<OrderItem> temp1 = new ArrayList<OrderItem>();
 		ArrayList<OrderItem> temp2 = new ArrayList<OrderItem>();
 		ArrayList<OrderItem> temp3 = new ArrayList<OrderItem>();
@@ -105,47 +109,101 @@ public class ihungryRestaurantController {
 	
 	class LoginListener implements ActionListener{
 		
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(ActionEvent event) 
+		{
+			composeForLogIn();			
+		}
+		
+		
+		public void composeForLogIn(){
 			
-			String username = gui.getUsernameLogin().getText();
-			String password = new String(gui.getPasswordLogin().getText());
-			Restaurant restInfo = null;
+			String username = gui.getLoginGui().getUsernameLogin().getText();
+			String password = new String(gui.getLoginGui().getPasswordLogin().getPassword());
 			
-			if (model.loginCheck(username,password))
-				if (model.attemptLogin(username,password))
-					restInfo = model.getRestaurantInfo(username,password);
-				else
-				{
-					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username or password is incorrect.</FONT></HTML>");	
-					JOptionPane.showMessageDialog(null,errorFields);
-				}
-			else
-			{
-				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username already exists.</FONT></HTML>");	
-				JOptionPane.showMessageDialog(null,errorFields);
-			}
-				
-			//display the restaurant info fetched from server
-			gui.displayOrderGui();
-			//gui.getPanel().setVisible(false);
-			gui.getTable().getSelectionModel().addListSelectionListener(new SelectionListener());
-      
-        
+			/*listOfItemNames.add("Pizza");
+			listOfItemNames.add("Small Pizza");
+			listOfItemNames.add("Big Pizza");
+			listOfItemNames.add("Burger");
+			listOfItemNames.add("Small Burger");
+			listOfItemNames.add("Big Burger");
+			
+			listOfDescription.add("Pizza");
+			listOfDescription.add("Small Pizza");
+			listOfDescription.add("Big Pizza");
+			listOfDescription.add("Burger");
+			listOfDescription.add("Small Burger");
+			listOfDescription.add("Big Burger");
+			
+			listOfPrice.add(new String("4.00"));
+			listOfPrice.add(new String("5.00"));
+			listOfPrice.add(new String("6.00"));
+			listOfPrice.add(new String("4.00"));
+			listOfPrice.add(new String("5.00"));
+			listOfPrice.add(new String("6.00"));
+			
+			gui.getOrderGui().displayOrderScreen();
+			gui.getOrderGui().getTabbedPane().setSelectedIndex(1);
+			onClickNext(); 
 			for(int i=0;i<5;i++)
 			{
 				listOfEdit.get(i).addActionListener(new EditButtonListener() );
 				listOfDelete.get(i).addActionListener(new DeleteButtonListener() );
 			}
-			gui.getNext().addActionListener(new NextButtonListener());
-			gui.getPrev().addActionListener(new PrevButtonListener());
-            
+			gui.getOrderGui().getNext().addActionListener(new NextButtonListener());
+			gui.getOrderGui().getPrev().addActionListener(new PrevButtonListener());
+			gui.getOrderGui().getTable().getSelectionModel().addListSelectionListener(new SelectionListener());*/
+			
+			//check for errors in login
+			if (model.loginCheck(username,password))
+				if (model.attemptLogin(username,password))
+				{
+					System.out.println("successfully logged in");
+					restaurant = model.getRestaurantInfo(username,password);
+					//populate listOfItemNames,listOfDescription,listOfPrice from the retrieved Restaurant object
+					populateMenuFields();
+					gui.getOrderGui().displayOrderScreen();
+					gui.getOrderGui().getTabbedPane().setSelectedIndex(1);
+					onClickNext(); 
+					for(int i=0;i<5;i++)
+					{
+						listOfEdit.get(i).addActionListener(new EditButtonListener() );
+						listOfDelete.get(i).addActionListener(new DeleteButtonListener() );
+					}
+					gui.getOrderGui().getNext().addActionListener(new NextButtonListener());
+					gui.getOrderGui().getPrev().addActionListener(new PrevButtonListener());
+					gui.getOrderGui().getTable().getSelectionModel().addListSelectionListener(new SelectionListener());
+				}
+				else
+				{
+					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Password is incorrect.</FONT></HTML>");	
+					JOptionPane.showMessageDialog(null,errorFields);
+				}
+			else
+			{
+				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username does not exists.</FONT></HTML>");	
+				JOptionPane.showMessageDialog(null,errorFields);
+			}
+		}
+		
+		
+		public void populateMenuFields(){
+			
+			if (restaurant.getMenu().getItems().size()!=0)
+			{
+				for(int i=0;i<restaurant.getMenu().getItems().size();i++)
+				{
+					listOfItemNames.add(restaurant.getMenu().getItemAt(i).getItemName());
+					listOfDescription.add(restaurant.getMenu().getItemAt(i).getItemDescription());
+					listOfPrice.add(restaurant.getMenu().getItemAt(i).getItemPrice()+"");
+				}
+			}
 		}
 	}
 	
 	
 	/**
-	 * SIgnUpListener class implements the actionPerformed method checking for
-	 * the user credentials and allowing the user to log into the application.
+	 * SignUpListener class implements the actionPerformed method. Sends a JSON
+	 * object of the Restaurant to the server which creates a new restaurant
 	 * 
 	 * @author parkavi
 	 *
@@ -154,11 +212,65 @@ public class ihungryRestaurantController {
 	class SignUpListener implements ActionListener{
 		public void actionPerformed(ActionEvent event) {
 			
-			gui.displaySignUpGui();
+			gui.getSignupGui().displayFirstPageSignUpGui();
+			gui.getSignupGui().getNextSignUp().addActionListener(new NextSignUpListener());
 			
-            
+		}
+		
+		class NextSignUpListener implements ActionListener{
+			
+			public void actionPerformed(ActionEvent event) {
+				gui.getSignupGui().displaySecondPageSignUpGui();
+				gui.getSignupGui().getSignUp2().addActionListener(new NextSignUpListener());
+				composeForSignUp();
+						                  
+			}
+			
+			public void composeForSignUp(){
+				
+				String username = gui.getSignupGui().getUserName().getText();
+				String password = new String(gui.getSignupGui().getPassword().getPassword());
+				String confirmPassword = new String(gui.getSignupGui().getCOnfirmPassword().getPassword());
+				String realname = gui.getSignupGui().getFirstName().getText().concat(gui.getSignupGui().getLastName().getText());
+				String priPhone = gui.getSignupGui().getPriPhone().getText();
+				String secPhone = gui.getSignupGui().getSecPhone().getText();
+				String email = gui.getSignupGui().getEmail().getText();
+				String birthDate = "";
+				String state = (String) gui.getSignupGui().getState().getSelectedItem();
+				String address = gui.getSignupGui().getStreet().getText().concat(gui.getSignupGui().getCity().getText()).
+				                      concat(state).concat(gui.getSignupGui().getZip().getText());
+				
+				Icon newIcon = new Icon();
+				AccountInfo newAccount = new AccountInfo(username,password);
+				LocationInfo newLocation = new LocationInfo(address);
+				ContactInfo newContact = new ContactInfo(realname,newLocation,priPhone,secPhone,email,birthDate,newIcon);
+				Menu newMenu = new Menu();
+				Album newAlbum = new Album();
+				restaurant = new Restaurant(newAccount,newContact,newMenu,newAlbum);
+				
+				boolean result;
+				
+				if(password.equals(confirmPassword))
+				{
+					result = model.signupForNewUser(restaurant);
+					if (result==true)
+						gui.getOrderGui().displayOrderScreen();
+					else
+					{
+						JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username already exists.Choose a different username.</FONT></HTML>");	
+						JOptionPane.showMessageDialog(null,errorFields);
+					}	
+				}
+				else
+				{
+					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Password and Confirm Password fields doesn't match.</FONT></HTML>");	
+					JOptionPane.showMessageDialog(null,errorFields);
+				}
+			}
 		}
 	}
+	
+	
 	
 	/**
 	 * SelectionListener class implements ListSelection Listener. Gives 
@@ -176,7 +288,7 @@ public class ihungryRestaurantController {
 		
 		public void valueChanged(ListSelectionEvent e){
 			
-			gui.getSubPanel10().setVisible(true);
+			gui.getOrderGui().getSubPanel10().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 			int minIndex = lsm.getMinSelectionIndex();
             int maxIndex = lsm.getMaxSelectionIndex();
@@ -187,13 +299,13 @@ public class ihungryRestaurantController {
             		//System.out.println("match found");
             		//gui.getSubPanel10().setVisible(true);
             		Order selectedOrder = currOrders.get(minIndex);
-            		gui.getOrderNo().setText(selectedOrder.getOrderID());
-            		gui.getCustNo().setText(selectedOrder.getCustID());
+            		gui.getOrderGui().getOrderNo().setText(selectedOrder.getOrderID());
+            		gui.getOrderGui().getCustNo().setText(selectedOrder.getCustID());
             		String[] orderDetails = new String[50];
             		for(int j=0;j<selectedOrder.getOrderItems().size();j++){
             			orderDetails[j] = selectedOrder.getOrderItems().get(j).getItem().getItemName() + "    " + selectedOrder.getOrderItems().get(j).getQuantity();
             		}
-            		gui.setSelectedOrderDetails(orderDetails);
+            		gui.getOrderGui().setSelectedOrderDetails(orderDetails);
             	//}
             //}
 		}
@@ -214,12 +326,11 @@ public class ihungryRestaurantController {
 	class EditButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) 
 		{
-			System.out.println(event.getSource());
 			int ind = listOfEdit.indexOf(event.getSource());
 			
-			JTextField name = gui.getItemNames(ind);
-		    JTextField description = gui.getDescription(ind);
-		    JTextField price = gui.getPrice(ind);
+			JTextField name = gui.getOrderGui().getItemNames(ind);
+		    JTextField description = gui.getOrderGui().getDescription(ind);
+		    JTextField price = gui.getOrderGui().getPrice(ind);
 		    
 		    if(name.getText().equals("") || description.getText().equals("") || price.getText().equals("")){
 				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Please enter a value in each field before saving.</FONT></HTML>");	
@@ -229,10 +340,6 @@ public class ihungryRestaurantController {
 		    	
 				if(listOfEdit.get(ind).getText()=="Save")
 				{		
-				    //Item newItem = new Item(Integer.toString(++itemNo),name.getText(),description.getText(),p);
-		     
-				     //call a method to send this item to server to be stored in the database
-				     
 				     name.setEditable(false);
 				     description.setEditable(false);
 				     price.setEditable(false);
@@ -243,11 +350,37 @@ public class ihungryRestaurantController {
 					     listOfItemNames.set(indx*5+ind,name.getText());
 					     listOfDescription.set(indx*5+ind,description.getText());
 					     listOfPrice.set(indx*5+ind,price.getText());
+					     
+					     //update the menu 
+					     Item updateItem = restaurant.getMenu().getItems().get(restaurant.getMenu().getMenuSize());
+					     updateItem.setItemName(name.getText());
+					     updateItem.setItemDescription(description.getText());
+					     updateItem.setItemPrice(Double.parseDouble(price.getText()));
+					     
+					     //write Menu to DB
+					     while (!model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu()))
+					     {
+					    	 
+					     }
+					     
+					     
 				     }
 				     else{
 				    	 listOfItemNames.add(name.getText());
 					     listOfDescription.add(description.getText());
 					     listOfPrice.add(price.getText());
+					     
+					     //add item to menu
+					     Item lastItem = restaurant.getMenu().getItems().get(restaurant.getMenu().getMenuSize());
+					     String newItemId = Integer.toString(Integer.parseInt(lastItem.getItemId()) + 1);
+					     Item newItem = new Item(newItemId,name.getText(),description.getText(),Double.parseDouble(price.getText()),new Rating(0,0),new Album());
+					     restaurant.getMenu().addItem(newItem);
+					     
+					     //write Menu to DB
+					     while (!model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu()))
+					     {
+					    	 
+					     }
 				     }
 				     		
 				}
@@ -269,11 +402,32 @@ public class ihungryRestaurantController {
 		}
 	}
 	
+	
 	class DeleteButtonListener implements ActionListener {
+		
 		public void actionPerformed(ActionEvent event) {
 			
+			int ind = listOfDelete.indexOf(event.getSource());
+			
+			if(indx*5+ind<listOfItemNames.size())
+			{
+				listOfItemNames.remove(indx*5+ind);
+				listOfDescription.remove(indx*5+ind);
+				listOfPrice.remove(indx*5+ind);
+				onClickNext();
+				
+				//remove item from menu
+			    restaurant.getMenu().removeItem(indx*5+ind);
+				
+				//write Menu to DB
+				while (!model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu()))
+			     {
+			    	 
+			     }
+			}
 		}
 	}
+	
 	
 	/**
 	 * NextButtonListener class implements the actionPerformed method and 
@@ -298,40 +452,41 @@ public class ihungryRestaurantController {
 				indx = indx + 1;
 				System.out.println("into next index = " + indx);
 				System.out.println("into next size = " + listOfItemNames.size());
-				for(int i=0;i<5;i++)
-				{
-					if(indx*5+i<listOfItemNames.size()){
-						gui.getItemNames(i).setText(listOfItemNames.get(indx*5+i));
-						gui.getDescription(i).setText(listOfDescription.get(indx*5+i));
-						gui.getPrice(i).setText(listOfPrice.get(indx*5+i));
-						gui.getItemNames(i).setEditable(false);
-						gui.getDescription(i).setEditable(false);
-						gui.getPrice(i).setEditable(false);
-						listOfEdit.get(i).setText("Edit");
-						listOfDelete.get(i).setText("Delete");
-						gui.getPrev().setVisible(true);
-						
-					}
-					else{
-						gui.getItemNames(i).setText("");
-						gui.getDescription(i).setText("");
-						gui.getPrice(i).setText("");
-						gui.getItemNames(i).setEditable(true);
-						gui.getDescription(i).setEditable(true);
-						gui.getPrice(i).setEditable(true);
-						listOfEdit.get(i).setText("Save");
-						listOfDelete.get(i).setText("Delete");
-						gui.getPrev().setVisible(true);
-					}
-					
-				}
+				onClickNext();
+				gui.getOrderGui().getPrev().setVisible(true);			
 			}
 			else{
 				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Please fill all the values before going to next page.</FONT></HTML>");	
 				JOptionPane.showMessageDialog(null,errorFields);
+			}			
+		}
+	}
+	
+	
+	public void onClickNext(){
+		
+		for(int i=0;i<5;i++)
+		{
+			if(indx*5+i<listOfItemNames.size()){
+				gui.getOrderGui().getItemNames(i).setText(listOfItemNames.get(indx*5+i));
+				gui.getOrderGui().getDescription(i).setText(listOfDescription.get(indx*5+i));
+				gui.getOrderGui().getPrice(i).setText(listOfPrice.get(indx*5+i));
+				gui.getOrderGui().getItemNames(i).setEditable(false);
+				gui.getOrderGui().getDescription(i).setEditable(false);
+				gui.getOrderGui().getPrice(i).setEditable(false);
+				listOfEdit.get(i).setText("Edit");
+				listOfDelete.get(i).setText("Delete");	
 			}
-				
-			
+			else{
+				gui.getOrderGui().getItemNames(i).setText("");
+				gui.getOrderGui().getDescription(i).setText("");
+				gui.getOrderGui().getPrice(i).setText("");
+				gui.getOrderGui().getItemNames(i).setEditable(true);
+				gui.getOrderGui().getDescription(i).setEditable(true);
+				gui.getOrderGui().getPrice(i).setEditable(true);
+				listOfEdit.get(i).setText("Save");
+				listOfDelete.get(i).setText("Delete");	
+			}
 		}
 	}
 	
@@ -351,27 +506,28 @@ public class ihungryRestaurantController {
 			System.out.println("into prev size = " + listOfItemNames.size());
 			for (int i=0;i<5;i++){
 				listOfEdit.get(i).setText("Edit");
-				gui.getItemNames(i).setText(listOfItemNames.get(indx*5+i));
-				gui.getDescription(i).setText(listOfDescription.get(indx*5+i));
-				gui.getPrice(i).setText(listOfPrice.get(indx*5+i));
-				gui.getItemNames(i).setEditable(false);
-				gui.getDescription(i).setEditable(false);
-				gui.getPrice(i).setEditable(false);
+				gui.getOrderGui().getItemNames(i).setText(listOfItemNames.get(indx*5+i));
+				gui.getOrderGui().getDescription(i).setText(listOfDescription.get(indx*5+i));
+				gui.getOrderGui().getPrice(i).setText(listOfPrice.get(indx*5+i));
+				gui.getOrderGui().getItemNames(i).setEditable(false);
+				gui.getOrderGui().getDescription(i).setEditable(false);
+				gui.getOrderGui().getPrice(i).setEditable(false);
 			}
 			if (indx == 0){
 				System.out.println("exiting prev");
-				gui.getPrev().setVisible(false);
+				gui.getOrderGui().getPrev().setVisible(false);
 			}
 			
 		}
 	}
+	
 	
 	/*
 	 * This method is called to update the list of pending orders.
 	 */
 	
 	public void setCurrentOrders(){
-		gui.setCurrentOrders(data,pointer);
+		gui.getOrderGui().setCurrentOrders(data,pointer);
 		for(int i=0;i<pointer;i++)
 			for(int j=0;j<5;j++)
 				this.data[i][j]="";

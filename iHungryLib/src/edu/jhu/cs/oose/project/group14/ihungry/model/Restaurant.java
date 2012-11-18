@@ -30,6 +30,14 @@ public class Restaurant extends Person{
 		
 	}
 	
+	public Restaurant(AccountInfo acc_info, ContactInfo cont_info, Menu menu_in, Album album_in) {
+		
+		super(acc_info,cont_info);
+		menu = menu_in;
+		album = album_in;
+		
+	}
+	
 	@Override
 	public void setAccountInfo(AccountInfo acc){
 		super.setAccountInfo(acc);

@@ -58,13 +58,15 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		try{
 			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
 		}catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			System.out.println("Exception Occured");
 		}
 		
 		if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.FALSE) ){
+			System.out.println("username doesn't exists");
 			return false;
 		} else if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.TRUE) ){
+			System.out.println("username exists");
 			return true;
 		}
 		
@@ -84,8 +86,10 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		}
 		
 		if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.LOGIN_SUCCESS) ){
+			System.out.println("logged in");
 			return true;
 		} else if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.LOGIN_ERROR) ){
+			System.out.println("not logged in because of some password or username mistake");
 			return false;
 		}
 		
@@ -93,8 +97,31 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 	}
 	
 	
-	public boolean signupForNewUser( Restaurant restaurant ){
-		return true;
+	public boolean signupForNewUser(Restaurant restaurant){
+		
+		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(restaurant.getAccountInfo().getUname()), MD5.getMd5(restaurant.getAccountInfo().getPasswd()),
+				CommunicationProtocol.BUSI_SIGNUP, restaurant.getJSON().toString());
+		String responseStr = "";
+		
+		try
+		{
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+		}
+		catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_SUCCEEDED) )
+		{
+			return true;
+		} 
+		else if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_FAILED) )
+		{
+			return false;
+		}
+		
+		return false;
 	}
 	
 	
@@ -112,6 +139,8 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		restInfo.setAccountInfo(aInfo);
 		restInfo.setContactInfo(cInfo);
 		String responseFromServer = restInfo.getJSON().toString();*/
+		
+		//Restaurant newRestaurant = new Restaurant();
 
 		return null;
 	}
@@ -124,5 +153,34 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 	
 	public List<Order> retrieveChangedOrders(String restId){
 		return null;
+	}
+	
+	
+	public boolean updateMenu(AccountInfo accinfo, Menu menu){
+		
+		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(accinfo.getUname()), MD5.getMd5(accinfo.getPasswd()),
+				CommunicationProtocol.BUSI_UPDATE_MENU, menu.getJSON().toString());
+		String responseStr = "";
+		
+		try
+		{
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+		}
+		catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_SUCCEEDED) )
+		{
+			return true;
+		} 
+		else if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_FAILED) )
+		{
+			return false;
+		}
+		
+		return false;
+		
 	}
 }
