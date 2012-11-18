@@ -49,8 +49,8 @@ public class ListedJSONObj  implements JSONHandler<ListedJSONObj>,Iterable<JSONO
 			Iterator<JSONObject> it = array.iterator();
 			int n = 0;
 			while(it.hasNext()){
-				n++;
 				jso.put(Integer.toString(n), it.next());
+				n++;
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
