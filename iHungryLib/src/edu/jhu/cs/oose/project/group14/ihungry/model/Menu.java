@@ -96,6 +96,16 @@ public class Menu implements JSONHandler<Menu>,Serializable{
         this.items = items;
     }
     
+    
+    public void removeItem(int index){
+    	this.items.remove(index);
+    }
+    
+    
+    public int getMenuSize(){
+    	return menuSize;
+    }
+    
     @Override
     public JSONObject getJSON() {
         JSONObject jsonobj = new JSONObject();
