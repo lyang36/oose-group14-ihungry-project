@@ -44,7 +44,7 @@ class doComms implements Runnable {
 
 public class Server implements ServerModel{
 
-	private static int port=4444, maxConnections=100;
+	private static int port=4444, maxConnections=65535;
 	MessageReactor msreactor;
 	int threadNum = 0;
 	
