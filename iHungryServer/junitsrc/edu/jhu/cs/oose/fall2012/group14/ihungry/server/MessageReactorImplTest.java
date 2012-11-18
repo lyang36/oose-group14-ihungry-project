@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,10 +95,50 @@ public class MessageReactorImplTest {
 	}
 
 
+	public void addRestaurants(){
+		
+		//incert data
+		List<Restaurant> restaurants = new ArrayList<Restaurant>();
+		edu.jhu.cs.oose.project.group14.ihungry.model.Menu menu = new edu.jhu.cs.oose.project.group14.ihungry.model.Menu();
+		Album album = new Album();
+		Icon icon = new Icon();
+
+		AccountInfo acc1 = new AccountInfo("newchina", "");
+		ContactInfo contact1 = new ContactInfo("New China II",
+				new LocationInfo("1030 WEST 41st St, Baltimore, MD 21211"), "445-685-6652", "",
+				"", "", icon);
+		Restaurant rest1 = new Restaurant(menu, album);
+		rest1.setAccountInfo(acc1);
+		rest1.setContactInfo(contact1);
+
+		AccountInfo acc2 = new AccountInfo("carlyleclub", "");
+		ContactInfo contact2 = new ContactInfo("The Carlyle Club",
+				new LocationInfo("500 W University Pkwy, Baltimore, MD 21210"), "", "", "", "",
+				icon);
+		Restaurant rest2 = new Restaurant(menu, album);
+		rest2.setAccountInfo(acc2);
+		rest2.setContactInfo(contact2);
+
+		restaurants.add(rest1);
+		restaurants.add(rest2);
+		
+		for(Restaurant res:restaurants){
+			testCommand(res.getAccountInfo().getId(),
+					res.getAccountInfo().getPasswd(), CommunicationProtocol.BUSI_SIGNUP,
+					CommunicationProtocol.PROCESS_SUCCEEDED, res.getJSON().toString());
+		}
+		
+		
+	}
+	
 	
 	@Test
 	public void testBusiAccount(){
 		DBOperatorTestUnit.initializeDB();
+		
+		addRestaurants();
+		
+		
 		Menu m = new Menu();
 		Album ab = new Album();
 		ContactInfo contact = new ContactInfo(new LocationInfo("abc dff"), "123456687");
@@ -117,6 +158,7 @@ public class MessageReactorImplTest {
 				CommunicationProtocol.PROCESS_FAILED, res.getJSON().toString());
 		
 		//test login
+		System.out.println("Test Login");
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_LOGIN,
 				CommunicationProtocol.LOGIN_SUCCESS, res.getJSON().toString());
@@ -188,6 +230,7 @@ public class MessageReactorImplTest {
 				CommunicationProtocol.PROCESS_FAILED, cus.getJSON().toString());
 		
 		//test login
+		System.out.println("Test Login");
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.CUS_LOGIN,
 				CommunicationProtocol.LOGIN_SUCCESS, cus.getJSON().toString());

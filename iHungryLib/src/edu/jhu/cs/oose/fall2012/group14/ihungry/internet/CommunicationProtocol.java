@@ -72,7 +72,7 @@ public class CommunicationProtocol {
 	 * customer login. 
 	 * Input SupInfo: "". 
 	 * <p>Return Command: LOGIN_ERROR/LOGIN_SUCESS 
-	 * <p>Return Supinfo: ""
+	 * <p>Return Supinfo: Customer.getJSON/""
 	 */
 	public static final String CUS_LOGIN = 						"4976d7ca80f2cb54c1c7d5c87fb0c7ef";
 	
