@@ -120,7 +120,7 @@ public class ihungryRestaurantController {
 			String username = gui.getLoginGui().getUsernameLogin().getText();
 			String password = new String(gui.getLoginGui().getPasswordLogin().getPassword());
 			
-			listOfItemNames.add("Pizza");
+			/*listOfItemNames.add("Pizza");
 			listOfItemNames.add("Small Pizza");
 			listOfItemNames.add("Big Pizza");
 			listOfItemNames.add("Burger");
@@ -151,10 +151,10 @@ public class ihungryRestaurantController {
 			}
 			gui.getOrderGui().getNext().addActionListener(new NextButtonListener());
 			gui.getOrderGui().getPrev().addActionListener(new PrevButtonListener());
-			gui.getOrderGui().getTable().getSelectionModel().addListSelectionListener(new SelectionListener());
+			gui.getOrderGui().getTable().getSelectionModel().addListSelectionListener(new SelectionListener());*/
 			
 			//check for errors in login
-			/*if (model.loginCheck(username,password))
+			if (model.loginCheck(username,password))
 				if (model.attemptLogin(username,password))
 				{
 					restaurant = model.getRestaurantInfo(username,password);
@@ -181,7 +181,7 @@ public class ihungryRestaurantController {
 			{
 				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username already exists.</FONT></HTML>");	
 				JOptionPane.showMessageDialog(null,errorFields);
-			}*/
+			}
 		}
 		
 		
