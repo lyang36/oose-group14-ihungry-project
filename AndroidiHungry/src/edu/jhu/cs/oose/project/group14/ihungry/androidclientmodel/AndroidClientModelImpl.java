@@ -29,15 +29,24 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.*;
  * 
  */
 public class AndroidClientModelImpl implements AndroidClientModel {
-	static private final int CONNECTIONTIMEOUT = 5000;
+	static private final int CONNECTIONTIMEOUT = 10000;
 	private InternetClient internetClient;
-
+	private AccountInfo customer_info;
+	
 	public AndroidClientModelImpl() {
 		internetClient = new InternetClient();
-		Log.v("[Server Info]", CommunicationProtocol.SERVER_IP_ADDRESS + " "
+		Log.v("[Constr01: Server Info]", CommunicationProtocol.SERVER_IP_ADDRESS + " "
+				+ CommunicationProtocol.SERVER_PORT);
+	}
+	
+	public AndroidClientModelImpl(AccountInfo customer_info_in){
+		this.customer_info = customer_info_in;
+		internetClient = new InternetClient();
+		Log.v("[Constr02: Server Info]", CommunicationProtocol.SERVER_IP_ADDRESS + " "
 				+ CommunicationProtocol.SERVER_PORT);
 	}
 
+	/*
 	public String getResponseFromServerT() {
 		Log.v("getResponseFromServerT", "executed");
 
@@ -52,12 +61,13 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 					.sendAndGet(a, CONNECTIONTIMEOUT);
 
 		} catch (Exception e) {
+			Log.e("[getResponseFromServer Exception]",""+e.getMessage());
 			e.printStackTrace();
 		}
 
 		return responseFromServer;
 
-	}
+	}*/
 
 	public boolean loginCheck(String username, String password) {
 		String sendStr = CommunicationProtocol.construcSendingStr(
@@ -125,13 +135,79 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		return customer;
 	}
 
-	public ContactInfo getRestaurantInfo(String restId) {
-		// TODO Auto-generated method stub
+	public List<AccountInfo> getRestaurantAccountInfos(LocationInfo loc_in){
+		
+		/* Get restaurant Account Infos */
+		LocationInfo loc_test = new LocationInfo("Test");
+		loc_test.parseFromJSONObject(loc_test.getJSON());
+		AccountInfo acc_test = new AccountInfo("lyang", "123");
+		List<AccountInfo> busAccountInfos = new ArrayList<AccountInfo>();
 
-		return null;
+		String sendStr = CommunicationProtocol.construcSendingStr(
+				acc_test.getId(), acc_test.getPasswd(),
+				CommunicationProtocol.CUS_FIND_RESTAURANT_IDS, loc_test.getJSON().toString());
+		
+		String responseStr = "";
+		try {
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			System.out.println("response: "+responseStr);
+			
+			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
+			ListedJSONObj jobj = new ListedJSONObj();
+			jobj.parseFromJSONObject(new JSONObject(supinfo));
+		
+			Iterator<JSONObject> it = jobj.iterator();
+			while(it.hasNext()){
+				AccountInfo busacc = new AccountInfo();
+				busacc.parseFromJSONObject(it.next());
+				Log.v("[bus ids]",""+busacc.getId());
+				busAccountInfos.add(busacc);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return busAccountInfos;
+	}
+	
+	public List<ContactInfo> getRestaurantContactInfos(List<AccountInfo> bus_accInfos){
+		AccountInfo acc_test = new AccountInfo("lyang", "123");
+		List<ContactInfo> bus_conInfos = new ArrayList<ContactInfo>();
+
+		for(int i=0; i<bus_accInfos.size(); i++){
+			AccountInfo bus_acc = bus_accInfos.get(i);
+			
+			String sendStr = CommunicationProtocol.construcSendingStr(
+					acc_test.getId(), acc_test.getPasswd(),
+					CommunicationProtocol.CUS_GET_RES_CONTACT, bus_acc.getJSON().toString());
+			String responseStr = "";
+			try {
+				responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+				
+				ContactInfo bus_con = new ContactInfo(new LocationInfo(""), "");
+				String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
+				JSONObject obj = new JSONObject(supinfo);
+				bus_con.parseFromJSONObject(obj);
+				
+				bus_conInfos.add(bus_con);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+		}
+		
+		return bus_conInfos;
 	}
 
-	public List<Restaurant> retrieveRestaurants(LocationInfo loc) {
+	/*
+	public List<ContactInfo> retrieveRestaurants(LocationInfo loc) {
+		LocationInfo loc_test = new LocationInfo("Test");
+		List<AccountInfo> busAccountInfos = this.getRestaurantAccountInfos(loc_test);
+		List<ContactInfo> busContactInfos = this.getRestaurantContactInfos(busAccountInfos);
+		
+		return busContactInfos;
+*/
 		/*
 		 * 1. Generate a sending message to be sent to the server with
 		 * locationinfo
@@ -153,7 +229,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		 * "3327 St. Paul St, Baltimore, MD 21218" }, { "r1007",
 		 * "Thai Restaurant", "3316 Greenmount Ave, Baltimore, MD 21218" } };
 		 */
-		
+		/*
 		List<Restaurant> restaurants = new ArrayList<Restaurant>();
 		edu.jhu.cs.oose.project.group14.ihungry.model.Menu menu = new edu.jhu.cs.oose.project.group14.ihungry.model.Menu();
 		Album album = new Album();
@@ -177,9 +253,9 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 
 		restaurants.add(rest1);
 		restaurants.add(rest2);
-
-		return restaurants;
-	}
+		 */
+		
+//	}
 
 	public Menu retrieveMenu(String restId) {
 		/* 1. Generate a sending message to be sent to the server with restId */
