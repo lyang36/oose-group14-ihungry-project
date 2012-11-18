@@ -441,8 +441,10 @@ public class DBOperator implements DataBaseOperater{
 			AccountInfo acc = new AccountInfo();
 			acc = (new Restaurant(null, null)).parseFromJSONObject(jbus).getAccountInfo();
 			acc.setPasswd("");		//remove the password
+			//System.out.println(acc.getJSON().toString());
 			busiAccs.add(acc.getJSON());
 		}	
+		//System.out.println(busiAccs.getJSON().toString());
 		return busiAccs;
 	}
 	
