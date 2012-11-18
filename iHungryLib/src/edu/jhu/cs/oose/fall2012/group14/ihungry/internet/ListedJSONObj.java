@@ -50,6 +50,7 @@ public class ListedJSONObj  implements JSONHandler<ListedJSONObj>,Iterable<JSONO
 			int n = 0;
 			while(it.hasNext()){
 				jso.put(Integer.toString(n), it.next());
+				n++;
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
