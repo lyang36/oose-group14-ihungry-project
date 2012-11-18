@@ -16,7 +16,7 @@ public interface AndroidClientModel {
 	 * Get response from server in the form of String. This method is used mainly for testing connection with server (send & response)
 	 * @return a response from the server
 	 */
-	public String getResponseFromServerT();
+//	public String getResponseFromServerT();
 	
 
 	/**
@@ -59,14 +59,23 @@ public interface AndroidClientModel {
 	 * @param restId Restaurant ID
 	 * @return the restaurant's ContactInfo
 	 */
-	public ContactInfo getRestaurantInfo( String restId );
+	
+	/**
+	 * Get the list of Restaurant info
+	 * @return
+	 */
+	public List<AccountInfo> getRestaurantAccountInfos(LocationInfo loc);
+	
+	
+	public List<ContactInfo> getRestaurantContactInfos(List<AccountInfo> bus_accInfos);
+	
 	
 	/**
 	 * Retrieve a list of restaurants based on the customer's GPS location.
 	 * @param loc LocationInfo
 	 * @return a list of restaurant
 	 */
-	public List<Restaurant> retrieveRestaurants(LocationInfo loc);
+	//public List<ContactInfo> retrieveRestaurants(LocationInfo loc);
 	
 	
 	/**

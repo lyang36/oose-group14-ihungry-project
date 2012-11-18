@@ -39,7 +39,8 @@ public class NearbyActivity extends MapActivity {
 	static final private int ZOOMTIME = 15;
 
 	private AndroidClientModel clientModel;
-	private List<Restaurant> restaurants;
+	private List<AccountInfo> restaurant_acc_infos;
+	private List<ContactInfo> restaurant_con_infos;
 	
 	static final private int[][] restaurant_locations = {
 			{ 39337482, -76634559 }, { 39337249, -76624322 },
@@ -175,16 +176,21 @@ public class NearbyActivity extends MapActivity {
 			try {
 				/* Get a list of restaurants infos */
 				clientModel = new AndroidClientModelImpl();
-				restaurants = clientModel.retrieveRestaurants(new LocationInfo(0,0));
+				
+				restaurant_acc_infos = clientModel.getRestaurantAccountInfos(new LocationInfo(0,0));
+				restaurant_con_infos = clientModel.getRestaurantContactInfos(restaurant_acc_infos);
 
-				for (int i = 0; i < restaurants.size(); i++) {
-					Restaurant rest = (Restaurant)restaurants.get(i);
+				for (int i = 0; i < restaurant_con_infos.size(); i++) {
+					AccountInfo rest_acc = (AccountInfo)restaurant_acc_infos.get(i);
+					ContactInfo rest_con = (ContactInfo)restaurant_con_infos.get(i);
 					
-					Log.v("RestInfo", rest.getContactInfo().getAddress()+" "+ i+" "+ rest.getContactInfo().getRealName()+" "+
-							rest.getAccountInfo().getId());
+					Log.v("RestInfo", rest_con.getAddress().getAddress()+" "+ i+" "+ rest_con.getRealName()+" "+
+							rest_acc.getId());
+					
 					overlayitem2 = getLocationByAddress(
-							rest.getContactInfo().getAddress().getAddress(), i, rest.getContactInfo().getRealName(),
-							rest.getAccountInfo().getId());
+							rest_con.getAddress().getAddress(), i, rest_con.getRealName(),
+							rest_acc.getId());
+					
 					if (overlayitem2 != null) {
 						overlayitem2_multi.add(overlayitem2);
 						publishProgress(overlayitem2);
