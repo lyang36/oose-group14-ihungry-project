@@ -120,7 +120,7 @@ public class AndroidClientModelImplTest extends TestCase {
 		System.out.println(busContactInfos.size());
 		for(int i=0; i<busContactInfos.size(); i++){
 			ContactInfo ci = (ContactInfo)busContactInfos.get(i);
-			System.out.print(ci.getRealName()+" "+ci.getPrimPhone()+" " +ci.getAddress().getAddress() );
+			System.out.println(ci.getRealName()+" "+ci.getPrimPhone()+" " +ci.getAddress().getAddress() );
 			
 		}
 		
