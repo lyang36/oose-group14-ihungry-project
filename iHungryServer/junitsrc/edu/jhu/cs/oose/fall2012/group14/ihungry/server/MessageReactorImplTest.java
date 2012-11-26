@@ -28,6 +28,8 @@ import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 import edu.jhu.cs.oose.project.group14.ihungry.model.OrderItem;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Rating;
+
 
 public class MessageReactorImplTest {
 	public void testCommand(String uname, String passwd,String command,
@@ -169,7 +171,10 @@ public class MessageReactorImplTest {
 				CommunicationProtocol.TRUE, res.getJSON().toString());
 		
 		//test update contact info
-		contact = new ContactInfo(new LocationInfo("abc dff"), "4444433");
+		//contact = new ContactInfo(new LocationInfo("abc dff"), "4444433");
+		contact = new ContactInfo("Lyang Cafe",new LocationInfo("Near JHU, 21218, MD"), 
+				"911-000-1111", "111-111-2222", 
+				"lyang@cafe.com", "1989-0-0", new Icon());
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_UPDATE_CONTACT,
 				CommunicationProtocol.PROCESS_SUCCEEDED, contact.getJSON().toString());
@@ -194,14 +199,39 @@ public class MessageReactorImplTest {
 				CommunicationProtocol.PROCESS_SUCCEEDED, "");
 		
 		
-		Menu menu = new Menu();
-		menu.setRestId(MD5.getNameMd5("lyang"));
-		menu.addItem(new Item());
-		menu.addItem(new Item());
-		System.out.println(menu.getJSON().toString());
+		Menu menu0 = new Menu();
+		menu0.setRestId(MD5.getNameMd5("lyang"));
+		menu0.addItem(new Item());
+		menu0.addItem(new Item());
+		
+		/* Add Menu */
+		Menu menu1 = new Menu();
+		menu1.setRestId(MD5.getNameMd5("newchina"));
+		menu1.addItem(new Item("i001", "Chicken with Broccoli", 4.5, new Rating(
+				4.0, 10), new Album()));
+		menu1.addItem(new Item("i002", "Assorted Mixed Vegetable", 4.65,
+				new Rating(4.4, 11), new Album()));
+		menu1.addItem(new Item("i003", "Shrimp with Lobster Sauce", 4.95,
+				new Rating(4.3, 12), new Album()));
+		menu1.addItem(new Item("i004", "Chicken with Cashew Nuts", 5.05,
+				new Rating(4.1, 13), new Album()));
+		menu1.addItem(new Item("i005", "B-B-Q Spare Ribs", 5.25, new Rating(
+				3.95, 14), new Album()));
+		menu1.addItem(new Item("i006", "Skewered Beef", 4.5,
+				new Rating(4.8, 15), new Album()));
+		menu1.addItem(new Item("i007", "Wonton Soup", 1.5, new Rating(4.5, 16),
+				new Album()));
+		menu1.addItem(new Item("i008", "House Special Soup", 5.50, new Rating(
+				4.7, 17), new Album()));
+		testCommand(MD5.getNameMd5("newchina"),
+				MD5.getMd5(""), CommunicationProtocol.BUSI_UPDATE_MENU,
+				CommunicationProtocol.PROCESS_SUCCEEDED, menu1.getJSON().toString());
+		
+		
+		System.out.println(menu0.getJSON().toString());
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_UPDATE_MENU,
-				CommunicationProtocol.PROCESS_SUCCEEDED, menu.getJSON().toString());
+				CommunicationProtocol.PROCESS_SUCCEEDED, menu0.getJSON().toString());
 		
 		//test get album
 		System.out.println("Test Busi get menu");
@@ -242,7 +272,10 @@ public class MessageReactorImplTest {
 		
 		
 		//test update contact info
-		contact = new ContactInfo(new LocationInfo("abc dff"), "4444433");
+		//contact = new ContactInfo(new LocationInfo("abc dff"), "4444433");
+		contact = new ContactInfo("Lin Yang",new LocationInfo("JHU, 21218, MD"), 
+				"911-000-1111", "111-111-2222", 
+				"lyang@jhu.edu", "1989-0-0", new Icon());
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.CUS_UPDATE_CONTACT,
 				CommunicationProtocol.PROCESS_SUCCEEDED, contact.getJSON().toString());
