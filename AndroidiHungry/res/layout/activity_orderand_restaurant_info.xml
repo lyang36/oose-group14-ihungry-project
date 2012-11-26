@@ -17,7 +17,7 @@
             android:id="@+id/tv_restaurant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="23dp"
+            android:layout_marginTop="1dp"
             android:text="Restaurant Name"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -26,6 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Address"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tv_primphone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Primary Phone Number"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <ListView

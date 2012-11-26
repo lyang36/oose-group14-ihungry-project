@@ -41,7 +41,8 @@
                     android:id="@+id/et_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ems="10" >
+                    android:ems="10" 
+                    android:inputType="textPersonName" >
 
                     <requestFocus />
                 </EditText>
@@ -63,7 +64,8 @@
                     android:id="@+id/et_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ems="10" />
+                    android:ems="10" 
+                    android:inputType="textPersonName" />
             </TableRow>
 
             <TableRow

@@ -39,9 +39,9 @@ public interface AndroidClientModel {
 	 * @param email
 	 * @param birthday
 	 * @param icon
-	 * @return a Customer object: if success, return Customer; else return null.
+	 * @return a boolean value: if success, return true; else return false.
 	 */
-	public Customer signupForNewUser(String username, String password,
+	public boolean signupForNewUser(String username, String password,
 			String realname, String address, String primphone, String secphone,
 			String email, String birthday, Icon icon);	
 	
@@ -71,6 +71,14 @@ public interface AndroidClientModel {
 	
 	
 	/**
+	 * Get the Contact Info of a specific 
+	 * @param bus_accInfo
+	 * @return
+	 */
+	public ContactInfo getRestaurantContactInfoSingle(AccountInfo bus_accInfo);
+
+	
+	/**
 	 * Retrieve a list of restaurants based on the customer's GPS location.
 	 * @param loc LocationInfo
 	 * @return a list of restaurant
@@ -95,14 +103,15 @@ public interface AndroidClientModel {
 	 * @param orderitems a list of orderitems
 	 * @return
 	 */
-	public Order createOrder(String orderId, String custId, String restId, int status, List<OrderItem> orderitems); 
+	public Order createOrder(String restId, int status, List<OrderItem> orderitems); 
 	
 	
 	/**
 	 * Submit the order to the server for processing.
 	 * @param order created Order
+	 * @return a boolean value indicating whether the order is successfully submitted
 	 */
-	public void submitOrder(Order order);
+	public boolean submitOrder(Order order);
 	
 	
 	/**
@@ -110,26 +119,24 @@ public interface AndroidClientModel {
 	 * @param custId Customer's ID
 	 * @return
 	 */
-	public List<Order> retrieveAllOrders(String custId);
+	public List<Order> retrieveAllOrders();
 	
 	
 	/**
 	 * Retrieve orders from the server based on the info of the customer, 
 	 * the status of requested orders and the number of orders
-	 * @param custId Customer's ID
 	 * @param status status of the order (processes/confirmed/etc.)
 	 * @param count # of orders customer wants to see
 	 * @return an arraylist of Orders satisfying the requirements
 	 */
-	public List<Order> retrieveOrders(String custId, String status, int count);
+	public List<Order> retrieveOrders(String status, int count);
 	
 	
 	/**
 	 * This is called frequently by the client requesting status changed orders
-	 * @param custId Customer's ID
 	 * @return an arraylist of Orders satisfying the requirements
 	 */
-	public List<Order> retrieveChangedOrders(String custId);
+	public List<Order> retrieveChangedOrders();
 	
 //	public void processOrder(Order order, String status);
 	

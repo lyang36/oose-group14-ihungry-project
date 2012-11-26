@@ -78,6 +78,7 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 		String rest_id = item.getRestaurantID();
 		String rest_name = item.getTitle();
 		String rest_addr = item.getSnippet();
+		String rest_primphone = item.getRestaurantPhone();
 
 		if (rest_id != null) { // if null => maybe is current location
 			Intent intent = new Intent(c, OrderandRestaurantInfoActivity.class);
@@ -85,6 +86,8 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 			intent.putExtra("rest_id", rest_id);
 			intent.putExtra("rest_name", rest_name);
 			intent.putExtra("rest_addr", rest_addr);
+			intent.putExtra("rest_primphone", rest_primphone);
+			
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			c.startActivity(intent);
 		//	((Activity) c).startActivityForResult(intent, ActivitySwitchSignals.RESTAURANTINFO);

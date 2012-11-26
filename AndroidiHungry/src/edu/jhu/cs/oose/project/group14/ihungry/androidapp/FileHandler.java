@@ -9,8 +9,9 @@ import android.util.Log;
 
 /**
  * This class handles reading from and writing to the file.
+ * 
  * @author SuNFloWer
- *
+ * 
  */
 public class FileHandler {
 	/**
@@ -22,6 +23,16 @@ public class FileHandler {
 	 */
 	public static String f_rest_location_cache = "restLocationCache.txt";
 	
+	/**
+	 * The Username stored in Android phone.
+	 */
+	public static String username_stored = "";
+	
+	/**
+	 * The MD5 version of password stored in Android phone.
+	 */
+	public static String pwd_stored = "";
+
 	/**
 	 * Save input string into a file and store in internal storage in Android
 	 * 
@@ -36,8 +47,8 @@ public class FileHandler {
 					Context.MODE_PRIVATE);
 			outStream.write(str.getBytes());
 			outStream.close();
-			Log.v("[Save file]","Saved "+str);
-			//	ToastDisplay.DisplayToastOnScr(context, "Saved"+str);
+			Log.v("[Save file]", "Saved " + str);
+			// ToastDisplay.DisplayToastOnScr(context, "Saved"+str);
 			saveSucceed = true;
 		} catch (Exception e) {
 			Log.e("[Exception]", "Error saving file");
@@ -47,8 +58,8 @@ public class FileHandler {
 	}
 
 	/**
-	 * Read content according to the file name from 
-	 * the internal storage of Android.
+	 * Read content according to the file name from the internal storage of
+	 * Android.
 	 * 
 	 * @param fileName
 	 * @return a String containing the file content.
@@ -66,11 +77,36 @@ public class FileHandler {
 			stream.close();
 			inStream.close();
 			readStr = stream.toString();
-		//	ToastDisplay.DisplayToastOnScr(context, "Loaded " + readStr);
-			Log.v("[Load file]","Loaded "+readStr);
+			// ToastDisplay.DisplayToastOnScr(context, "Loaded " + readStr);
+			Log.v("[Load file]", "Loaded " + readStr);
 		} catch (Exception e) {
 			Log.v("[Exception]", "Error reading file");
 		}
 		return readStr;
 	}
+
+	/*
+	public static void setUnamePwd() {
+		String readStoredInfo = FileHandler.loadFile(null,
+				FileHandler.f_userinfo);
+		if (readStoredInfo != null) {
+			String delims = "[|]+";
+			String[] tokens = readStoredInfo.split(delims);
+			for (int i = 0; i < tokens.length; i++) {
+				Log.v("[Login]", tokens.length + " " + tokens[i]);
+
+			}
+			username_stored = tokens[0];
+			pwd_stored = tokens[1];
+		}
+	}*/
+	
+	public static void setUname(String uname){
+		username_stored = uname;
+	}
+	
+	public static void setPwd(String pwd){
+		pwd_stored = pwd;
+	}
+	
 }

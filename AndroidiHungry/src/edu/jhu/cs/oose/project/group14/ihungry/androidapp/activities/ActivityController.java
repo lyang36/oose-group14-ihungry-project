@@ -23,8 +23,6 @@ public class ActivityController extends Activity {
 
 	private Intent intent_i;
 	private SparseArray<ActivitySwitcher> switchArray;
-	private AndroidClientModel clientModel;
-	private Customer myCust;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,25 +36,7 @@ public class ActivityController extends Activity {
 		switchArray.append( ActivitySwitchSignals.ABOUTMESWH, 		new AboutmeSwitcher() );
 		switchArray.append( ActivitySwitchSignals.FAVOURITESSWH, 	new FavouriteSwitcher() );
 		switchArray.append( ActivitySwitchSignals.ORDERHISTORYSWH, 	new OrderhistorySwitcher() );
-		
-		/*
-		 * First activity -> login page
-		 * 
-		 * If have username and pwd , then auto fill the blank Otherwise, leave
-		 * the blank empty (User will prompt to sign up)
-		 */
-		clientModel = new AndroidClientModelImpl();
-		myCust = clientModel.getCustomerInfo("szhao12", "12345");
-		AccountInfo aInfo = myCust.getAccountInfo();
-		ContactInfo cInfo = myCust.getContactInfo();
-		
-		FileHandler.saveFile( this,
-				FileHandler.f_userinfo,
-				aInfo.getUname()+"||"+ aInfo.getPasswd()+"||"+ aInfo.getId()+"||"+
-				cInfo.getRealName()+"||"+cInfo.getAddress().getAddress()+"||"+cInfo.getPrimPhone()+"||"+
-				cInfo.getSecPhone()+"||"+cInfo.getEmail()+"||"+cInfo.getBirthDate());
-		// "szhao12||12345||Shang Zhao||Male||911-911-9119||Johns Hopkins University, Baltimore, MD, 21218"
-		
+	
 		// Load the first Screen / Activity
 		intent_i = new Intent(getApplicationContext(), LoginActivity.class);
 		startActivityForResult(intent_i, ActivitySwitchSignals.LOGIN);

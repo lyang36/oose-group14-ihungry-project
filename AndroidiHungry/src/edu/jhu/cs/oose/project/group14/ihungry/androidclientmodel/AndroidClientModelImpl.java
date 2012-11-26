@@ -1,10 +1,13 @@
 package edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ToastDisplay;
@@ -31,7 +34,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.*;
 public class AndroidClientModelImpl implements AndroidClientModel {
 	static private final int CONNECTIONTIMEOUT = 10000;
 	private InternetClient internetClient;
-	private AccountInfo customer_info;
+	private AccountInfo customer_account;
 	
 	public AndroidClientModelImpl() {
 		internetClient = new InternetClient();
@@ -40,7 +43,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	}
 	
 	public AndroidClientModelImpl(AccountInfo customer_info_in){
-		this.customer_info = customer_info_in;
+		this.customer_account = customer_info_in;
 		internetClient = new InternetClient();
 		Log.v("[Constr02: Server Info]", CommunicationProtocol.SERVER_IP_ADDRESS + " "
 				+ CommunicationProtocol.SERVER_PORT);
@@ -93,7 +96,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	public Customer getCustomerInfo(String username, String password) {
 		
 		/* Assume below is Generated on the server side */
-		ContactInfo cInfo = new ContactInfo("Shang Zhao",
+/*		ContactInfo cInfo = new ContactInfo("Shang Zhao",
 				new LocationInfo("Johns Hopkins University, Baltimore, MD, 21218"),
 				"911-911-9999", "443-343-1111", "szhao12@jhu.edu",
 				"1989-12-11", new Icon());
@@ -102,24 +105,38 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		customer.setAccountInfo(aInfo);
 		customer.setContactInfo(cInfo);
 		String responseFromServer = customer.getJSON().toString();
-
+*/
 		/* -----------> transmitting from server -----------> */
 
 		/* <----------- received by client <----------- */
+		String sendStr = CommunicationProtocol.construcSendingStr(
+				MD5.getNameMd5(username), MD5.getMd5(password),
+				CommunicationProtocol.CUS_LOGIN, "");
 
-		Customer myCustInfo = new Customer();
-		JSONObject c_obj = null;
+		String responseStr = "";
+		Customer customer = new Customer();
+
 		try {
-			c_obj = new JSONObject(responseFromServer);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		myCustInfo.parseFromJSONObject(c_obj);
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			System.out.println("Customer [Response]: "+responseStr);
 
-		return myCustInfo;
+			if (CommunicationProtocol.getRequestFromReceivedStr(responseStr)
+					.equals(CommunicationProtocol.LOGIN_ERROR)) {
+				return null;
+			}
+			
+			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
+			JSONObject obj = new JSONObject(supinfo);
+			customer.parseFromJSONObject(obj);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return customer;
 	}
 
-	public Customer signupForNewUser(String username, String password,
+	public boolean signupForNewUser(String username, String password,
 			String realname, String address, String primphone, String secphone,
 			String email, String birthday, Icon icon) {
 		
@@ -132,7 +149,29 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		/* Send the customer info to the server. */
 		/* If success received, return the customer object. 
 		 * Else return null. */
-		return customer;
+		/* Generate a request containing the JSON object string to the server. */		
+		String sendStr = CommunicationProtocol.construcSendingStr(
+				MD5.getNameMd5(username), MD5.getMd5(password),
+				CommunicationProtocol.CUS_SIGN_UP, customer.getJSON().toString());
+		String responseStr = "";
+
+		try {
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		if (CommunicationProtocol.getRequestFromReceivedStr(responseStr)
+				.equals(CommunicationProtocol.PROCESS_FAILED)) {
+			return false;
+		} else if (CommunicationProtocol.getRequestFromReceivedStr(responseStr)
+				.equals(CommunicationProtocol.PROCESS_SUCCEEDED)) {
+			return true;
+		}
+		return false;
+		
 	}
 
 	public List<AccountInfo> getRestaurantAccountInfos(LocationInfo loc_in){
@@ -140,11 +179,10 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		/* Get restaurant Account Infos */
 		LocationInfo loc_test = new LocationInfo("Test");
 		loc_test.parseFromJSONObject(loc_test.getJSON());
-		AccountInfo acc_test = new AccountInfo("lyang", "123");
 		List<AccountInfo> busAccountInfos = new ArrayList<AccountInfo>();
 
 		String sendStr = CommunicationProtocol.construcSendingStr(
-				acc_test.getId(), acc_test.getPasswd(),
+				customer_account.getId(), customer_account.getPasswd(),
 				CommunicationProtocol.CUS_FIND_RESTAURANT_IDS, loc_test.getJSON().toString());
 		
 		String responseStr = "";
@@ -171,33 +209,34 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	}
 	
 	public List<ContactInfo> getRestaurantContactInfos(List<AccountInfo> bus_accInfos){
-		AccountInfo acc_test = new AccountInfo("lyang", "123");
 		List<ContactInfo> bus_conInfos = new ArrayList<ContactInfo>();
 
 		for(int i=0; i<bus_accInfos.size(); i++){
 			AccountInfo bus_acc = bus_accInfos.get(i);
-			
-			String sendStr = CommunicationProtocol.construcSendingStr(
-					acc_test.getId(), acc_test.getPasswd(),
-					CommunicationProtocol.CUS_GET_RES_CONTACT, bus_acc.getJSON().toString());
-			String responseStr = "";
-			try {
-				responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
-				
-				ContactInfo bus_con = new ContactInfo(new LocationInfo(""), "");
-				String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
-				JSONObject obj = new JSONObject(supinfo);
-				bus_con.parseFromJSONObject(obj);
-				
-				bus_conInfos.add(bus_con);
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		
+			bus_conInfos.add(this.getRestaurantContactInfoSingle(bus_acc));
 		}
-		
 		return bus_conInfos;
+	}
+	
+	public ContactInfo getRestaurantContactInfoSingle(AccountInfo bus_acc){
+		String sendStr = CommunicationProtocol.construcSendingStr(
+				customer_account.getId(), customer_account.getPasswd(),
+				CommunicationProtocol.CUS_GET_RES_CONTACT, bus_acc.getJSON().toString());
+		String responseStr = "";
+		ContactInfo bus_con = new ContactInfo(new LocationInfo(""), "");
+
+		try {
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			System.out.println("bus Contact Info [Response]: "+responseStr);
+
+			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
+			JSONObject obj = new JSONObject(supinfo);
+			bus_con.parseFromJSONObject(obj);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bus_con;
 	}
 
 	/*
@@ -262,7 +301,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		/* 2. Call internetClient.sendAndGet to get response from server */
 		/* 3. If valid => parse the information to Menu object */
 
-		Item item1 = new Item("i001", "Chicken with Broccoli", 4.5, new Rating(
+/*		Item item1 = new Item("i001", "Chicken with Broccoli", 4.5, new Rating(
 				4.0, 10), new Album());
 		Item item2 = new Item("i002", "Assorted Mixed Vegetable", 4.65,
 				new Rating(4.4, 11), new Album());
@@ -287,14 +326,33 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		items.add(item6);
 		items.add(item7);
 		items.add(item8);
-		Menu menuServer = new Menu(restId, items);
+		Menu menuServer = new Menu(restId, items); */
 		/* menuObj_Str should be inside the SupplyInfo of the response */
-		String menuObj_Str = menuServer.getJSON().toString();
+//		String menuObj_Str = menuServer.getJSON().toString();
 		/* -----------> transmitting from server -----------> */
 
+		AccountInfo bus_acc = new AccountInfo();
+		bus_acc.setId(restId);
+				
+		String sendStr = CommunicationProtocol.construcSendingStr(
+				customer_account.getId(), customer_account.getPasswd(),
+				CommunicationProtocol.CUS_GET_MENU, bus_acc.getJSON().toString());
+		String responseStr = "";
+		Menu menu_received = new Menu();
+
+		try {
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			
+			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
+			JSONObject obj = new JSONObject(supinfo);
+			menu_received.parseFromJSONObject(obj);
+						
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		/* <----------- received by client <----------- */
-		Menu menuClient = new Menu();
-		JSONObject obj = null;
+/*		JSONObject obj = null;
 		try {
 			Log.i("[Menu_info]", menuObj_Str + "");
 			obj = new JSONObject(menuObj_Str);
@@ -302,28 +360,58 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 			e.printStackTrace();
 		}
 		menuClient.parseFromJSONObject(obj);
-
-		return menuClient;
+*/
+		return menu_received;
 	}
 
-	public Order createOrder(String orderId, String custId, String restId,
+	@SuppressLint("SimpleDateFormat") 
+	public Order createOrder(String restId,
 			int status, List<OrderItem> orderitems) {
-		Order order = new Order(orderId, custId, restId, status, orderitems);
+		
+		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		String orderDate = formatter.format(calendar.getTime());
+		Log.v("[Order ID (Date)]", orderDate+" "+this.customer_account.getUname());
+		
+		String orderId = this.customer_account.getUname()+"-"+orderDate;
+		Order order = new Order(orderId, this.customer_account.getId(), restId, status, orderitems);
 
 		return order;
 	}
 
-	public void submitOrder(Order order) {
+	public boolean submitOrder(Order order) {
 		/* Generate a request containing the JSON object string to the server. */
 		Log.v("[Model: submitOrder]", "Order submitted.!");
+		
+		String sendStr = CommunicationProtocol.construcSendingStr(
+				customer_account.getId(), customer_account.getPasswd(),
+				CommunicationProtocol.CUS_SUBMIT_ORDER, order.getJSON().toString());
+		String responseStr = "";
+
+		try {
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (CommunicationProtocol.getRequestFromReceivedStr(responseStr)
+				.equals(CommunicationProtocol.PROCESS_FAILED)) {
+			return false;
+		} else if (CommunicationProtocol.getRequestFromReceivedStr(responseStr)
+				.equals(CommunicationProtocol.PROCESS_SUCCEEDED)) {
+			return true;
+		}
+		return false;
 	}
 
-	public List<Order> retrieveAllOrders(String custId) {
+	public List<Order> retrieveAllOrders() {
 		/*
 		 * Generate a sending message containing custId to server and if
 		 * response are valid => convert to a List<Order> object
 		 */
-
+/*
 		List<Order> orders = new ArrayList<Order>();
 
 		Item item1 = new Item("i001", "Chicken with Broccoli", 4.5, new Rating(
@@ -362,11 +450,39 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		orders.add(order1);
 		orders.add(order2);
 		orders.add(order3);
-
-		return orders;
+*/
+		/* Get restaurant Account Infos */
+		List<Order> my_orders = new ArrayList<Order>();
+		OrderQuerier querier = new OrderQuerier();
+		querier.setCusID("lyang");
+		
+		String sendStr = CommunicationProtocol.construcSendingStr(
+				customer_account.getId(), customer_account.getPasswd(),
+				CommunicationProtocol.CUS_RETRIVE_ORDER, querier.getJSON().toString());
+		
+		String responseStr = "";
+		try {
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			System.out.println("response: "+responseStr);
+			
+			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
+			ListedJSONObj jobj = new ListedJSONObj();
+			jobj.parseFromJSONObject(new JSONObject(supinfo));
+		
+			Iterator<JSONObject> it = jobj.iterator();
+			while(it.hasNext()){
+				Order order = new Order("", "", "", -1, new ArrayList<OrderItem>());
+				order.parseFromJSONObject(it.next());
+				my_orders.add(order);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return my_orders;
 	}
 
-	public List<Order> retrieveOrders(String custId, String status, int count) {
+	public List<Order> retrieveOrders(String status, int count) {
 		// TODO Auto-generated method stub
 		/*
 		 * 1. Generate a sending message to be sent to the server with Customer,
@@ -378,7 +494,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		return null;
 	}
 
-	public List<Order> retrieveChangedOrders(String custId) {
+	public List<Order> retrieveChangedOrders() {
 		// TODO Auto-generated method stub
 		return null;
 	}
