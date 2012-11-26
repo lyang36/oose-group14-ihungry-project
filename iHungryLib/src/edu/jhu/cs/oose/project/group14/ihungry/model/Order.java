@@ -2,6 +2,8 @@ package edu.jhu.cs.oose.project.group14.ihungry.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.json.JSONException;
@@ -122,6 +124,18 @@ public class Order implements JSONHandler<Order>, Serializable{
 		return this.timemilisecs;
 	}
 	
+	public String getDateString(){
+		//
+		// Create a DateFormatter object for displaying date information.
+		//
+		//DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(this.timemilisecs);
+		return formatter.format(calendar.getTime());
+	
+	}
+	
 	public String getOrderID(){
 		return this.orderId;
 	}
@@ -138,8 +152,28 @@ public class Order implements JSONHandler<Order>, Serializable{
 		return this.status;
 	}
 	
+	public String getStatusMeaning(){
+		if(this.status == STATUS_UNDERPROCING){
+			return "Order Under Processing";
+		} else if(this.status == STATUS_CONFIRMED){
+			return "Order Confirmed";
+		} else if(this.status == STATUS_REJECTED){
+			return "Order Rejected";
+		} else if(this.status == STATUS_FINISHED){
+			return "Order Finished";
+		} else if(this.status == STATUS_CANCELLED){
+			return "Order Cancelled";
+		} else{
+			return "UNKNOWN Status";
+		}
+	}
+	
 	public List<OrderItem> getOrderItems(){
 		return this.orderItems;
+	}
+	
+	public void setRestId(String restId){
+		this.restId = restId;
 	}
 	
 	/**
@@ -261,4 +295,10 @@ public class Order implements JSONHandler<Order>, Serializable{
 	public void setToCusStatus(boolean st){
 		isNewToCus = st;
 	}
+	
+	
+	
+	
+	
+	
 }
