@@ -47,6 +47,12 @@ public class LocationInfo implements JSONHandler<LocationInfo>{
 		this.address = add;
 	}
 	
+	public LocationInfo( String add, long lat, long lon){
+		this(add);
+		this.latitude = lat;
+		this.longitude = lon;
+	}
+	
 	public String getAddress(){
 		return this.address;
 	}
@@ -67,6 +73,14 @@ public class LocationInfo implements JSONHandler<LocationInfo>{
 		return longitude;
 	}
 	
+	
+	public void setLatitude(long lat){
+		this.latitude = lat;
+	}
+	
+	public void setLongitude(long lon){
+		this.longitude = lon;
+	}
 	
 
 	@Override
