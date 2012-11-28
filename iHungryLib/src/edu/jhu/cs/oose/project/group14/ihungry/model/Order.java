@@ -16,7 +16,7 @@ import org.json.JSONObject;
  */
 
 @SuppressWarnings("serial")
-public class Order implements JSONHandler<Order>, Serializable{
+public class Order implements JSONHandler<Order>, Serializable, Comparable<Order>{
 	/**
 	 * JSON Key
 	 */
@@ -295,10 +295,49 @@ public class Order implements JSONHandler<Order>, Serializable{
 	public void setToCusStatus(boolean st){
 		isNewToCus = st;
 	}
+
+	/**
+	 * Generates hashcode for the order object which helps in comparing 2 order 
+	 * objects for equality
+	 */
 	
+	@Override
+	public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
+	return result;
+	}
+
+	/**
+	 * Generates hashcode for the order object which helps in comparing 2 order 
+	 * objects for equality
+	 */
 	
+	@Override
+	public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (obj == null)
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	Order other = (Order) obj;
+	if (orderId == null) {
+		if (other.orderId != null)
+			return false;
+	} else if (!orderId.equals(other.orderId))
+		return false;
+	return true;
+	}
+
+	/**
+	 * 
+	 */
 	
-	
-	
-	
+	@Override
+	public int compareTo(Order order) {
+	return this.orderId.compareTo(order.orderId);	
+	}	
+
 }
