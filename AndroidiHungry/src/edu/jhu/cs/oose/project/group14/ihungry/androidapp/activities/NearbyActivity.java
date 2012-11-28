@@ -87,7 +87,7 @@ public class NearbyActivity extends MapActivity {
 		overlayitem2_multi = new ArrayList<MyOverlayItem>();
 		NetworkSearchAddressTask task_search = new NetworkSearchAddressTask();
 		task_search.execute();
-
+		
 		/*
 		 * ##### Hook up button presses to the appropriate event handler. #####
 		 */
@@ -193,7 +193,9 @@ public class NearbyActivity extends MapActivity {
 				clientModel = new AndroidClientModelImpl(CustomerAccountInfoCreator.createAccountInfo(
 						FileHandler.username_stored, FileHandler.pwd_stored));
 
-				restaurant_acc_infos = clientModel.getRestaurantAccountInfos(new LocationInfo(0,0));
+			//	restaurant_acc_infos = clientModel.getRestaurantAccountInfos(new LocationInfo(currentLocation.getLatitude(), currentLocation.getLongitude()));
+				restaurant_acc_infos = clientModel.getRestaurantAccountInfos(new LocationInfo(0, 0));
+
 				restaurant_con_infos = clientModel.getRestaurantContactInfos(restaurant_acc_infos);
 
 				for (int i = 0; i < restaurant_con_infos.size(); i++) {

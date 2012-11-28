@@ -81,7 +81,6 @@ public class MessageReactorImpl implements MessageReactor{
 		try{
 			String temp = null;
 			if(judge){
-				
 				if(onjudge != null){
 					temp = onjudge.onTrue();
 				}
@@ -139,16 +138,6 @@ public class MessageReactorImpl implements MessageReactor{
 	    inputAcc = new AccountInfo();
 		inputAcc.setId(uname);
 		inputAcc.setPasswd(passwd);
-		
-		
-		if (commandmesg.contains(CommunicationProtocol.BUSI_UPDATE_MENU) ||
-				commandmesg.contains(CommunicationProtocol.BUSI_LOGIN)	)
-		{
-			System.out.println("sample");
-			System.out.println(inputAcc.getJSON().toString());
-		}
-		
-		
 		//System.out.println("<<><>>" + inputAcc.getJSON().toString());
 		this.internet = internet;
 		try {
@@ -276,10 +265,6 @@ public class MessageReactorImpl implements MessageReactor{
 			//business update contact
 			else if(commandmesg.contains(CommunicationProtocol.BUSI_UPDATE_MENU)){
 				final Restaurant bus = dboperator.getBusiness(inputAcc);
-				if (bus==null)
-					System.out.println("bus=null");
-				else
-					System.out.println("bus = not null");
 				returnStringInfo(bus != null,
 						supinfo, 
 						CommunicationProtocol.PROCESS_SUCCEEDED, 
@@ -288,18 +273,15 @@ public class MessageReactorImpl implements MessageReactor{
 
 							@Override
 							public String onTrue() {
-								System.out.println("into true block");
 								Restaurant busa = dboperator.getBusiness(inputAcc);
 								busa.setMenu((new Menu()).
 										parseFromJSONObject(supinfoObj));
 								dboperator.addBusiness(busa);
-								System.out.println("updateMenu done");
 								return null;
 							}
 
 							@Override
 							public String onFalse() {
-								System.out.println("into false block");
 								return null;	
 							}
 					
