@@ -32,7 +32,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.*;
  * 
  */
 public class AndroidClientModelImpl implements AndroidClientModel {
-	static private final int CONNECTIONTIMEOUT = 10000;
+	static private final int CONNECTION_TIMEOUT = 10000;
 	private InternetClient internetClient;
 	private AccountInfo customer_account;
 	
@@ -61,7 +61,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		String responseFromServer = "";
 		try {
 			responseFromServer = internetClient
-					.sendAndGet(a, CONNECTIONTIMEOUT);
+					.sendAndGet(a, CONNECTION_TIMEOUT);
 
 		} catch (Exception e) {
 			Log.e("[getResponseFromServer Exception]",""+e.getMessage());
@@ -78,7 +78,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 				CommunicationProtocol.CUS_CHECK_UNAME_EXISTED, "");
 		String responseStr = "";
 		try {
-			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -117,7 +117,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		Customer customer = new Customer();
 
 		try {
-			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
 			System.out.println("Customer [Response]: "+responseStr);
 
 			if (CommunicationProtocol.getRequestFromReceivedStr(responseStr)
@@ -156,7 +156,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		String responseStr = "";
 
 		try {
-			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -177,17 +177,15 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	public List<AccountInfo> getRestaurantAccountInfos(LocationInfo loc_in){
 		
 		/* Get restaurant Account Infos */
-		LocationInfo loc_test = new LocationInfo("Test");
-		loc_test.parseFromJSONObject(loc_test.getJSON());
 		List<AccountInfo> busAccountInfos = new ArrayList<AccountInfo>();
 
 		String sendStr = CommunicationProtocol.construcSendingStr(
 				customer_account.getId(), customer_account.getPasswd(),
-				CommunicationProtocol.CUS_FIND_RESTAURANT_IDS, loc_test.getJSON().toString());
+				CommunicationProtocol.CUS_FIND_RESTAURANT_IDS, loc_in.getJSON().toString());
 		
 		String responseStr = "";
 		try {
-			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
 			System.out.println("response: "+responseStr);
 			
 			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
@@ -226,7 +224,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		ContactInfo bus_con = new ContactInfo(new LocationInfo(""), "");
 
 		try {
-			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
 			System.out.println("bus Contact Info [Response]: "+responseStr);
 
 			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
@@ -341,7 +339,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		Menu menu_received = new Menu();
 
 		try {
-			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
 			
 			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
 			JSONObject obj = new JSONObject(supinfo);
@@ -390,7 +388,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		String responseStr = "";
 
 		try {
-			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -462,7 +460,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		
 		String responseStr = "";
 		try {
-			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
 			System.out.println("response: "+responseStr);
 			
 			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);

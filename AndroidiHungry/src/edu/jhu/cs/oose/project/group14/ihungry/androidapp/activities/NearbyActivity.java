@@ -38,18 +38,18 @@ import android.widget.*;
  * 
  */
 public class NearbyActivity extends MapActivity {
-	static final private int ZOOMTIME = 15;
+	static final private int ZOOM_TIME = 15;
 
 	private AndroidClientModel clientModel;
 	private List<AccountInfo> restaurant_acc_infos;
 	private List<ContactInfo> restaurant_con_infos;
 	
-	static final private int[][] restaurant_locations = {
+/*	static final private int[][] restaurant_locations = {
 			{ 39337482, -76634559 }, { 39337249, -76624322 },
 			{ 39344429, -76631478 }, { 39334798, -76620687 },
 			{ 39313321, -76617787 }, { 39330855, -76633269 },
 			{ 39329058, -76615716 }, { 39328962, -76609548 } };
-	
+*/	
 	private TapControlledMapView mapView;
 	private MapController mapController;
 	private Location currentLocation;
@@ -104,7 +104,7 @@ public class NearbyActivity extends MapActivity {
 		mapView.setSatellite(false);
 		mapView.setTraffic(false);
 		mapController = mapView.getController();
-		mapController.setZoom(ZOOMTIME);
+		mapController.setZoom(ZOOM_TIME);
 
 		// dismiss balloon upon single tap of MapView (iOS behavior)
 		mapView.setOnSingleTapListener(new OnSingleTapListener() {
@@ -122,17 +122,21 @@ public class NearbyActivity extends MapActivity {
 		mapOverlays = mapView.getOverlays();
 		drawable = getResources().getDrawable(R.drawable.marker);
 		itemizedoverlay = new MyItemizedOverlay(drawable, mapView);
-		// set iOS behavior attributes for overlay
-		itemizedoverlay.setShowClose(false);
-		itemizedoverlay.setShowDisclosure(true);
-		itemizedoverlay.setSnapToCenter(true);
+		setOverlayProperty(itemizedoverlay);
 
 		drawable2 = getResources().getDrawable(R.drawable.blue_pin);
 		itemizedoverlay2 = new MyItemizedOverlay(drawable2, mapView);
-		// set iOS behavior attributes for overlay
-		itemizedoverlay2.setShowClose(false);
-		itemizedoverlay2.setShowDisclosure(true);
-		itemizedoverlay2.setSnapToCenter(true);
+		setOverlayProperty(itemizedoverlay2);
+	}
+	
+	/**
+	 * Set iOS behavior attributes for overlay.
+	 * @param itemizedoverlay
+	 */
+	private void setOverlayProperty(MyItemizedOverlay itemizedoverlay){
+		itemizedoverlay.setShowClose(false);
+		itemizedoverlay.setShowDisclosure(true);
+		itemizedoverlay.setSnapToCenter(true);
 	}
 	
 	/**
@@ -197,11 +201,11 @@ public class NearbyActivity extends MapActivity {
 					ContactInfo rest_con = (ContactInfo)restaurant_con_infos.get(i);
 					
 					Log.v("RestInfo", rest_con.getAddress().getAddress()+" "+ i+" "+ rest_con.getRealName()+" "+
-							rest_acc.getId());
+							rest_acc.getId()+" "+rest_con.getAddress().getLatitude()+" "+rest_con.getAddress().getLongitude());
 					
 					overlayitem2 = getLocationByAddress(
 							rest_con.getAddress().getAddress(), i, rest_con.getRealName(),
-							rest_acc.getId(), rest_con.getPrimPhone());
+							rest_acc.getId(), rest_con.getPrimPhone(), rest_con.getAddress());
 					
 					if (overlayitem2 != null) {
 						overlayitem2_multi.add(overlayitem2);
@@ -248,7 +252,7 @@ public class NearbyActivity extends MapActivity {
 	 */
 	public MyOverlayItem getLocationByAddress(
 			String locationName, int index, String restaurantName,
-			String restaurantID, String restPrimPhone) {
+			String restaurantID, String restPrimPhone, LocationInfo locationinfo) {
 		Log.v("[Search address]", locationName);
 
 		// Log.v("[Cache]", FileHandler.loadFile(this,
@@ -258,8 +262,9 @@ public class NearbyActivity extends MapActivity {
 			// return;
 		} else {
 			// GeoPoint pt = getLocationByGeocoder(locationName);
-			GeoPoint pt = new GeoPoint(restaurant_locations[index][0],
-					restaurant_locations[index][1]);
+			//GeoPoint pt = new GeoPoint(restaurant_locations[index][0],restaurant_locations[index][1]);
+			GeoPoint pt = new GeoPoint((int)locationinfo.getLatitude(), (int)locationinfo.getLongitude());
+			
 			if (pt != null)
 				return new MyOverlayItem(pt, restaurantName, locationName,
 						restaurantID, restPrimPhone);
@@ -339,7 +344,7 @@ public class NearbyActivity extends MapActivity {
 		public void onClick(View v) {
 			Log.v("[NearbyActivity]", "fresh btn clicked");
 
-			mapController.setZoom(ZOOMTIME);
+			mapController.setZoom(ZOOM_TIME);
 
 			animateToCurrentLocation();
 
