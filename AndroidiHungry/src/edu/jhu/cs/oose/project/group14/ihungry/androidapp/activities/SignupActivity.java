@@ -74,18 +74,17 @@ public class SignupActivity extends Activity {
 			birthday = handleEditText(et_birthday.getText().toString());
 
 			Log.v("[Customer info]",username+"||"+password+"||"+realname+"||"+address+"||"+primphone+
-					"||"+secphone+"||"+email+"||"+birthday+"||");
+					"||"+secphone+"||"+email+"||"+birthday);
 			
 			/* Call client model to sign up for a new user */
-			Customer signup_result = clientModel.signupForNewUser(username, password, realname, address, 
+			boolean signup_result = clientModel.signupForNewUser(username, password, realname, address, 
 					primphone, secphone, email, birthday, new Icon());
 			
-			if(signup_result == null){
-				ToastDisplay.DisplayToastOnScr(SignupActivity.this, "Signup failed!");
-			} else{
+			if(signup_result){
 				ToastDisplay.DisplayToastOnScr(SignupActivity.this, "Signup successfully!");
+			} else{
+				ToastDisplay.DisplayToastOnScr(SignupActivity.this, "Connection Error or Signup failed!");
 			}
-
 			
 		//	setResult(ActivitySwitchSignals.ORDERREVIEWCLOSESWH);
 
@@ -98,7 +97,7 @@ public class SignupActivity extends Activity {
 	 * @param text_in
 	 * @return
 	 */
-	private String handleEditText(String text_in){
+	protected static String handleEditText(String text_in){
 		if(text_in == null || text_in.equals("")){
 			return " ";
 		} else{

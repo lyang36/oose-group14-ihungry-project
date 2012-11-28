@@ -94,18 +94,6 @@ public class Menu implements JSONHandler<Menu>,Serializable{
      */
     public void replaceMenu(List<Item> items){
         this.items = items;
-        this.menuSize = items.size();
-    }
-    
-    
-    public void removeItem(int index){
-    	this.items.remove(index);
-    	this.menuSize = items.size();
-    }
-    
-    
-    public int getMenuSize(){
-    	return menuSize;
     }
     
     @Override

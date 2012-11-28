@@ -38,6 +38,22 @@ public class DBOperator implements DataBaseOperater{
     private DBCollection busiCollection = null;
     private DBCollection orderCollection = null;
     
+    //new a query objec
+    private void newQuery(){
+    	query = new BasicDBObject();
+    }
+    
+    private void newQuery(String uname){
+    	newQuery();
+    	query.put(AccountInfo.KEY_ID, uname);
+    }
+    
+    private void newQuery(AccountInfo acc){
+    	newQuery(acc.getId());
+    	query.put(AccountInfo.KEY_PASSWD, acc.getPasswd());
+    }
+    
+    
 	@Override
 	public boolean connectToDB() {
 		try {
@@ -71,17 +87,44 @@ public class DBOperator implements DataBaseOperater{
 	
 	
 	/**
+	 * @param coll - collection
+	 * @return the first object of this query
+	 */
+	private DBObject getFirstObjPriv(DBCollection coll){
+		DBCursor cur = queryOnCollection(coll, query);
+		if(cur.hasNext()){
+			return cur.next();
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * @param coll - collection
+	 * @param uname
+	 * @return the first object of this query
+	 */
+	private DBObject getFirstObjPriv(DBCollection coll, String uname){
+		newQuery(uname);
+		return getFirstObjPriv(coll);
+	}
+	
+	/**
+	 * @param coll - collection
+	 * @param acc
+	 * @return the first object of this query
+	 */
+	private DBObject getFirstObjPriv(DBCollection coll, AccountInfo acc){
+		newQuery(acc);
+		return getFirstObjPriv(coll);
+	}
+	
+	/**
 	 * get the business without the password
 	 * @return
 	 */
 	private DBObject getBusiness_priv(String uname){
-		query = new BasicDBObject();
-		query.put(AccountInfo.KEY_ID, uname);
-		DBCursor cur = queryOnCollection(busiCollection, query);
-		if(cur.hasNext()){
-			return cur.next();
-		}		
-		return null;
+		return getFirstObjPriv(busiCollection, uname);
 	}
 	
 	/**
@@ -89,92 +132,70 @@ public class DBOperator implements DataBaseOperater{
 	 * @return
 	 */
 	private DBObject getCustomer_priv(String uname){
-		query = new BasicDBObject();
-		query.put(AccountInfo.KEY_ID, uname);
-		DBCursor cur = queryOnCollection(cusCollection, query);
-		if(cur.hasNext()){
-			return cur.next();
-		}		
-		return null;
+		return getFirstObjPriv(cusCollection, uname);
 	}
 	
 	@Override
 	public boolean checkUserUnameExisted(AccountInfo acc) {
-		if(getCustomer_priv(acc.getId()) != null){
-			return true;
-		}
-		return false;
+		return (getCustomer_priv(acc.getId()) != null);
 	}
 
 
 	
 	@Override
 	public boolean checkBusiUnameExisted(AccountInfo acc) {
-		if(getBusiness_priv(acc.getId()) != null){
-			return true;
-		}
-		return false;
+		return (getBusiness_priv(acc.getId()) != null);
 	}
 
+	private JSONObject dbObj2JSONObj(DBObject dbo){
+		if(dbo == null) 
+			return null;
+		JSONObject retj = null;
+		try {
+			retj = new JSONObject(dbo.toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return retj;
+	}
+	
 	@Override
 	public Customer getCustomer(AccountInfo acc) {
-		String uname = acc.getId();
-		String passwd = acc.getPasswd();
-		query = new BasicDBObject();
-		query.put(AccountInfo.KEY_ID, uname);
-		query.put(AccountInfo.KEY_PASSWD, passwd);
-		DBCursor cur = queryOnCollection(cusCollection, query);
-		if(cur.hasNext()){
-			JSONObject retj = null;
-			try {
-				retj = new JSONObject(cur.next().toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			Customer cus = new Customer();
-			cus.parseFromJSONObject(retj);
-			return cus;
-		}		
-		return null;
+		DBObject cusdb = getFirstObjPriv(cusCollection, acc);
+		Customer cus = new Customer();
+		JSONObject jobj = dbObj2JSONObj(cusdb);
+		if(jobj != null){
+			cus.parseFromJSONObject(jobj);
+			return cus;	
+		}else{
+			return null;
+		}
 	}
 	
 	private boolean checkValidUser(AccountInfo acc){
-		if(getCustomer(acc) == null){
-			return false;
-		}else{
-			return true;
-		}
+		return (getCustomer(acc) != null);
 	}
 	
 	
 	private boolean checkValidBusi(AccountInfo acc){
-		if(getBusiness(acc) == null){
-			return false;
-		}else{
-			return true;
-		}
+		return (getBusiness(acc) != null);
 	}
 
 	@Override
 	public Restaurant getBusiness(AccountInfo acc) {
-		query = (BasicDBObject) JSON.parse(acc.getJSON().toString());
-		query.removeField(AccountInfo.KEY_UNAME);
-		DBCursor cur = queryOnCollection(busiCollection, query);
-		if(cur.hasNext()){
-			JSONObject retj = null;
-			try {
-				retj = new JSONObject(cur.next().toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			
-			Restaurant bus = new Restaurant(null, null);
-			bus.parseFromJSONObject(retj);
-			return bus;
-		}		
-		return null;
+		DBObject cusdb = getFirstObjPriv(busiCollection, acc);
+		Restaurant bus = new Restaurant(null, null);
+		JSONObject jobj = dbObj2JSONObj(cusdb);
+		if(jobj != null){
+			bus.parseFromJSONObject(jobj);
+			return bus;	
+		}else{
+			return null;
+		}
 	}
 
+	
+	
 
 	@Override
 	public ListedJSONObj getUserOrders(AccountInfo acc, int startInd,
@@ -441,8 +462,10 @@ public class DBOperator implements DataBaseOperater{
 			AccountInfo acc = new AccountInfo();
 			acc = (new Restaurant(null, null)).parseFromJSONObject(jbus).getAccountInfo();
 			acc.setPasswd("");		//remove the password
+			//System.out.println(acc.getJSON().toString());
 			busiAccs.add(acc.getJSON());
 		}	
+		//System.out.println(busiAccs.getJSON().toString());
 		return busiAccs;
 	}
 	

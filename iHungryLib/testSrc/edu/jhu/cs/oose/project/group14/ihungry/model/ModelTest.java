@@ -61,8 +61,8 @@ public class ModelTest {
 		ContactInfo contact = new ContactInfo(new LocationInfo("abc dff"), "123456687");
 		AccountInfo acc = new AccountInfo("abc", "efg");
 		
-		Item item = new Item("i001", "Pizza","Pizza", 4.54, new Rating(5, 10), new Album());
-		Item item2 = new Item("i002", "Soup","Soup", 3.67, new Rating(4, 20), new Album());
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
+		Item item2 = new Item("i002", "Soup", 3.67, new Rating(4, 20), new Album());
 
 		List<Item> items = new ArrayList<Item>();
 		items.add(item);
@@ -145,7 +145,7 @@ public class ModelTest {
 	
 	@Test
 	public void testItem(){
-		Item item = new Item("i001", "Pizza","Pizza", 4.54, new Rating(5, 10), new Album());
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
 		
 		JSONObject jsonobj1 = item.getJSON();
 		System.out.println(jsonobj1.toString());
@@ -158,7 +158,7 @@ public class ModelTest {
 	
 	@Test
 	public void testOrderItem(){
-		Item item = new Item("i001", "Pizza", "Pizza",4.54, new Rating(5, 10), new Album());
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
 		OrderItem orderItem = new OrderItem(item, 2);
 		
 		JSONObject jsonobj1 = orderItem.getJSON();
@@ -171,10 +171,10 @@ public class ModelTest {
 	
 	@Test
 	public void testOrder(){
-		Item item = new Item("i001", "Pizza","Pizza", 4.54, new Rating(5, 10), new Album());
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
 		OrderItem orderItem = new OrderItem(item, 2);
 		
-		Item item2 = new Item("i002", "Soup","Soup", 3.67, new Rating(4, 20), new Album());
+		Item item2 = new Item("i002", "Soup", 3.67, new Rating(4, 20), new Album());
 		OrderItem orderItem2 = new OrderItem(item2, 3);
 		
 		List<OrderItem> orderItems = new ArrayList<OrderItem>();
@@ -191,8 +191,8 @@ public class ModelTest {
 	
 	@Test
 	public void testMenu(){
-		Item item = new Item("i001", "Pizza","Pizza", 4.54, new Rating(5, 10), new Album());
-		Item item2 = new Item("i002", "Soup","Soup", 3.67, new Rating(4, 20), new Album());
+		Item item = new Item("i001", "Pizza", 4.54, new Rating(5, 10), new Album());
+		Item item2 = new Item("i002", "Soup", 3.67, new Rating(4, 20), new Album());
 
 		List<Item> items = new ArrayList<Item>();
 		items.add(item);

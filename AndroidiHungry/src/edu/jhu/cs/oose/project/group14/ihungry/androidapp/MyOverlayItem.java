@@ -15,7 +15,8 @@ public class MyOverlayItem extends OverlayItem {
 	/**
 	 * restaurantID: the added extra attribute.
 	 */
-	protected String restaurantID;
+	private String restaurantID;
+	private String restaurantPrimPhone;
 	
 	/**
 	 * MyOverlayItem constructor.
@@ -24,9 +25,10 @@ public class MyOverlayItem extends OverlayItem {
 	 * @param snippet
 	 * @param restID
 	 */
-	public MyOverlayItem(GeoPoint point, String title, String snippet, String restID) {
+	public MyOverlayItem(GeoPoint point, String title, String snippet, String restID, String primphone) {
 		super(point, title, snippet);
 		restaurantID = restID;
+		this.restaurantPrimPhone = primphone;
 	}
 
 	/**
@@ -35,6 +37,14 @@ public class MyOverlayItem extends OverlayItem {
 	 */
 	public String getRestaurantID() {
 		return this.restaurantID;
+	}
+	
+	/**
+	 * Get restaurant primary phone number;
+	 * @return
+	 */
+	public String getRestaurantPhone() {
+		return this.restaurantPrimPhone;
 	}
 
 	/**

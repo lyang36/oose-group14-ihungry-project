@@ -9,7 +9,9 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.Overlay;
 import com.readystatesoftware.maps.*;
 
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ActivitySwitchSignals;
+import edu.jhu.cs.oose.project.group14.ihungry.androidapp.CustomerAccountInfoCreator;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.FileHandler;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.MyItemizedOverlay;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.MyLocation;
@@ -39,7 +41,8 @@ public class NearbyActivity extends MapActivity {
 	static final private int ZOOMTIME = 15;
 
 	private AndroidClientModel clientModel;
-	private List<Restaurant> restaurants;
+	private List<AccountInfo> restaurant_acc_infos;
+	private List<ContactInfo> restaurant_con_infos;
 	
 	static final private int[][] restaurant_locations = {
 			{ 39337482, -76634559 }, { 39337249, -76624322 },
@@ -151,7 +154,7 @@ public class NearbyActivity extends MapActivity {
 				}
 
 				overlayitem = new MyOverlayItem(currentPoint,
-						"Current Location", "", null);
+						"Current Location", "", null, "");
 				itemizedoverlay.addOverlay(overlayitem);
 				mapOverlays.add(itemizedoverlay);
 				mapView.postInvalidate();
@@ -174,17 +177,32 @@ public class NearbyActivity extends MapActivity {
 		protected String doInBackground(Void... params) {
 			try {
 				/* Get a list of restaurants infos */
-				clientModel = new AndroidClientModelImpl();
-				restaurants = clientModel.retrieveRestaurants(new LocationInfo(0,0));
+			/*	AccountInfo accinfo = new AccountInfo();
+				accinfo.setUserName(FileHandler.username_stored);
+				accinfo.setPasswd(FileHandler.pwd_stored);
+				Log.v("userName & pwd", FileHandler.username_stored+ " "+FileHandler.pwd_stored);
+			*/	
+			//	accinfo.setUserName("lyang");
+			//	accinfo.setPasswd(MD5.getMd5("123"));
+			//	accinfo.setPasswd("123"); // WRONG
 
-				for (int i = 0; i < restaurants.size(); i++) {
-					Restaurant rest = (Restaurant)restaurants.get(i);
+				clientModel = new AndroidClientModelImpl(CustomerAccountInfoCreator.createAccountInfo(
+						FileHandler.username_stored, FileHandler.pwd_stored));
+
+				restaurant_acc_infos = clientModel.getRestaurantAccountInfos(new LocationInfo(0,0));
+				restaurant_con_infos = clientModel.getRestaurantContactInfos(restaurant_acc_infos);
+
+				for (int i = 0; i < restaurant_con_infos.size(); i++) {
+					AccountInfo rest_acc = (AccountInfo)restaurant_acc_infos.get(i);
+					ContactInfo rest_con = (ContactInfo)restaurant_con_infos.get(i);
 					
-					Log.v("RestInfo", rest.getContactInfo().getAddress()+" "+ i+" "+ rest.getContactInfo().getRealName()+" "+
-							rest.getAccountInfo().getId());
+					Log.v("RestInfo", rest_con.getAddress().getAddress()+" "+ i+" "+ rest_con.getRealName()+" "+
+							rest_acc.getId());
+					
 					overlayitem2 = getLocationByAddress(
-							rest.getContactInfo().getAddress().getAddress(), i, rest.getContactInfo().getRealName(),
-							rest.getAccountInfo().getId());
+							rest_con.getAddress().getAddress(), i, rest_con.getRealName(),
+							rest_acc.getId(), rest_con.getPrimPhone());
+					
 					if (overlayitem2 != null) {
 						overlayitem2_multi.add(overlayitem2);
 						publishProgress(overlayitem2);
@@ -230,7 +248,7 @@ public class NearbyActivity extends MapActivity {
 	 */
 	public MyOverlayItem getLocationByAddress(
 			String locationName, int index, String restaurantName,
-			String restaurantID) {
+			String restaurantID, String restPrimPhone) {
 		Log.v("[Search address]", locationName);
 
 		// Log.v("[Cache]", FileHandler.loadFile(this,
@@ -244,7 +262,7 @@ public class NearbyActivity extends MapActivity {
 					restaurant_locations[index][1]);
 			if (pt != null)
 				return new MyOverlayItem(pt, restaurantName, locationName,
-						restaurantID);
+						restaurantID, restPrimPhone);
 			else
 				return null;
 		}

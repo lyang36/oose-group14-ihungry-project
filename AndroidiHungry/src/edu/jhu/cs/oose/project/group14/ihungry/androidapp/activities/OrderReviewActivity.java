@@ -5,6 +5,8 @@ import java.util.*;
 import com.example.androidihungry.R;
 
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ActivitySwitchSignals;
+import edu.jhu.cs.oose.project.group14.ihungry.androidapp.CustomerAccountInfoCreator;
+import edu.jhu.cs.oose.project.group14.ihungry.androidapp.FileHandler;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ToastDisplay;
 import edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel.*;
 
@@ -16,9 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
-import edu.jhu.cs.oose.project.group14.ihungry.model.Item;
-import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
-import edu.jhu.cs.oose.project.group14.ihungry.model.OrderItem;
+import edu.jhu.cs.oose.project.group14.ihungry.model.*;
 
 /**
  * This view shows the detailed ordered items.
@@ -38,8 +38,9 @@ public class OrderReviewActivity extends Activity {
 		setContentView(R.layout.activity_order_review);
 		
 		/* Initialize the client model */
-		clientModel = new AndroidClientModelImpl();
-
+		clientModel = new AndroidClientModelImpl(CustomerAccountInfoCreator.createAccountInfo(
+				FileHandler.username_stored, FileHandler.pwd_stored));
+		
 		((Button) findViewById(R.id.btn_submit))
 				.setOnClickListener(btn_submit_Listener);
 
@@ -132,12 +133,18 @@ public class OrderReviewActivity extends Activity {
 
 	OnClickListener btn_submit_Listener = new OnClickListener() {
 		public void onClick(View v) {
+			Order order_final = clientModel.createOrder(order_t.getRestID(), 
+					order_t.getStatus(), order_t.getOrderItems());
 			/*
 			 * Submit the order.
 			 */
-			clientModel.submitOrder(order_t);
-			ToastDisplay.DisplayToastOnScr(OrderReviewActivity.this, "Order Submitted!");
+			boolean submit_result = clientModel.submitOrder(order_final);
 			
+			if(submit_result)
+				ToastDisplay.DisplayToastOnScr(OrderReviewActivity.this, "Order Submitted Successful !");
+			else 
+				ToastDisplay.DisplayToastOnScr(OrderReviewActivity.this, "Order Submitted Failed !");
+
 			setResult(ActivitySwitchSignals.ORDERREVIEWCLOSESWH);
 
 			finish();
