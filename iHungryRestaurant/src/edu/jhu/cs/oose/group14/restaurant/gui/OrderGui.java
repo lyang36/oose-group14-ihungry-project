@@ -4,6 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -22,10 +31,12 @@ import javax.swing.LayoutStyle;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
-import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
+import edu.jhu.cs.oose.group14.restaurant.model.iHungryRestaurant;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 
-public class OrderGui {
+public class OrderGui implements Observer {
 	
 	private Container contentPane;
 	
@@ -63,16 +74,39 @@ public class OrderGui {
 	private ArrayList<JButton> listOfEdit = new ArrayList<JButton>();
 	private ArrayList<JButton> listOfDelete = new ArrayList<JButton>();
 
-	private String[] columnNames = {"Order No", "List", "Status", "Order Placed Time"};
-	private Object[][] data = new Object[1000][5];
+	private Vector<String> columnNames = new Vector<String>(); 
 	private int pointer = 0;
-	private JTable table = new JTable(data, columnNames);
+	private DefaultTableModel tableModel = null;
+	private JTable table = null; 
 	private String[] orderDetails = new String[50];
 	private int orderDetailsPointer = 0;
+		
+	private JTable orderHistorytable = null; 
+	private DefaultTableModel orderHistoryTableModel = null;
+	private JPanel orderHistorySubPanel;
+	private JLabel orderHistoryOrderNoL1;
+	private JLabel orderHistoryCustNoL1;
+	private JList orderHistoryList;
+	private JTextField orderHistoryOrderNoT;
+	private JTextField orderHistoryCustNoT;
 	
+	private JTable declinedOrderTable = null; 
+	private DefaultTableModel declinedOrderTableModel = null;
+	private JPanel declinedOrderSubPanel;
+	private JLabel declinedOrderOrderNoL1;
+	private JLabel declinedOrderCustNoL1;
+	private JList declinedOrderList;
+	private JTextField declinedOrderOrderNoT;
+	private JTextField declinedOrderCustNoT;
+
 	
 	public OrderGui(Container contentPane){
 		this.contentPane = contentPane;
+		
+		columnNames.add("Order No");
+		columnNames.add("Customer Id");
+		columnNames.add("Item Count");
+		columnNames.add("Order Placed Time");
 	}
 	
 	/**
@@ -83,8 +117,8 @@ public class OrderGui {
 	
 	public void displayOrderScreen()
 	{
-		
-		contentPane.getComponents()[0].setVisible(false);
+		for(int i=0;i<contentPane.getComponentCount();i++)
+			contentPane.getComponents()[i].setVisible(false);
 		//handle for if restaurant is null(new user) and not null(existing user)
 		
 		{
@@ -274,13 +308,10 @@ public class OrderGui {
 				jTabbedPane1.addTab("To Be Delivered", null, toBeDelivered, null);
 			}
 			{
-				declinedOrders = new JPanel();
-				jTabbedPane1.addTab("Declined Orders", null, declinedOrders, null);
-				declinedOrders.setPreferredSize(new java.awt.Dimension(359, 144));
+				displayDeclinedOrder();								
 			}
 			{
-				orderHistory = new JPanel();
-				jTabbedPane1.addTab("Order History", null, orderHistory, null);
+				displayOrderHistory();
 			}
 		}		
 	}
@@ -298,7 +329,9 @@ public class OrderGui {
 		jTabbedPane1.addTab("Current Orders", null, splitPane, null);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerLocation(500);
-		
+				
+		//tableModel = new DefaultTableModel(new Vector(), columnNames);
+		table = new JTable(tableModel);
 		table.setRowHeight(30);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(table);		
@@ -383,6 +416,162 @@ public class OrderGui {
 
 	}
 	
+	/*
+	 * This method is called to display the Declined Order tab. Declined Order
+	 * tab is a split pane with the list of declined orders on one side and details
+	 * of the currently selected order on the right side.
+	 */
+	private void displayDeclinedOrder() {
+		
+		// create split pane and add it to the tabbed pane
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		jTabbedPane1.addTab("Declined Orders", null, splitPane, null);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setDividerLocation(500);
+				
+		declinedOrderTable = new JTable(declinedOrderTableModel);
+		declinedOrderTable.setRowHeight(30);
+		declinedOrderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrollPane = new JScrollPane(declinedOrderTable);
+		splitPane.setLeftComponent(scrollPane);
+		scrollPane.setPreferredSize(new java.awt.Dimension(483, 312));
+		
+		//create a panel with a JList which shows the Order list
+		declinedOrderSubPanel = new JPanel();
+		splitPane.setRightComponent(declinedOrderSubPanel);
+		GroupLayout declinedOrderSubPanelLayout = new GroupLayout((JComponent)declinedOrderSubPanel);
+		declinedOrderSubPanel.setLayout(declinedOrderSubPanelLayout);
+		{
+			declinedOrderOrderNoL1 = new JLabel();
+			declinedOrderOrderNoL1.setText("Order No :");
+		}
+		{
+			declinedOrderList = new JList(orderDetails);		
+		}		
+		{
+			declinedOrderCustNoL1 = new JLabel();
+			declinedOrderCustNoL1.setText("Cust No :");
+		}
+		{
+			declinedOrderOrderNoT = new JTextField();
+		}
+		{
+			declinedOrderCustNoT = new JTextField();
+		}
+		declinedOrderSubPanelLayout.setVerticalGroup(declinedOrderSubPanelLayout.createSequentialGroup()
+			.addContainerGap(39, 39)
+			.addGroup(declinedOrderSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			    .addComponent(declinedOrderOrderNoT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+			    .addComponent(declinedOrderOrderNoL1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+			.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+			.addGroup(declinedOrderSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			    .addComponent(declinedOrderCustNoT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+			    .addComponent(declinedOrderCustNoL1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
+			.addGap(23)
+			.addComponent(declinedOrderList, GroupLayout.PREFERRED_SIZE, 338, GroupLayout.PREFERRED_SIZE)
+			.addGap(27)
+			.addGroup(declinedOrderSubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE))
+			.addContainerGap(24, 24));
+		declinedOrderSubPanelLayout.setHorizontalGroup(declinedOrderSubPanelLayout.createSequentialGroup()
+			.addContainerGap(30, 30)
+			.addGroup(declinedOrderSubPanelLayout.createParallelGroup()
+			    .addGroup(declinedOrderSubPanelLayout.createSequentialGroup()
+			        .addGroup(declinedOrderSubPanelLayout.createParallelGroup()
+			            .addComponent(declinedOrderCustNoL1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+			            .addGroup(GroupLayout.Alignment.LEADING, declinedOrderSubPanelLayout.createSequentialGroup()
+			                .addComponent(declinedOrderOrderNoL1, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+			                .addGap(7)))
+			        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+			        .addGroup(declinedOrderSubPanelLayout.createParallelGroup()
+			            .addComponent(declinedOrderCustNoT, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
+			            .addComponent(declinedOrderOrderNoT, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE))
+			        .addGap(234))
+			    .addComponent(declinedOrderList, GroupLayout.Alignment.LEADING, 0, 447, Short.MAX_VALUE)
+			    .addGroup(GroupLayout.Alignment.LEADING, declinedOrderSubPanelLayout.createSequentialGroup()
+			        .addGap(0, 35, Short.MAX_VALUE)))
+			.addContainerGap(22, 22));
+		declinedOrderSubPanelLayout.linkSize(SwingConstants.VERTICAL, new Component[] {declinedOrderCustNoT, declinedOrderOrderNoT});
+		declinedOrderSubPanelLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {declinedOrderCustNoT, declinedOrderOrderNoT});
+	}
+	
+	/*
+	 * This method is called to display the Order History tab. Order History
+	 * tab is a split pane with the list of old orders on one side and details
+	 * of the currently selected order on the right side.
+	 */
+	private void displayOrderHistory() {
+		
+		// create split pane and add it to the tabbed pane
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		jTabbedPane1.addTab("Order History", null, splitPane, null);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setDividerLocation(500);
+				
+		orderHistorytable = new JTable(orderHistoryTableModel);
+		orderHistorytable.setRowHeight(30);
+		orderHistorytable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrollPane = new JScrollPane(orderHistorytable);
+		splitPane.setLeftComponent(scrollPane);
+		scrollPane.setPreferredSize(new java.awt.Dimension(483, 312));
+		
+		//create a panel with a JList which shows the Order list
+		orderHistorySubPanel = new JPanel();
+		splitPane.setRightComponent(orderHistorySubPanel);
+		GroupLayout orderHistorySubPanelLayout = new GroupLayout((JComponent)orderHistorySubPanel);
+		orderHistorySubPanel.setLayout(orderHistorySubPanelLayout);
+		{
+			orderHistoryOrderNoL1 = new JLabel();
+			orderHistoryOrderNoL1.setText("Order No :");
+		}
+		{
+			orderHistoryList = new JList(orderDetails);		
+		}		
+		{
+			orderHistoryCustNoL1 = new JLabel();
+			orderHistoryCustNoL1.setText("Cust No :");
+		}
+		{
+			orderHistoryOrderNoT = new JTextField();
+		}
+		{
+			orderHistoryCustNoT = new JTextField();
+		}
+		orderHistorySubPanelLayout.setVerticalGroup(orderHistorySubPanelLayout.createSequentialGroup()
+			.addContainerGap(39, 39)
+			.addGroup(orderHistorySubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			    .addComponent(orderHistoryOrderNoT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+			    .addComponent(orderHistoryOrderNoL1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+			.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+			.addGroup(orderHistorySubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			    .addComponent(orderHistoryCustNoT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+			    .addComponent(orderHistoryCustNoL1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
+			.addGap(23)
+			.addComponent(orderHistoryList, GroupLayout.PREFERRED_SIZE, 338, GroupLayout.PREFERRED_SIZE)
+			.addGap(27)
+			.addGroup(orderHistorySubPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE))
+			.addContainerGap(24, 24));
+		orderHistorySubPanelLayout.setHorizontalGroup(orderHistorySubPanelLayout.createSequentialGroup()
+			.addContainerGap(30, 30)
+			.addGroup(orderHistorySubPanelLayout.createParallelGroup()
+			    .addGroup(orderHistorySubPanelLayout.createSequentialGroup()
+			        .addGroup(orderHistorySubPanelLayout.createParallelGroup()
+			            .addComponent(orderHistoryCustNoL1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+			            .addGroup(GroupLayout.Alignment.LEADING, orderHistorySubPanelLayout.createSequentialGroup()
+			                .addComponent(orderHistoryOrderNoL1, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+			                .addGap(7)))
+			        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+			        .addGroup(orderHistorySubPanelLayout.createParallelGroup()
+			            .addComponent(orderHistoryCustNoT, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
+			            .addComponent(orderHistoryOrderNoT, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE))
+			        .addGap(234))
+			    .addComponent(orderHistoryList, GroupLayout.Alignment.LEADING, 0, 447, Short.MAX_VALUE)
+			    .addGroup(GroupLayout.Alignment.LEADING, orderHistorySubPanelLayout.createSequentialGroup()
+			        .addGap(0, 35, Short.MAX_VALUE)))
+			.addContainerGap(22, 22));
+		orderHistorySubPanelLayout.linkSize(SwingConstants.VERTICAL, new Component[] {orderHistoryCustNoT, orderHistoryOrderNoT});
+		orderHistorySubPanelLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {orderHistoryCustNoT, orderHistoryOrderNoT});
+	}
+	
 	
 	/**
 	 * getPrice method returns a reference of the list of Price fields
@@ -419,21 +608,44 @@ public class OrderGui {
 		return custNoT;
 	}
 	
-	
-	public Object[][] getCurrentOrders(){
-		return data;
+	public JTable getOrderHistoryTable(){
+		return orderHistorytable;
 	}
 	
-	/*
-	 * This method appends the new orders fetched from server to the existing list.
-	 */
+	public JPanel getOrderHistorySubPanel(){
+		return orderHistorySubPanel;
+	}
 	
-	public void setCurrentOrders(Object[][] data, int pointer){
-		
-		for(int i=this.pointer;i<(this.pointer+pointer);i++)
-			for(int j=0;j<data[0].length;j++){
-				this.data[i][j] = data[i-this.pointer][j];
-			}
+	public JTextField getOrderHistoryOrderNo(){
+		return orderHistoryOrderNoT;
+	}
+	
+	public JTextField getOrderHistoryCustNo(){
+		return orderHistoryCustNoT;
+	}
+	
+	public JList getOrderHistoryList(){
+		return orderHistoryList;
+	}
+	
+	public JTable getDeclinedOrderTable(){
+		return declinedOrderTable;
+	}
+	
+	public JPanel getDeclinedOrderSubPanel(){
+		return declinedOrderSubPanel;
+	}
+	
+	public JTextField getDeclinedOrderOrderNo(){
+		return declinedOrderOrderNoT;
+	}
+	
+	public JTextField getDeclinedOrderCustNo(){
+		return declinedOrderCustNoT;
+	}
+	
+	public JList getDeclinedOrderList(){
+		return declinedOrderList;
 	}
 	
 	/*
@@ -441,10 +653,8 @@ public class OrderGui {
 	 */
 	
 	public void setSelectedOrderDetails(String[] orderDetails)
-	{
-		
-		list1.setListData(orderDetails);
-		
+	{		
+		list1.setListData(orderDetails);		
 	}
 	
 	public int getPointer(){
@@ -507,4 +717,60 @@ public class OrderGui {
 		return jTabbedPane1;
 	}
 
+	 public void update(Observable obs, Object x) {
+		 iHungryRestaurant hugryRestaurant = (iHungryRestaurant) obs;
+		 Set<Order> orders = hugryRestaurant.getPendingOrders();
+		 Vector data = new Vector();
+		 
+		 for (Iterator<Order> i = orders.iterator(); i.hasNext();) {
+			Order order = i.next();
+			Vector row = new Vector();
+			row.add(order.getOrderID());
+			row.add(order.getCustID());
+			row.add(order.getOrderItems().size());
+			row.add(new Date(order.getTime()));
+			data.add(row);
+		}
+		 
+		 tableModel = new DefaultTableModel(data, columnNames);		 		 
+		 
+		 if(table != null)
+			 table.repaint();
+		 
+		 orders = hugryRestaurant.getDeclinedOrders();
+		 Vector declinedOrderData  = new Vector();
+		 
+		 for (Iterator<Order> i = orders.iterator(); i.hasNext();) {
+			Order order = i.next();
+			Vector row = new Vector();
+			row.add(order.getOrderID());
+			row.add(order.getCustID());
+			row.add(order.getOrderItems().size());
+			row.add(new Date(order.getTime()));
+			declinedOrderData.add(row);
+		}
+		 
+		 declinedOrderTableModel = new DefaultTableModel(declinedOrderData, columnNames);
+		 		 
+		 if(declinedOrderTable != null)
+			 declinedOrderTable.repaint();
+		 
+		 orders = hugryRestaurant.getOldOrders();
+		 Vector oldOrderData  = new Vector();
+		 
+		 for (Iterator<Order> i = orders.iterator(); i.hasNext();) {
+			Order order = i.next();
+			Vector row = new Vector();
+			row.add(order.getOrderID());
+			row.add(order.getCustID());
+			row.add(order.getOrderItems().size());
+			row.add(new Date(order.getTime()));
+			oldOrderData.add(row);
+		}
+		 
+		 orderHistoryTableModel = new DefaultTableModel(oldOrderData, columnNames);
+		 		 
+		 if(orderHistorytable != null)
+			 orderHistorytable.repaint();
+	 }
 }

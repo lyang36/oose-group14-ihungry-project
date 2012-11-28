@@ -48,13 +48,13 @@ public class LoginGui {
 			{
 				usernameLogin = new JTextField();
 				usernameLogin.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-				usernameLogin.setText("group14");
+				usernameLogin.setText("No1Res");
 			}
 			{
 				passwordLogin = new JPasswordField();
 				passwordLogin.setRequestFocusEnabled(false);
 				passwordLogin.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-				passwordLogin.setText("group14");
+				passwordLogin.setText("abc");
 			}
 			{
 				username = new JLabel();

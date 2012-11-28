@@ -81,11 +81,12 @@ public class SignupGui {
 				}
 				{
 					fnameSignUpL = new JTextField();
-					fnameSignUpL.setText("First");
+					fnameSignUpL.setToolTipText("FirstName");
 				}
 				{
 					lnameSignUpL = new JTextField();
-					lnameSignUpL.setText("Last");
+					lnameSignUpL.setToolTipText("LastName");
+					
 				}
 				{
 					nameSignUpL = new JLabel();
@@ -180,6 +181,12 @@ public class SignupGui {
 		
 	}
 	
+	public void setSignUpPanel(){
+		signUpPanel.setVisible(true);
+		passwordSignUpT.setText("");
+		confirmPasswordSignUpT.setText("");
+	}
+	
 	
 	public JButton getNextSignUp(){
 		return nextSignUpL;
@@ -201,7 +208,7 @@ public class SignupGui {
 		return passwordSignUpT;
 	}
 	
-	public JPasswordField getCOnfirmPassword(){
+	public JPasswordField getConfirmPassword(){
 		return confirmPasswordSignUpT;
 	}
 	
@@ -373,6 +380,10 @@ public class SignupGui {
 	
 	public JTextField getSecPhone(){
 		return secSignUpT;
+	}
+	
+	public JPanel getSignUpPanel(){
+		return signUpPanel;
 	}
 	
 }

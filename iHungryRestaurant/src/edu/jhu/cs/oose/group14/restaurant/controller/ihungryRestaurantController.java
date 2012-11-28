@@ -1,21 +1,34 @@
 package edu.jhu.cs.oose.group14.restaurant.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.*;
-import java.awt.List;
-import java.awt.event.*;
-import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import edu.jhu.cs.oose.group14.restaurant.gui.ihungryRestaurantGui;
+import edu.jhu.cs.oose.group14.restaurant.model.iHungryRestaurant;
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelImpl;
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelInterface;
-import edu.jhu.cs.oose.project.group14.ihungry.model.*;
+import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
+import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Icon;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Item;
+import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
-
-import java.util.*;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Rating;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 /**
  * ihungryRestaurantModel class is the model class for ihungry vendor 
@@ -32,17 +45,15 @@ public class ihungryRestaurantController {
     private ArrayList<String> listOfItemNames, listOfDescription, listOfPrice ;
 	private int itemNo =0;
 	private int indx=0;
-	private ArrayList<Order> currOrders = new ArrayList<Order>();
 	private Object[][] data =  new Object[1000][5];
 	private int pointer = 0;
-	private Restaurant restaurant;
-	
-
+	private Restaurant restaurant = new Restaurant(new Menu(),new Album());
+	private String username,realname,password,confirmPassword = null;
+	private String priPhone,secPhone,email,birthDate,state,address = null;
 	
 	/*
 	 * Constructor for ihungryVendorController
-	 */
-	
+	 */	
 	public ihungryRestaurantController(ihungryRestaurantGui gui){
 		this.gui = gui;
 		model = new ihungryRestaurantModelImpl();
@@ -54,59 +65,16 @@ public class ihungryRestaurantController {
 		this.gui.getLoginGui().getLogin().addActionListener(new LoginListener());
 		this.gui.getLoginGui().getSignUp().addActionListener(new SignUpListener());
 		
-		//some sample data
-		Item i1 = new Item("I001","Pizza","Small Pizza",4.45,new Rating(0,0),new Album());
-		Item i2 = new Item("I002","Pizza Big","Big Pizza",7.30,new Rating(0,0),new Album());
-		Item i3 = new Item("I003","Burger","Burger",2.25,new Rating(0,0),new Album());
-		ArrayList<OrderItem> temp1 = new ArrayList<OrderItem>();
-		ArrayList<OrderItem> temp2 = new ArrayList<OrderItem>();
-		ArrayList<OrderItem> temp3 = new ArrayList<OrderItem>();
-		temp1.add(new OrderItem(i1,1));
-		temp1.add(new OrderItem(i2,2));
-		Order o1 = new Order("O001","C001","R001",1,temp1);
-		temp2.add(new OrderItem(i2,2));
-		temp2.add(new OrderItem(i3,3));
-		Order o2 = new Order("O002","C002","R001",1,temp2);
-		temp3.add(new OrderItem(i3,3));
-		temp3.add(new OrderItem(i1,1));
-		Order o3 = new Order("O003","C003","R001",1,temp3);
-		currOrders.add(o1);
-		currOrders.add(o2);
-		currOrders.add(o3);
-		data[0][0]= o1.getOrderID();
-		data[0][1]=o1.getCustID();
-		data[0][2]=o1.getStatus();
-		data[1][0]= o2.getOrderID();
-		data[1][1]=o2.getCustID();
-		data[1][2]=o2.getStatus();
-		data[2][0]= o3.getOrderID();
-		data[2][1]=o3.getCustID();
-		data[2][2]=o3.getStatus();
-		pointer = 3;
-		
-		/*listOfItemNames.add("Pizza");
-		listOfItemNames.add("Pizza Big");
-		listOfItemNames.add("Burger");
-		listOfDescription.add("Garden Fresh Pizza");
-		listOfDescription.add("Garden Fresh Pizza Big");
-		listOfDescription.add("Veggie Burger");
-		listOfPrice.add(Double.toString(4.45));
-		listOfPrice.add(Double.toString(7.30));
-		listOfPrice.add(Double.toString(2.30));*/
-		setCurrentOrders();
-
+		// Register the Observer to the Observable
+		iHungryRestaurant.getInstance().addObserver(gui.getOrderGui());
 	}
-	
-	
 	
 	/**
 	 * LoginListener class implements the actionPerformed method checking for
 	 * the user credentials and allowing the user to log into the application.
 	 * 
 	 * @author parkavi
-	 *
-	 */
-	
+	 */	
 	class LoginListener implements ActionListener{
 		
 		public void actionPerformed(ActionEvent event) 
@@ -114,34 +82,12 @@ public class ihungryRestaurantController {
 			composeForLogIn();			
 		}
 		
-		
 		public void composeForLogIn(){
 			
 			String username = gui.getLoginGui().getUsernameLogin().getText();
 			String password = new String(gui.getLoginGui().getPasswordLogin().getPassword());
 			
-			/*listOfItemNames.add("Pizza");
-			listOfItemNames.add("Small Pizza");
-			listOfItemNames.add("Big Pizza");
-			listOfItemNames.add("Burger");
-			listOfItemNames.add("Small Burger");
-			listOfItemNames.add("Big Burger");
-			
-			listOfDescription.add("Pizza");
-			listOfDescription.add("Small Pizza");
-			listOfDescription.add("Big Pizza");
-			listOfDescription.add("Burger");
-			listOfDescription.add("Small Burger");
-			listOfDescription.add("Big Burger");
-			
-			listOfPrice.add(new String("4.00"));
-			listOfPrice.add(new String("5.00"));
-			listOfPrice.add(new String("6.00"));
-			listOfPrice.add(new String("4.00"));
-			listOfPrice.add(new String("5.00"));
-			listOfPrice.add(new String("6.00"));
-			
-			gui.getOrderGui().displayOrderScreen();
+			/*gui.getOrderGui().displayOrderScreen();
 			gui.getOrderGui().getTabbedPane().setSelectedIndex(1);
 			onClickNext(); 
 			for(int i=0;i<5;i++)
@@ -155,12 +101,46 @@ public class ihungryRestaurantController {
 			
 			//check for errors in login
 			if (model.loginCheck(username,password))
-				if (model.attemptLogin(username,password))
+			{
+				String result = model.attemptLogin(username,password);
+				System.out.println("result="+result);
+				if (!result.equals(""))
 				{
 					System.out.println("successfully logged in");
-					restaurant = model.getRestaurantInfo(username,password);
-					//populate listOfItemNames,listOfDescription,listOfPrice from the retrieved Restaurant object
+					
+					iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
+					hungryRestaurant.setAccountInfo(new AccountInfo(username, password));
+										
+					// get the orders and store it in iHungryRestaurant class					
+					hungryRestaurant.setPendingOrders(model.retreiveOrders(
+							hungryRestaurant.getAccountInfo().getId(),
+							Order.STATUS_UNDERPROCING, 100));
+					
+					hungryRestaurant.setAcceptedOrders(model.retreiveOrders(
+							hungryRestaurant.getAccountInfo().getId(),
+							Order.STATUS_CONFIRMED, 100));
+					
+					hungryRestaurant.setDeclinedOrders(model.retreiveOrders(
+							hungryRestaurant.getAccountInfo().getId(),
+							Order.STATUS_REJECTED, 100));
+
+					hungryRestaurant.setOldOrders(model.retreiveOrders(
+							hungryRestaurant.getAccountInfo().getId(),
+							Order.STATUS_FINISHED, 100));
+
+					JSONObject jsonobj = null;
+					try {
+						jsonobj = new JSONObject(result);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
+					restaurant.parseFromJSONObject(jsonobj);
 					populateMenuFields();
+					Runnable r = new OrderRunnable(ihungryRestaurantController.this, restaurant.getAccountInfo());
+					Thread t =  new Thread(r);
+					t.start();
+					
 					gui.getOrderGui().displayOrderScreen();
 					gui.getOrderGui().getTabbedPane().setSelectedIndex(1);
 					onClickNext(); 
@@ -172,12 +152,17 @@ public class ihungryRestaurantController {
 					gui.getOrderGui().getNext().addActionListener(new NextButtonListener());
 					gui.getOrderGui().getPrev().addActionListener(new PrevButtonListener());
 					gui.getOrderGui().getTable().getSelectionModel().addListSelectionListener(new SelectionListener());
+					gui.getOrderGui().getDeclinedOrderTable().getSelectionModel().addListSelectionListener(new DeclinedOrderSelectionListener());
+					gui.getOrderGui().getOrderHistoryTable().getSelectionModel().addListSelectionListener(new OrderHistorySelectionListener());
+					
+					//add listeners to accept and decline buttons
 				}
 				else
 				{
 					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Password is incorrect.</FONT></HTML>");	
 					JOptionPane.showMessageDialog(null,errorFields);
 				}
+			}
 			else
 			{
 				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username does not exists.</FONT></HTML>");	
@@ -199,16 +184,14 @@ public class ihungryRestaurantController {
 			}
 		}
 	}
-	
-	
+		
 	/**
 	 * SignUpListener class implements the actionPerformed method. Sends a JSON
 	 * object of the Restaurant to the server which creates a new restaurant
 	 * 
 	 * @author parkavi
 	 *
-	 */
-	
+	 */	
 	class SignUpListener implements ActionListener{
 		public void actionPerformed(ActionEvent event) {
 			
@@ -220,24 +203,60 @@ public class ihungryRestaurantController {
 		class NextSignUpListener implements ActionListener{
 			
 			public void actionPerformed(ActionEvent event) {
-				gui.getSignupGui().displaySecondPageSignUpGui();
-				gui.getSignupGui().getSignUp2().addActionListener(new NextSignUpListener());
+				
+				username = gui.getSignupGui().getUserName().getText();
+				password = new String(gui.getSignupGui().getPassword().getPassword());
+				confirmPassword = new String(gui.getSignupGui().getConfirmPassword().getPassword());
+				realname = gui.getSignupGui().getFirstName().getText().concat(gui.getSignupGui().getLastName().getText());
+				
+				if(!gui.getSignupGui().getUserName().getText().equals("") &&
+						!new String(gui.getSignupGui().getPassword().getPassword()).equals("")	&&
+						!new String(gui.getSignupGui().getConfirmPassword().getPassword()).equals(""))
+					if(password.equals(confirmPassword))
+					{
+						if(!model.loginCheck(username, password))
+						{
+							gui.getSignupGui().displaySecondPageSignUpGui();
+							gui.getSignupGui().getSignUp2().addActionListener(new SecondSignUpListener());							
+						}
+						else
+						{
+							JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username already exists.Choose a different username.</FONT></HTML>");	
+							JOptionPane.showMessageDialog(null,errorFields);
+							gui.getSignupGui().getUserName().setText("");
+							gui.getSignupGui().getUserName().requestFocus();							
+						}
+					}
+					else
+					{
+						JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Password and Confirm Password fields doesn't match.</FONT></HTML>");	
+						JOptionPane.showMessageDialog(null,errorFields);
+						gui.getSignupGui().getPassword().setText("");
+						gui.getSignupGui().getConfirmPassword().setText("");
+						gui.getSignupGui().getPassword().requestFocus();
+					}
+				else
+				{
+					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username and Password fields cannot be empty.</FONT></HTML>");	
+					JOptionPane.showMessageDialog(null,errorFields);
+				}
+			}
+		}
+		
+		class SecondSignUpListener implements ActionListener{
+			
+			public void actionPerformed(ActionEvent event){
 				composeForSignUp();
-						                  
 			}
 			
 			public void composeForSignUp(){
 				
-				String username = gui.getSignupGui().getUserName().getText();
-				String password = new String(gui.getSignupGui().getPassword().getPassword());
-				String confirmPassword = new String(gui.getSignupGui().getCOnfirmPassword().getPassword());
-				String realname = gui.getSignupGui().getFirstName().getText().concat(gui.getSignupGui().getLastName().getText());
-				String priPhone = gui.getSignupGui().getPriPhone().getText();
-				String secPhone = gui.getSignupGui().getSecPhone().getText();
-				String email = gui.getSignupGui().getEmail().getText();
-				String birthDate = "";
-				String state = (String) gui.getSignupGui().getState().getSelectedItem();
-				String address = gui.getSignupGui().getStreet().getText().concat(gui.getSignupGui().getCity().getText()).
+				priPhone = gui.getSignupGui().getPriPhone().getText();
+				secPhone = gui.getSignupGui().getSecPhone().getText();
+				email = gui.getSignupGui().getEmail().getText();
+				birthDate = "";
+				state = (String) gui.getSignupGui().getState().getSelectedItem();
+				address = gui.getSignupGui().getStreet().getText().concat(gui.getSignupGui().getCity().getText()).
 				                      concat(state).concat(gui.getSignupGui().getZip().getText());
 				
 				Icon newIcon = new Icon();
@@ -246,31 +265,21 @@ public class ihungryRestaurantController {
 				ContactInfo newContact = new ContactInfo(realname,newLocation,priPhone,secPhone,email,birthDate,newIcon);
 				Menu newMenu = new Menu();
 				Album newAlbum = new Album();
-				restaurant = new Restaurant(newAccount,newContact,newMenu,newAlbum);
+				restaurant = new Restaurant(newMenu,newAlbum);
+				restaurant.setAccountInfo(newAccount);
+				restaurant.setContactInfo(newContact);
 				
 				boolean result;
 				
-				if(password.equals(confirmPassword))
+				result = model.signupForNewUser(restaurant);
+				if (result)
 				{
-					result = model.signupForNewUser(restaurant);
-					if (result==true)
-						gui.getOrderGui().displayOrderScreen();
-					else
-					{
-						JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username already exists.Choose a different username.</FONT></HTML>");	
-						JOptionPane.showMessageDialog(null,errorFields);
-					}	
-				}
-				else
-				{
-					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Password and Confirm Password fields doesn't match.</FONT></HTML>");	
-					JOptionPane.showMessageDialog(null,errorFields);
+					gui.getOrderGui().displayOrderScreen();
+					//gui.getOrderGui().getAcceptButton().addActionListener()
 				}
 			}
 		}
 	}
-	
-	
 	
 	/**
 	 * SelectionListener class implements ListSelection Listener. Gives 
@@ -286,33 +295,105 @@ public class ihungryRestaurantController {
 		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
 		 */
 		
-		public void valueChanged(ListSelectionEvent e){
-			
+		public void valueChanged(ListSelectionEvent e) {
+
+			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getSubPanel10().setVisible(true);
-			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
 			int minIndex = lsm.getMinSelectionIndex();
-            int maxIndex = lsm.getMaxSelectionIndex();
-                       
-            
-            //for(int i=0;i<currOrders.size();i++){
-            	//if(currOrders.get(i).getOrderID().equals(data[minIndex][0])){
-            		//System.out.println("match found");
-            		//gui.getSubPanel10().setVisible(true);
-            		Order selectedOrder = currOrders.get(minIndex);
-            		gui.getOrderGui().getOrderNo().setText(selectedOrder.getOrderID());
-            		gui.getOrderGui().getCustNo().setText(selectedOrder.getCustID());
-            		String[] orderDetails = new String[50];
-            		for(int j=0;j<selectedOrder.getOrderItems().size();j++){
-            			orderDetails[j] = selectedOrder.getOrderItems().get(j).getItem().getItemName() + "    " + selectedOrder.getOrderItems().get(j).getQuantity();
-            		}
-            		gui.getOrderGui().setSelectedOrderDetails(orderDetails);
-            	//}
-            //}
+
+			List<Order> pendingOrders = new ArrayList<Order>(hungryRestaurant.getPendingOrders());
+			Order selectedOrder = pendingOrders.get(minIndex);
+			gui.getOrderGui().getOrderNo().setText(selectedOrder.getOrderID());
+			gui.getOrderGui().getCustNo().setText(selectedOrder.getCustID());
+			String[] orderDetails = new String[50];
+			
+			for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
+				orderDetails[j] = selectedOrder.getOrderItems().get(j)
+						.getItem().getItemName()
+						+ "    "
+						+ selectedOrder.getOrderItems().get(j).getQuantity();
+			}
+			gui.getOrderGui().setSelectedOrderDetails(orderDetails);
 		}
 		
 	}
 	
+	/**
+	 * DeclinedOrderSelectionListener class implements ListSelection Listener. Gives 
+	 * implementation for the valueChanged method.
+	 * 
+	 * @author parkavi
+	 *
+	 */
+	public class DeclinedOrderSelectionListener implements ListSelectionListener{
+		
+		/*
+		 * This method will populate the JList with the details of the currently selected order.
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
+		
+		public void valueChanged(ListSelectionEvent e) {
+
+			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
+			gui.getOrderGui().getDeclinedOrderSubPanel().setVisible(true);
+			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+			int minIndex = lsm.getMinSelectionIndex();			
+
+			List<Order> declinedOrders = new ArrayList<Order>(hungryRestaurant.getDeclinedOrders());
+			Order selectedOrder = declinedOrders.get(minIndex);
+			gui.getOrderGui().getDeclinedOrderOrderNo().setText(selectedOrder.getOrderID());
+			gui.getOrderGui().getDeclinedOrderCustNo().setText(selectedOrder.getCustID());
+			String[] orderDetails = new String[50];
+			
+			for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
+				orderDetails[j] = selectedOrder.getOrderItems().get(j)
+						.getItem().getItemName()
+						+ "    "
+						+ selectedOrder.getOrderItems().get(j).getQuantity();
+			}
+			gui.getOrderGui().getDeclinedOrderList().setListData(orderDetails);
+		}
+		
+	}
 	
+	/**
+	 * OrderHistorySelectionListener class implements ListSelection Listener. Gives 
+	 * implementation for the valueChanged method.
+	 * 
+	 * @author parkavi
+	 *
+	 */
+	public class OrderHistorySelectionListener implements ListSelectionListener{
+		
+		/*
+		 * This method will populate the JList with the details of the currently selected order.
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
+		
+		public void valueChanged(ListSelectionEvent e) {
+
+			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
+			gui.getOrderGui().getOrderHistorySubPanel().setVisible(true);
+			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+			int minIndex = lsm.getMinSelectionIndex();			
+
+			List<Order> oldOrders = new ArrayList<Order>(hungryRestaurant.getOldOrders());
+			Order selectedOrder = oldOrders.get(minIndex);
+			gui.getOrderGui().getOrderHistoryOrderNo().setText(selectedOrder.getOrderID());
+			gui.getOrderGui().getOrderHistoryCustNo().setText(selectedOrder.getCustID());
+			String[] orderDetails = new String[50];
+			
+			for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
+				orderDetails[j] = selectedOrder.getOrderItems().get(j)
+						.getItem().getItemName()
+						+ "    "
+						+ selectedOrder.getOrderItems().get(j).getQuantity();
+			}
+			gui.getOrderGui().getOrderHistoryList().setListData(orderDetails);
+		}
+		
+	}
 	
 	/**
 	 * EditButtonListener class implements the actionPerformed method checking for 
@@ -320,9 +401,7 @@ public class ihungryRestaurantController {
 	 * 
 	 * @author parkavi
 	 *
-	 */
-	
-	
+	 */		
 	class EditButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) 
 		{
@@ -352,18 +431,17 @@ public class ihungryRestaurantController {
 					     listOfPrice.set(indx*5+ind,price.getText());
 					     
 					     //update the menu 
-					     Item updateItem = restaurant.getMenu().getItems().get(restaurant.getMenu().getMenuSize());
+					     Item updateItem = restaurant.getMenu().getItems().get(indx*5+ind);
 					     updateItem.setItemName(name.getText());
 					     updateItem.setItemDescription(description.getText());
 					     updateItem.setItemPrice(Double.parseDouble(price.getText()));
+					     restaurant.getMenu().setItem(indx*5+ind, updateItem);
 					     
 					     //write Menu to DB
 					     while (!model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu()))
 					     {
 					    	 
 					     }
-					     
-					     
 				     }
 				     else{
 				    	 listOfItemNames.add(name.getText());
@@ -371,20 +449,22 @@ public class ihungryRestaurantController {
 					     listOfPrice.add(price.getText());
 					     
 					     //add item to menu
-					     Item lastItem = restaurant.getMenu().getItems().get(restaurant.getMenu().getMenuSize());
-					     String newItemId = Integer.toString(Integer.parseInt(lastItem.getItemId()) + 1);
+					     String newItemId = null;
+					     if (restaurant.getMenu().getMenuSize()==0)
+					    	 newItemId = "1";
+					     else
+					     {
+					    	 Item lastItem = restaurant.getMenu().getItems().get(restaurant.getMenu().getMenuSize()-1);
+					    	 newItemId = Integer.toString(Integer.parseInt(lastItem.getItemId()) + 1);
+					     }
 					     Item newItem = new Item(newItemId,name.getText(),description.getText(),Double.parseDouble(price.getText()),new Rating(0,0),new Album());
 					     restaurant.getMenu().addItem(newItem);
 					     
 					     //write Menu to DB
-					     while (!model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu()))
-					     {
-					    	 
-					     }
+					     boolean result = model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu());
+					     System.out.println("result = "+result);
 				     }
-				     		
 				}
-				
 				else if(listOfEdit.get(ind).getText()=="Edit")
 				{
 					name.setEditable(true);
@@ -395,8 +475,7 @@ public class ihungryRestaurantController {
 			        /*//replace the newly entered item and its price
 			        listOfItemNames.set(indx*5+ind,name.getText());
 			        listOfDescription.set(indx*5+ind,description.getText());
-			        listOfPrice.set(indx*5+ind,price.getText());*/
-					
+			        listOfPrice.set(indx*5+ind,price.getText());*/					
 				}
 		    }
 		}
@@ -427,16 +506,14 @@ public class ihungryRestaurantController {
 			}
 		}
 	}
-	
-	
+		
 	/**
 	 * NextButtonListener class implements the actionPerformed method and 
 	 * populates the textfields to show the next set of menu items.
 	 * 
 	 * @author parkavi
 	 *
-	 */
-	
+	 */	
 	class NextButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 				
@@ -497,8 +574,7 @@ public class ihungryRestaurantController {
 	 * 
 	 * @author parkavi
 	 *
-	 */
-	
+	 */	
 	class PrevButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			indx = indx - 1;
@@ -521,17 +597,7 @@ public class ihungryRestaurantController {
 		}
 	}
 	
-	
-	/*
-	 * This method is called to update the list of pending orders.
-	 */
-	
-	public void setCurrentOrders(){
-		gui.getOrderGui().setCurrentOrders(data,pointer);
-		for(int i=0;i<pointer;i++)
-			for(int j=0;j<5;j++)
-				this.data[i][j]="";
-	}
-
-	
+	public ihungryRestaurantModelInterface getModel(){
+		return model;
+	}		
 }

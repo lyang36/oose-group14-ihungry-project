@@ -2,6 +2,7 @@ package edu.jhu.cs.oose.group14.restaurant.model;
 
 import java.util.List;
 
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
@@ -33,7 +34,18 @@ public interface ihungryRestaurantModelInterface {
 	 * @param password
 	 * @return LOGIN_SUCCESS/LOGIN_ERROR
 	 */
-	public boolean attemptLogin( String username, String password);
+	public String attemptLogin( String username, String password);
+	
+	
+	/**
+	 * Called whenever a change has been made to the menu. This method
+	 * updates the menu in the database.
+	 *  
+	 * @param accinfo
+	 * @param menu
+	 * @return PROCESS_SUCCEEDED/PROCESS_FAILED
+	 */
+	public boolean updateMenu(AccountInfo accinfo, Menu menu);
 	
 	
 	/**
@@ -42,16 +54,6 @@ public interface ihungryRestaurantModelInterface {
 	 * @return a boolean value whether the signup is successful on the server side.
 	 */
 	public boolean signupForNewUser( Restaurant restaurant );
-	
-	
-	/**
-	 * Get the restaurant object info from the server.
-	 * @param username
-	 * @param password
-	 * @return restaurant object
-	 */
-	public Restaurant getRestaurantInfo( String username, String password);
-	
 	
 	
 	/**
@@ -71,7 +73,7 @@ public interface ihungryRestaurantModelInterface {
 	 */
 	public List<Order> retrieveChangedOrders(String restId);
 	
-	public boolean updateMenu(AccountInfo accinfo, Menu menu);
+	
 	
 	
 	
