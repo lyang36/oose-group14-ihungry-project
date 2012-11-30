@@ -36,41 +36,25 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	private InternetClient internetClient;
 	private AccountInfo customer_account;
 	
+	/**
+	 * A constructor with no parameter.
+	 */
 	public AndroidClientModelImpl() {
 		internetClient = new InternetClient();
 		Log.v("[Constr01: Server Info]", CommunicationProtocol.SERVER_IP_ADDRESS + " "
 				+ CommunicationProtocol.SERVER_PORT);
 	}
 	
+	/**
+	 * A constructor with the customer's AccountInfo as parameter.
+	 * @param customer_info_in
+	 */
 	public AndroidClientModelImpl(AccountInfo customer_info_in){
 		this.customer_account = customer_info_in;
 		internetClient = new InternetClient();
 		Log.v("[Constr02: Server Info]", CommunicationProtocol.SERVER_IP_ADDRESS + " "
 				+ CommunicationProtocol.SERVER_PORT);
 	}
-
-	/*
-	public String getResponseFromServerT() {
-		Log.v("getResponseFromServerT", "executed");
-
-		String a = CommunicationProtocol.construcSendingStr(
-				CommunicationProtocol.FB_SIGN_NAME,
-				CommunicationProtocol.FB_SIGN_PASSWD,
-				CommunicationProtocol.BUSI_LOGIN, "{\"name\": \"try\"}");
-
-		String responseFromServer = "";
-		try {
-			responseFromServer = internetClient
-					.sendAndGet(a, CONNECTION_TIMEOUT);
-
-		} catch (Exception e) {
-			Log.e("[getResponseFromServer Exception]",""+e.getMessage());
-			e.printStackTrace();
-		}
-
-		return responseFromServer;
-
-	}*/
 
 	public boolean loginCheck(String username, String password) {
 		String sendStr = CommunicationProtocol.construcSendingStr(
@@ -222,63 +206,6 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		}
 		return bus_con;
 	}
-
-	/*
-	public List<ContactInfo> retrieveRestaurants(LocationInfo loc) {
-		LocationInfo loc_test = new LocationInfo("Test");
-		List<AccountInfo> busAccountInfos = this.getRestaurantAccountInfos(loc_test);
-		List<ContactInfo> busContactInfos = this.getRestaurantContactInfos(busAccountInfos);
-		
-		return busContactInfos;
-*/
-		/*
-		 * 1. Generate a sending message to be sent to the server with
-		 * locationinfo
-		 */
-		/* 2. Call internetClient.sendAndGet to get response from server */
-		/* 3. If valid => parse the information to List<Restaurant> object */
-
-		/*
-		 * static final private String[][] restaurant_info = { { "r1000",
-		 * "New China II", "1030 WEST 41st St, Baltimore, MD 21211" }, {
-		 * "r1001", "The Carlyle Club",
-		 * "500 W University Pkwy, Baltimore, MD 21210" }, { "r1002",
-		 * "Miss Shirley's Cafe", "513 W Cold Spring Ln,Baltimore, MD 21210" },
-		 * { "r1003", "One World Cafe",
-		 * "100 W University Pkwy, Baltimore, MD 21210" }, { "r1004",
-		 * "SanSoo Kab San", "2101 Maryland Ave, Baltimore, MD 21218" }, {
-		 * "r1005", "The Food Market", "1017 W 36th St, Baltimore, MD 21211" },
-		 * { "r1006", "Tamber's Nifty Fifties Dining",
-		 * "3327 St. Paul St, Baltimore, MD 21218" }, { "r1007",
-		 * "Thai Restaurant", "3316 Greenmount Ave, Baltimore, MD 21218" } };
-		 */
-		/*
-		List<Restaurant> restaurants = new ArrayList<Restaurant>();
-		edu.jhu.cs.oose.project.group14.ihungry.model.Menu menu = new edu.jhu.cs.oose.project.group14.ihungry.model.Menu();
-		Album album = new Album();
-		Icon icon = new Icon();
-
-		AccountInfo acc1 = new AccountInfo("newchina", "");
-		ContactInfo contact1 = new ContactInfo("New China II",
-				new LocationInfo("1030 WEST 41st St, Baltimore, MD 21211"), "445-685-6652", "",
-				"", "", icon);
-		Restaurant rest1 = new Restaurant(menu, album);
-		rest1.setAccountInfo(acc1);
-		rest1.setContactInfo(contact1);
-
-		AccountInfo acc2 = new AccountInfo("carlyleclub", "");
-		ContactInfo contact2 = new ContactInfo("The Carlyle Club",
-				new LocationInfo("500 W University Pkwy, Baltimore, MD 21210"), "", "", "", "",
-				icon);
-		Restaurant rest2 = new Restaurant(menu, album);
-		rest2.setAccountInfo(acc2);
-		rest2.setContactInfo(contact2);
-
-		restaurants.add(rest1);
-		restaurants.add(rest2);
-		 */
-		
-//	}
 
 	public Menu retrieveMenu(String restId) {
 		/* 1. Generate a sending message to be sent to the server with restId */
