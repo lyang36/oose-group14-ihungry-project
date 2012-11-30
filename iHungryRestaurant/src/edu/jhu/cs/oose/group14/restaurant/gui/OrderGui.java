@@ -136,7 +136,8 @@ public class OrderGui implements Observer {
 			displayCurrentOrder();
 			displayToBeDeliveredOrder();
 			displayDeclinedOrder();								
-			displayOrderHistory();	
+			displayOrderHistory();
+			//showUpdateScreen();
 			
 		}
 	}
@@ -888,6 +889,22 @@ public class OrderGui implements Observer {
 	public JTabbedPane getTabbedPane(){
 		return jTabbedPane1;
 	}
+	
+	
+	/*private void showUpdateScreen()
+	{
+		updateScreen = new JPanel();
+		jTabbedPane1.addTab("View/Update Menu", null, updateScreen, null);
+		GroupLayout viewMenuLayout = new GroupLayout((JComponent)viewMenu);
+		viewMenu.setLayout(viewMenuLayout);
+		viewMenu.setPreferredSize(new java.awt.Dimension(788, 543));
+		viewMenu.setBorder(BorderFactory.createTitledBorder(""));
+		{
+			menuFrontMessage = new JLabel();
+			menuFrontMessage.setText("             View/Update Menu allows you to view the existing menu and to add/delete/update menu items.");
+			menuFrontMessage.setBorder(new LineBorder(new java.awt.Color(0,0,0), 1, false));
+		}
+	}*/
 
 	 public void update(Observable obs, Object x) {
 		 
