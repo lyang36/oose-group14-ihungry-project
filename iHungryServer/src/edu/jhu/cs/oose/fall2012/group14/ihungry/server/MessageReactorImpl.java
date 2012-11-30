@@ -737,6 +737,30 @@ public class MessageReactorImpl implements MessageReactor{
 			}
 			
 			
+			//business process a order
+			else if(commandmesg.contains(CommunicationProtocol.BUSI_GET_CUS_CONTACT)){
+				Restaurant res = dboperator.getBusiness(inputAcc);
+				returnStringInfo((res != null),
+						"", 
+						CommunicationProtocol.PROCESS_SUCCEEDED, 
+						CommunicationProtocol.PROCESS_FAILED, 
+						new OnJudgeListener(){
+							@Override
+							public String onTrue() {
+								Order odr = (new Order(supinfoObj));
+								return dboperator.busiGetCusContactInfo(odr).getJSON().toString();
+							}
+		
+							@Override
+							public String onFalse() {	
+								return null;
+							}
+					
+						});
+				
+			}
+			
+			
 			//retrive changed orders
 			else if(commandmesg.contains(CommunicationProtocol.BUSI_RETRIVE_CHANGED_ORDERS)){
 				Restaurant bus = dboperator.getBusiness(inputAcc);
@@ -749,6 +773,7 @@ public class MessageReactorImpl implements MessageReactor{
 							public String onTrue() {
 								ListedJSONObj obj = null;
 								obj = dboperator.getChangedBusiOrders(inputAcc);
+								System.out.println("order:" + obj.getJSON().toString());
 								return obj.getJSON().toString();
 							}
 		

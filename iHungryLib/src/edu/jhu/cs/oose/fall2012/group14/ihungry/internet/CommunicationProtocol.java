@@ -167,7 +167,7 @@ public class CommunicationProtocol {
 	public static final String CUS_SUBMIT_ORDER 	  =		"18fc1c45a61ac49fd563875a69fc7fed";
 	
 	/**
-	 * customer submit an order <p>
+	 * customer update an order <p>
 	 * Input SupInfo: Order.getJSON()<p>
 	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
 	 * Return Supinfo: ""
@@ -175,7 +175,7 @@ public class CommunicationProtocol {
 	public static final String CUS_UPDATE_ORDER 	  =		"13ac2330ef57b95dc1bfe48f45f054c5";
 	
 	/**
-	 * customer submit an order <p>
+	 * customer retrive orders <p>
 	 * Input SupInfo: OrderQuerier.getJSON()<p>
 	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
 	 * Return Supinfo: ListedJSONObj of Orders
@@ -184,6 +184,9 @@ public class CommunicationProtocol {
 	
 	/**
 	 * retrive changed order
+	 * Input SupInfo: ""<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ListedJSONObj of Orders
 	 */
 	public static final String CUS_RETRIVE_CHANGED_ORDER = 	"bd472871498f04ffee93a6c6c3980b0e";
 	
@@ -202,24 +205,109 @@ public class CommunicationProtocol {
 		
 	
 	/**
-	 * Business util
+	 * restaurant login. 
+	 * Input SupInfo: "". 
+	 * <p>Return Command: LOGIN_ERROR/LOGIN_SUCESS 
+	 * <p>Return Supinfo: Restaurant.getJSON/
 	 */
 	public static final String BUSI_LOGIN = 				"f4cb213d54f9344dbf4aa77a2deb1b6f";
+	
+	/**
+	 * restaurant sign/ up. 
+	 * Input SupInfo: Restaurant.getJSON. 
+	 * <p>Return Command: LOGIN_ERROR/LOGIN_SUCESS 
+	 * <p>Return Supinfo: ""
+	 */
 	public static final String BUSI_SIGNUP = 				"b5faedba1c8eb07ef588b500f6d68f9d";
+	
+	/**
+	 * restaurant check username existed. <p>
+	 * Input SupInfo: "" <p>
+	 * Return Command: TRUE/FALSE<p>
+	 * Return Supinfo: ""
+	 */
 	public static final String BUSI_CHECK_UNAME_EXISTED = 	"aa1c7d9580569252f3ab9d886049e934";
+	
+	/**
+	 * restaurant update the contact. <p>
+	 * Input SupInfo: Contact.getJSON() <p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ""
+	 */
 	public static final String BUSI_UPDATE_CONTACT = 		"5071cf4b162b6e66d3ca5d71321624ad";
+	
+	/**
+	 * restaurant get contact. Input SupInfo: "". 
+	 * <p>Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED
+	 * <p>Return Supinfo: Contact.getJSON()
+	 */
 	public static final String BUSI_GET_CONTACT = 			"7a3b457e1544c136e822dfed78cd982e";
+	
+	/**
+	 * restaurant get customer's contact. 
+	 * Input SupInfo: Order.getJSON. 
+	 * <p>Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED
+	 * <p>Return Supinfo: Contact.getJSON()
+	 */
 	public static final String BUSI_GET_CUS_CONTACT = 		"1ca24bb6a50f11f694036a6160ef6a2b";
+	
+	
+	/**
+	 * restaurant update the menu. <p>
+	 * Input SupInfo: Menu.getJSON() <p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ""
+	 */
 	public static final String BUSI_UPDATE_MENU	=			"19a3a67078a026f331d721ed28c98101";
+	
+	/**
+	 * restaurant update the menu. <p>
+	 * Input SupInfo: Menu.getJSON() <p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ""
+	 */
 	public static final String BUSI_UPDATE_ALBUM = 			"3042ae4410fb6416fc3b7e6a9a37cff9";
+	
+	/**
+	 * restaurant update the album. <p>
+	 * Input SupInfo: album.getJSON() <p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ""
+	 */
 	public static final String BUSI_GET_ALBUM	=			"441f01e2dd032971c771f1e2ab1f38e1";
+	
+	/**
+	 * restaurant get the menu. <p>
+	 * Input SupInfo: "" <p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: Menu.getJSON
+	 */
 	public static final String BUSI_GET_MENU	=			"29d179daa3216ed25541f28c4a7401c3";
 	
 	/**
-	 * for orders 
+	 * restaurant retrive orders <p>
+	 * Input SupInfo: OrderQuerier.getJSON()<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ListedJSONObj of Orders
 	 */
 	public static final String BUSI_RETRIVE_ORDERS = 		"ad467bd4668f00f1ec3ce32df7c2ebfa";
+	
+	
+	
+	/**
+	 * restaurant retrive changed orders <p>
+	 * Input SupInfo: ""<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ListedJSONObj of Orders
+	 */
 	public static final String BUSI_RETRIVE_CHANGED_ORDERS ="536dbc9b3cd19e1485b3fd0926e26b44";
+	
+	/**
+	 * restaurant update an order <p>
+	 * Input SupInfo: Order.getJSON<p>
+	 * Return Command: PROCESS_SUCCEEDED/PROCESS_FAILED<p>
+	 * Return Supinfo: ""
+	 */
 	public static final String BUSI_PROCESS_ORDER = 		"8ef14e8985c487bb0025e9c4a6ae8d0a";
 
 	
