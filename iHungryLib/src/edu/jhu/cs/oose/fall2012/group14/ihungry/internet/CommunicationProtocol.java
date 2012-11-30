@@ -17,7 +17,7 @@ public class CommunicationProtocol {
 	/**
 	 * the server port
 	 */
-	public static int SERVER_PORT = 21;
+	public static int SERVER_PORT = 22;
 	
 	/**
 	 * server command strings
