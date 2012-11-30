@@ -144,7 +144,7 @@ public class MainScreenActivity extends Activity {
 		 * sendBroadcast(intent);
 		 */
 		alarmManager.cancel(pendingIntent);
-		stopService(new Intent(MainScreenActivity.this, NotifyService.class));
+		//stopService(new Intent(MainScreenActivity.this, NotifyService.class));
 
 		Toast.makeText(MainScreenActivity.this, "Fetch STOP", Toast.LENGTH_LONG)
 				.show();

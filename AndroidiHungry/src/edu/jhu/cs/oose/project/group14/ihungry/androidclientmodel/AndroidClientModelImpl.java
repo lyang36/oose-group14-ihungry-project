@@ -32,7 +32,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.*;
  * 
  */
 public class AndroidClientModelImpl implements AndroidClientModel {
-	static private final int CONNECTION_TIMEOUT = 10000;
+	static private final int CONNECTION_TIMEOUT = 30000;
 	private InternetClient internetClient;
 	private AccountInfo customer_account;
 	
@@ -415,6 +415,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		
 			Iterator<JSONObject> it = jobj.iterator();
 			while(it.hasNext()){
+				System.out.println("One Order");
 				Order order = new Order("", "", "", -1, new ArrayList<OrderItem>());
 				order.parseFromJSONObject(it.next());
 				changed_orders.add(order);

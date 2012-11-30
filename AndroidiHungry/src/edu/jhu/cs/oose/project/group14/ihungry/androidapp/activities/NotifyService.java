@@ -24,112 +24,117 @@ import android.os.IBinder;
 
 /**
  * A Notification Service used to notify user their changed orders.
+ * 
  * @author SuNFloWer
- *
+ * 
  */
 public class NotifyService extends Service {
-	
+
 	final static String ACTION = "NotifyServiceAction";
 	final static String STOP_SERVICE = "";
 	final static int RQS_STOP_SERVICE = 1;
-	
+
 	private NotifyServiceReceiver notifyServiceReceiver;
-	
-	private static final int MY_NOTIFICATION_ID=1;
+
+	private static final int MY_NOTIFICATION_ID = 1;
 	private NotificationManager notificationManager;
 	private Notification myNotification;
 	private final String myBlog = "http://ugrad.cs.jhu.edu/~group14/";
-	
-	private int notifyCounter=0;
-	
+
+	private int notifyCounter = 0;
+
 	private AndroidClientModel clientModel;
-	
+
 	@Override
 	public void onCreate() {
 		ToastDisplay.DisplayToastOnScr(NotifyService.this,
 				"Fetching changed orders every 30 seconds");
-		
+
 		notifyServiceReceiver = new NotifyServiceReceiver();
-		
+
 		/* Initialize AndroidClientModel */
-		clientModel = new AndroidClientModelImpl(CustomerAccountInfoCreator.createAccountInfo(
-				FileHandler.username_stored, FileHandler.pwd_stored));
+		clientModel = new AndroidClientModelImpl(
+				CustomerAccountInfoCreator.createAccountInfo(
+						FileHandler.username_stored, FileHandler.pwd_stored));
 
 		super.onCreate();
 	}
-	
+
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		
+
 		// Test : retrieve all orders
-		List<Order> orders = clientModel.retrieveAllOrders();
-		ToastDisplay.DisplayToastOnScr(NotifyService.this, "Orders size: "+orders.size());
+		List<Order> orders = clientModel.retrieveChangedOrders();
 
-		
-		IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(ACTION);
-		registerReceiver(notifyServiceReceiver, intentFilter);
-		
-		// Send Notification
-		notificationManager = 
-			(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-		notifyCounter++;
-		myNotification = new Notification(R.drawable.ic_launcher, 
-				"Notification "+notifyCounter, 
-				System.currentTimeMillis());
-		
-		/*   */
-		Context context = getApplicationContext();
-		String notificationTitle = "Updated order available";
-		String notificationText =  notifyCounter+"";
-		//Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(myBlog));
-		Intent myIntent = new Intent(NotifyService.this, OrderHistoryActivity.class);
+		if (orders.size() != 0) {
 
-		PendingIntent pendingIntent 
-				= PendingIntent.getActivity(getBaseContext(), 
-						0, myIntent, 
-						Intent.FLAG_ACTIVITY_NEW_TASK);
-		myNotification.defaults |= Notification.DEFAULT_SOUND;
-		myNotification.flags |= Notification.FLAG_AUTO_CANCEL;
-		myNotification.setLatestEventInfo(context, 
-					notificationTitle, 
-					notificationText, 
-					pendingIntent);
-		notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
+			ToastDisplay.DisplayToastOnScr(NotifyService.this, "Orders size: "
+					+ orders.size());
+
+			IntentFilter intentFilter = new IntentFilter();
+			intentFilter.addAction(ACTION);
+			registerReceiver(notifyServiceReceiver, intentFilter);
+
+			// Send Notification
+			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			notifyCounter++;
+			myNotification = new Notification(R.drawable.ic_launcher,
+					"Notification " + notifyCounter, System.currentTimeMillis());
+
+			/*   */
+			Context context = getApplicationContext();
+			String notificationTitle = "Updated order available";
+			String notificationText = notifyCounter + "";
+			// Intent myIntent = new Intent(Intent.ACTION_VIEW,
+			// Uri.parse(myBlog));
+			Intent myIntent = new Intent(NotifyService.this,
+					OrderHistoryActivity.class);
+
+			PendingIntent pendingIntent = PendingIntent.getActivity(
+					getBaseContext(), 0, myIntent,
+					Intent.FLAG_ACTIVITY_NEW_TASK);
+			myNotification.defaults |= Notification.DEFAULT_SOUND;
+			myNotification.flags |= Notification.FLAG_AUTO_CANCEL;
+			myNotification.setLatestEventInfo(context, notificationTitle,
+					notificationText, pendingIntent);
+			notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
+		}
+			return super.onStartCommand(intent, flags, startId);
 		
-		return super.onStartCommand(intent, flags, startId);
 	}
 
 	@Override
 	public void onDestroy() {
-		ToastDisplay.DisplayToastOnScr(NotifyService.this, "NotifyService.onDestroy");
+		ToastDisplay.DisplayToastOnScr(NotifyService.this,
+				"NotifyService.onDestroy");
 
 		this.unregisterReceiver(notifyServiceReceiver);
 		super.onDestroy();
 	}
 
 	/**
-	 * A Service Receiver to get signals from other intents (or activities), such as STOP.
+	 * A Service Receiver to get signals from other intents (or activities),
+	 * such as STOP.
+	 * 
 	 * @author SuNFloWer
-	 *
+	 * 
 	 */
-	public class NotifyServiceReceiver extends BroadcastReceiver{
+	public class NotifyServiceReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
 			int rqs = arg1.getIntExtra("RQS", 0);
-			
+
 			/* Stop the service */
-			if (rqs == RQS_STOP_SERVICE){
+			if (rqs == RQS_STOP_SERVICE) {
 				stopSelf();
 			}
 		}
 	}
 
-	
 }
