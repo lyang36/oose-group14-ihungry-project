@@ -98,6 +98,8 @@ public class ihungryRestaurantController {
 				{
 					System.out.println("successfully logged in");
 					
+					
+					
 					hungryRestaurant = iHungryRestaurant.getInstance();
 					hungryRestaurant.setAccountInfo(new AccountInfo(username, password));
 					
@@ -112,6 +114,11 @@ public class ihungryRestaurantController {
 					}
 					
 					restaurant.parseFromJSONObject(jsonobj);
+					if(username.equals("group14 cafe"))
+					{
+						restaurant.getContactInfo().getAddress().setLatitude(39320056);
+						restaurant.getContactInfo().getAddress().setLongitude(-76619896);
+					}
 					populateMenuFields();
 										
 					gui.getOrderGui().displayOrderScreen();
