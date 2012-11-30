@@ -113,6 +113,14 @@ public interface DataBaseOperater {
 	public ContactInfo getCustomerContactInfo(AccountInfo acc);
 	
 	/**
+	 * Business get the contact info of the customer. Since the contact info of customer is private, 
+	 * busi must use order to retrive
+	 * @param odr
+	 * @return customer's contact info
+	 */
+	public ContactInfo busiGetCusContactInfo(Order odr);
+	
+	/**
 	 * get the orders for the user, from newest to the oldest, make them to be unchanged
 	 * @param uname
 	 * @param passwd

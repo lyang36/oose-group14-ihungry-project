@@ -154,6 +154,10 @@ public class MessageReactorImplTest {
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_SIGNUP,
 				CommunicationProtocol.PROCESS_SUCCEEDED, res.getJSON().toString());
 		
+		
+
+
+		
 		//test re-signup
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_SIGNUP,
@@ -327,13 +331,19 @@ public class MessageReactorImplTest {
 		Menu m = new Menu();
 		Album ab = new Album();
 		ContactInfo contact = new ContactInfo(new LocationInfo("abc dff"), "123456687");
-		AccountInfo busiacc = new AccountInfo("lyang", "123");
+		AccountInfo busiacc = new AccountInfo("lyres", "123");
 		Restaurant res = new Restaurant(m, ab);
 		res.setAccountInfo(busiacc);
 		res.setContactInfo(contact);
 		
+		System.out.println(res.getJSON().toString());
+		testCommand(MD5.getNameMd5("lyres"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_SIGNUP,
+				CommunicationProtocol.PROCESS_SUCCEEDED, res.getJSON().toString());
+		
+		
 		Order order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
-				MD5.getNameMd5("lyang"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+				MD5.getNameMd5("lyres"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
 		
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.CUS_SUBMIT_ORDER,
@@ -363,22 +373,23 @@ public class MessageReactorImplTest {
 		
 		System.out.println("Business try to retrive changed orders -- 1 changed");
 		querier = new OrderQuerier();
-		querier.setCusID(MD5.getNameMd5("lyang"));
-		testCommand(MD5.getNameMd5("lyang"),
+		//querier.setCusID(MD5.getNameMd5("lyang"));
+		querier.setRestaurantID(MD5.getNameMd5("lyres"));
+		testCommand(MD5.getNameMd5("lyres"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_RETRIVE_CHANGED_ORDERS,
 				CommunicationProtocol.PROCESS_SUCCEEDED, querier.getJSON().toString());
 		
 		System.out.println("Business try to retrive changed orders -- 0 changed");
-		querier.setCusID(MD5.getNameMd5("lyang"));
-		testCommand(MD5.getNameMd5("lyang"),
+		querier.setRestaurantID(MD5.getNameMd5("lyres"));
+		testCommand(MD5.getNameMd5("lyres"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_RETRIVE_CHANGED_ORDERS,
 				CommunicationProtocol.PROCESS_SUCCEEDED, querier.getJSON().toString());
 		
 		
 		System.out.println("Business update an order");
 		order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
-				MD5.getNameMd5("lyang"), Order.STATUS_CONFIRMED, new ArrayList<OrderItem>());
-		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("lyres"), Order.STATUS_CONFIRMED, new ArrayList<OrderItem>());
+		testCommand(MD5.getNameMd5("lyres"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_PROCESS_ORDER,
 				CommunicationProtocol.PROCESS_SUCCEEDED, order.getJSON().toString());
 		
@@ -387,6 +398,11 @@ public class MessageReactorImplTest {
 				MD5.getMd5("123"), CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER,
 				CommunicationProtocol.PROCESS_SUCCEEDED, "");
 		
+		
+		System.out.println("Restaurant test use order to get customer's contact");
+		testCommand(MD5.getNameMd5("lyres"),
+				MD5.getMd5("123"), CommunicationProtocol.BUSI_GET_CUS_CONTACT,
+				CommunicationProtocol.PROCESS_SUCCEEDED, order.getJSON().toString());
 		
 
 	}

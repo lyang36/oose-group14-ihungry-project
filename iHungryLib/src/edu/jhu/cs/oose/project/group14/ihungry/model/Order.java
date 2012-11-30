@@ -16,7 +16,7 @@ import org.json.JSONObject;
  */
 
 @SuppressWarnings("serial")
-public class Order implements JSONHandler<Order>, Serializable{
+public class Order implements JSONHandler<Order>, Serializable, Comparable{
 	/**
 	 * JSON Key
 	 */
@@ -101,6 +101,10 @@ public class Order implements JSONHandler<Order>, Serializable{
 		this.parseFromJSONObject(jobj);
 	}
 	
+	public Order(String orderId){
+		this.orderId = orderId;
+	}
+	
 	public Order (String orderId, String customerId, String restaurantId, int status, List<OrderItem> orderitems){
 		this.orderId = orderId;
 		this.custId = customerId;
@@ -174,6 +178,10 @@ public class Order implements JSONHandler<Order>, Serializable{
 	
 	public void setRestId(String restId){
 		this.restId = restId;
+	}
+	
+	public void setStatus(int s){
+		this.status = s;
 	}
 	
 	/**
@@ -296,7 +304,37 @@ public class Order implements JSONHandler<Order>, Serializable{
 		isNewToCus = st;
 	}
 	
+	@Override
+	public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
+	return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+	if (this == obj)
+	return true;
+	if (obj == null)
+	return false;
+	if (getClass() != obj.getClass())
+	return false;
+	Order other = (Order) obj;
+	if (orderId == null) {
+	if (other.orderId != null)
+	return false;
+	} else if (!orderId.equals(other.orderId))
+	return false;
+	return true;
+	}
+
 	
+	@Override
+	public int compareTo(Object order) {
+		return this.orderId.compareTo(((Order) order).orderId);
+	}	
+
 	
 	
 	

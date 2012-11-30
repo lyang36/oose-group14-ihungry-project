@@ -34,8 +34,11 @@ public class Item implements JSONHandler<Item>, Serializable{
 	 */
 	public static final String KEY_ALBUM = "Album";
 	
+	public static final String KEY_DESCRIPTION = "Itemdescription";
+	
 	private String itemID;
 	private String itemName;
+	private String itemDescription;
 	private double price;
 	private Rating rating;
 	private Album album;
@@ -51,6 +54,7 @@ public class Item implements JSONHandler<Item>, Serializable{
 		this.itemID = "1";
 		this.album = new Album();
 		this.itemName = "item";
+		this.itemDescription = "new item";
 		this.price = 12.33;
 		this.rating = new Rating();
 	}
@@ -63,12 +67,27 @@ public class Item implements JSONHandler<Item>, Serializable{
 		this.album = album;
 	}
 
+	
+	public Item(String itemId, String itemName, String itemDescription,double price, Rating rating, Album album ) {
+		this.itemID = itemId;
+		this.itemName = itemName;
+		this.itemDescription = itemDescription;
+		this.price = price;
+		this.rating = rating;
+		this.album = album;
+	}
+
+	
 	public String getItemId() {
 		return this.itemID;
 	}
 
 	public String getItemName() {
 		return this.itemName;
+	}
+	
+	public String getItemDescription() {
+		return this.itemDescription;
 	}
 
 	public double getItemPrice() {
@@ -90,6 +109,10 @@ public class Item implements JSONHandler<Item>, Serializable{
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
 	}
+	
+	public void setItemDescription(String itemDescription) {
+		this.itemDescription = itemDescription;
+	}
 
 	public void setItemPrice(double price) {
 		this.price = price;
@@ -104,7 +127,7 @@ public class Item implements JSONHandler<Item>, Serializable{
 	
 	@Override
 	public String toString(){
-		return this.itemID+" "+this.itemName+" "+this.price+" "+this.rating.getRating();
+		return this.itemID+" "+this.itemName+" "+this.itemDescription+" "+this.price+" "+this.rating.getRating();
 	}
 
 	@Override
@@ -113,6 +136,7 @@ public class Item implements JSONHandler<Item>, Serializable{
 		try {
 			retObj.put(KEY_ITEMID, this.itemID);
 			retObj.put(KEY_ITEMNAME, this.itemName);
+			retObj.put(KEY_DESCRIPTION, this.itemDescription);
 			retObj.put(KEY_PRICE, this.price);
 			retObj.put(KEY_RATING, this.rating.getJSON());
 			retObj.put(KEY_ALBUM, this.album.getJSON());
@@ -128,6 +152,7 @@ public class Item implements JSONHandler<Item>, Serializable{
 		try {
 			this.itemID = jsonobj.getString(KEY_ITEMID);
 			this.itemName = jsonobj.getString(KEY_ITEMNAME);
+			this.itemDescription = jsonobj.getString(KEY_DESCRIPTION);
 			this.price = jsonobj.getDouble(KEY_PRICE);
 			this.rating = new Rating();
 			this.rating.parseFromJSONObject(jsonobj.getJSONObject(KEY_RATING));

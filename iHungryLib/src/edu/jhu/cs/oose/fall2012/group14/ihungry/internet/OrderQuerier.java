@@ -115,7 +115,7 @@ public class OrderQuerier implements JSONHandler<OrderQuerier>{
 			if(restaurantID != null)
 				retObj.put(Order.KEY_RESTID, this.restaurantID);
 			
-			if(status != -1)
+			//if(status != -1)
 				retObj.put(Order.KEY_STATUS, this.status);
 			
 		} catch (JSONException e) {
@@ -127,6 +127,7 @@ public class OrderQuerier implements JSONHandler<OrderQuerier>{
 	@Override
 	public OrderQuerier parseFromJSONObject(JSONObject jsonobj) {
 		try {
+			this.status = jsonobj.getInt(Order.KEY_STATUS);
 			this.startIndex = jsonobj.getInt(KEY_START_INDEX);
 			this.endIndex = jsonobj.getInt(KEY_END_INDEX);
 			this.orderID = jsonobj.getString(Order.KEY_ORDERID);

@@ -1,18 +1,35 @@
 package edu.jhu.cs.oose.group14.restaurant.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.*;
-import java.awt.List;
-import java.awt.event.*;
-import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import edu.jhu.cs.oose.group14.restaurant.gui.ihungryRestaurantGui;
+import edu.jhu.cs.oose.group14.restaurant.model.iHungryRestaurant;
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelImpl;
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelInterface;
-import edu.jhu.cs.oose.project.group14.ihungry.model.*;
-import java.util.*;
+import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
+import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Icon;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Item;
+import edu.jhu.cs.oose.project.group14.ihungry.model.LocationInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Rating;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 /**
  * ihungryRestaurantModel class is the model class for ihungry vendor 
@@ -24,142 +41,322 @@ public class ihungryRestaurantController {
 	
 	private ihungryRestaurantGui gui;
 	private ihungryRestaurantModelInterface model;
-	private ArrayList<JButton> listOfEdit;
-    private ArrayList<JButton> listOfDelete;
-    private ArrayList<String> listOfItemNames, listOfDescription, listOfPrice ;
+	private List<JButton> listOfEdit;
+    private List<JButton> listOfDelete;
+    private List<String> listOfItemNames, listOfDescription, listOfPrice ;
 	private int itemNo =0;
 	private int indx=0;
-	private ArrayList<Order> currOrders = new ArrayList<Order>();
 	private Object[][] data =  new Object[1000][5];
 	private int pointer = 0;
-	
-
+	private Restaurant restaurant = new Restaurant(new Menu(),new Album());
+	private String username,realname,password,confirmPassword = null;
+	private String priPhone,secPhone,email,birthDate,state,address = null;
+	private iHungryRestaurant hungryRestaurant;
 	
 	/*
 	 * Constructor for ihungryVendorController
-	 */
-	
+	 */	
 	public ihungryRestaurantController(ihungryRestaurantGui gui){
 		this.gui = gui;
 		model = new ihungryRestaurantModelImpl();
-		listOfEdit = gui.getEditButton();
-	    listOfDelete = gui.getDeleteButton();
+		listOfEdit = gui.getOrderGui().getEditButton();
+	    listOfDelete = gui.getOrderGui().getDeleteButton();
 	    listOfItemNames = new ArrayList<String>();
 	    listOfDescription = new ArrayList<String>();
 	    listOfPrice = new ArrayList<String>();
-		this.gui.getLogin().addActionListener(new LoginListener());
-		this.gui.getSignUp().addActionListener(new SignUpListener());
+		this.gui.getLoginGui().getLogin().addActionListener(new LoginListener());
+		this.gui.getLoginGui().getSignUp().addActionListener(new SignUpListener());
 		
-		//some sample data
-		Item i1 = new Item("I001","Pizza",4.45,new Rating(0,0),new Album());
-		Item i2 = new Item("I002","Pizza Big",7.30,new Rating(0,0),new Album());
-		Item i3 = new Item("I003","Burger",2.25,new Rating(0,0),new Album());
-		ArrayList<OrderItem> temp1 = new ArrayList<OrderItem>();
-		ArrayList<OrderItem> temp2 = new ArrayList<OrderItem>();
-		ArrayList<OrderItem> temp3 = new ArrayList<OrderItem>();
-		temp1.add(new OrderItem(i1,1));
-		temp1.add(new OrderItem(i2,2));
-		Order o1 = new Order("O001","C001","R001",1,temp1);
-		temp2.add(new OrderItem(i2,2));
-		temp2.add(new OrderItem(i3,3));
-		Order o2 = new Order("O002","C002","R001",1,temp2);
-		temp3.add(new OrderItem(i3,3));
-		temp3.add(new OrderItem(i1,1));
-		Order o3 = new Order("O003","C003","R001",1,temp3);
-		currOrders.add(o1);
-		currOrders.add(o2);
-		currOrders.add(o3);
-		data[0][0]= o1.getOrderID();
-		data[0][1]=o1.getCustID();
-		data[0][2]=o1.getStatus();
-		data[1][0]= o2.getOrderID();
-		data[1][1]=o2.getCustID();
-		data[1][2]=o2.getStatus();
-		data[2][0]= o3.getOrderID();
-		data[2][1]=o3.getCustID();
-		data[2][2]=o3.getStatus();
-		pointer = 3;
-		
-		/*listOfItemNames.add("Pizza");
-		listOfItemNames.add("Pizza Big");
-		listOfItemNames.add("Burger");
-		listOfDescription.add("Garden Fresh Pizza");
-		listOfDescription.add("Garden Fresh Pizza Big");
-		listOfDescription.add("Veggie Burger");
-		listOfPrice.add(Double.toString(4.45));
-		listOfPrice.add(Double.toString(7.30));
-		listOfPrice.add(Double.toString(2.30));*/
-		setCurrentOrders();
-
+		// Register the Observer to the Observable
+		iHungryRestaurant.getInstance().addObserver(gui.getOrderGui());
 	}
-	
-	
 	
 	/**
 	 * LoginListener class implements the actionPerformed method checking for
 	 * the user credentials and allowing the user to log into the application.
 	 * 
 	 * @author parkavi
-	 *
-	 */
-	
+	 */	
 	class LoginListener implements ActionListener{
 		
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(ActionEvent event) 
+		{
+			composeForLogIn();			
+		}
+		
+		public void composeForLogIn(){
 			
-			String username = gui.getUsernameLogin().getText();
-			String password = new String(gui.getPasswordLogin().getText());
-			Restaurant restInfo = null;
+			String username = gui.getLoginGui().getUsernameLogin().getText();
+			String password = new String(gui.getLoginGui().getPasswordLogin().getPassword());
 			
+			//check for errors in login
 			if (model.loginCheck(username,password))
-				if (model.attemptLogin(username,password))
-					restInfo = model.getRestaurantInfo(username,password);
+			{
+				String result = model.attemptLogin(username,password);
+				System.out.println("result="+result);
+				if (!result.equals(""))
+				{
+					System.out.println("successfully logged in");
+					
+					hungryRestaurant = iHungryRestaurant.getInstance();
+					hungryRestaurant.setAccountInfo(new AccountInfo(username, password));
+					
+					Timer timer = new Timer("RetrieveOrdersTask", true);					
+				    timer.scheduleAtFixedRate(new RetrieveOrdersTask(), 5000, 5000);
+
+					JSONObject jsonobj = null;
+					try {
+						jsonobj = new JSONObject(result);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
+					restaurant.parseFromJSONObject(jsonobj);
+					populateMenuFields();
+										
+					gui.getOrderGui().displayOrderScreen();
+					gui.getOrderGui().getTabbedPane().setSelectedIndex(1);
+					onClickNext(); 
+					// get the orders and store it in iHungryRestaurant class					
+					hungryRestaurant.setPendingOrders(model.retreiveOrders(
+							hungryRestaurant.getAccountInfo().getId(),
+							Order.STATUS_UNDERPROCING, 100));
+					
+					hungryRestaurant.setAcceptedOrders(model.retreiveOrders(
+							hungryRestaurant.getAccountInfo().getId(),
+							Order.STATUS_CONFIRMED, 100));
+					
+					hungryRestaurant.setDeclinedOrders(model.retreiveOrders(
+							hungryRestaurant.getAccountInfo().getId(),
+							Order.STATUS_REJECTED, 100));
+
+					hungryRestaurant.setOldOrders(model.retreiveOrders(
+							hungryRestaurant.getAccountInfo().getId(),
+							Order.STATUS_FINISHED, 100));
+					for(int i=0;i<5;i++)
+					{
+						listOfEdit.get(i).addActionListener(new EditButtonListener() );
+						listOfDelete.get(i).addActionListener(new DeleteButtonListener() );
+					}
+					gui.getOrderGui().getNext().addActionListener(new NextButtonListener());
+					gui.getOrderGui().getPrev().addActionListener(new PrevButtonListener());
+					gui.getOrderGui().getAcceptButton().addActionListener(new AcceptButtonListener());
+					gui.getOrderGui().getDeclineButton().addActionListener(new DeclineButtonListener());
+					gui.getOrderGui().getDeliverButton().addActionListener(new DeliverButtonListener());
+					gui.getOrderGui().getTable().getSelectionModel().addListSelectionListener(new SelectionListener());
+					gui.getOrderGui().getToBeDeliveredTable().getSelectionModel().addListSelectionListener(new ToBeDeliveredSelectionListener());
+					gui.getOrderGui().getDeclinedOrderTable().getSelectionModel().addListSelectionListener(new DeclinedOrderSelectionListener());
+					gui.getOrderGui().getOrderHistoryTable().getSelectionModel().addListSelectionListener(new OrderHistorySelectionListener());
+					
+					//add listeners to accept and decline buttons
+				}
 				else
 				{
-					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username or password is incorrect.</FONT></HTML>");	
+					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Password is incorrect.</FONT></HTML>");	
 					JOptionPane.showMessageDialog(null,errorFields);
 				}
+			}
 			else
 			{
-				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username already exists.</FONT></HTML>");	
+				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username does not exists.</FONT></HTML>");	
 				JOptionPane.showMessageDialog(null,errorFields);
 			}
-				
-			//display the restaurant info fetched from server
-			gui.displayOrderGui();
-			//gui.getPanel().setVisible(false);
-			gui.getTable().getSelectionModel().addListSelectionListener(new SelectionListener());
-      
-        
-			for(int i=0;i<5;i++)
+		}
+		
+		
+		public void populateMenuFields(){
+			
+			if (restaurant.getMenu().getItems().size()!=0)
 			{
-				listOfEdit.get(i).addActionListener(new EditButtonListener() );
-				listOfDelete.get(i).addActionListener(new DeleteButtonListener() );
+				for(int i=0;i<restaurant.getMenu().getItems().size();i++)
+				{
+					listOfItemNames.add(restaurant.getMenu().getItemAt(i).getItemName());
+					listOfDescription.add(restaurant.getMenu().getItemAt(i).getItemDescription());
+					listOfPrice.add(restaurant.getMenu().getItemAt(i).getItemPrice()+"");
+				}
 			}
-			gui.getNext().addActionListener(new NextButtonListener());
-			gui.getPrev().addActionListener(new PrevButtonListener());
-            
 		}
 	}
-	
-	
+		
 	/**
-	 * SIgnUpListener class implements the actionPerformed method checking for
-	 * the user credentials and allowing the user to log into the application.
+	 * SignUpListener class implements the actionPerformed method. Sends a JSON
+	 * object of the Restaurant to the server which creates a new restaurant
 	 * 
 	 * @author parkavi
 	 *
-	 */
-	
+	 */	
 	class SignUpListener implements ActionListener{
 		public void actionPerformed(ActionEvent event) {
 			
-			gui.displaySignUpGui();
+			gui.getSignupGui().displayFirstPageSignUpGui();
+			gui.getSignupGui().getNextSignUp().addActionListener(new NextSignUpListener());
 			
-            
+		}
+		
+		class NextSignUpListener implements ActionListener{
+			
+			public void actionPerformed(ActionEvent event) {
+				
+				username = gui.getSignupGui().getUserName().getText();
+				password = new String(gui.getSignupGui().getPassword().getPassword());
+				confirmPassword = new String(gui.getSignupGui().getConfirmPassword().getPassword());
+				realname = gui.getSignupGui().getFirstName().getText().concat(gui.getSignupGui().getLastName().getText());
+				
+				if(!gui.getSignupGui().getUserName().getText().equals("") &&
+						!new String(gui.getSignupGui().getPassword().getPassword()).equals("")	&&
+						!new String(gui.getSignupGui().getConfirmPassword().getPassword()).equals(""))
+					if(password.equals(confirmPassword))
+					{
+						if(!model.loginCheck(username, password))
+						{
+							gui.getSignupGui().displaySecondPageSignUpGui();
+							gui.getSignupGui().getSignUp2().addActionListener(new SecondSignUpListener());							
+						}
+						else
+						{
+							JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username already exists.Choose a different username.</FONT></HTML>");	
+							JOptionPane.showMessageDialog(null,errorFields);
+							gui.getSignupGui().getUserName().setText("");
+							gui.getSignupGui().getUserName().requestFocus();							
+						}
+					}
+					else
+					{
+						JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Password and Confirm Password fields doesn't match.</FONT></HTML>");	
+						JOptionPane.showMessageDialog(null,errorFields);
+						gui.getSignupGui().getPassword().setText("");
+						gui.getSignupGui().getConfirmPassword().setText("");
+						gui.getSignupGui().getPassword().requestFocus();
+					}
+				else
+				{
+					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username and Password fields cannot be empty.</FONT></HTML>");	
+					JOptionPane.showMessageDialog(null,errorFields);
+				}
+			}
+		}
+		
+		class SecondSignUpListener implements ActionListener{
+			
+			public void actionPerformed(ActionEvent event){
+				composeForSignUp();
+			}
+			
+			public void composeForSignUp(){
+				
+				priPhone = gui.getSignupGui().getPriPhone().getText();
+				secPhone = gui.getSignupGui().getSecPhone().getText();
+				email = gui.getSignupGui().getEmail().getText();
+				birthDate = "";
+				state = (String) gui.getSignupGui().getState().getSelectedItem();
+				address = gui.getSignupGui().getStreet().getText().concat(gui.getSignupGui().getCity().getText()).
+				                      concat(state).concat(gui.getSignupGui().getZip().getText());
+				
+				Icon newIcon = new Icon();
+				AccountInfo newAccount = new AccountInfo(username,password);
+				LocationInfo newLocation = new LocationInfo(address);
+				ContactInfo newContact = new ContactInfo(realname,newLocation,priPhone,secPhone,email,birthDate,newIcon);
+				Menu newMenu = new Menu();
+				Album newAlbum = new Album();
+				restaurant = new Restaurant(newMenu,newAlbum);
+				restaurant.setAccountInfo(newAccount);
+				restaurant.setContactInfo(newContact);
+				
+				boolean result;
+				
+				result = model.signupForNewUser(restaurant);
+				if (result)
+				{
+					/*gui.getOrderGui().displayOrderScreen();
+					//gui.getOrderGui().getAcceptButton().addActionListener()
+					for(int i=0;i<5;i++)
+					{
+						listOfEdit.get(i).addActionListener(new EditButtonListener() );
+						listOfDelete.get(i).addActionListener(new DeleteButtonListener() );
+					}
+					gui.getOrderGui().getNext().addActionListener(new NextButtonListener());
+					gui.getOrderGui().getPrev().addActionListener(new PrevButtonListener());
+					gui.getOrderGui().getAcceptButton().addActionListener(new AcceptButtonListener());
+					gui.getOrderGui().getDeclineButton().addActionListener(new DeclineButtonListener());
+					gui.getOrderGui().getDeliverButton().addActionListener(new DeliverButtonListener());
+					gui.getOrderGui().getTable().getSelectionModel().addListSelectionListener(new SelectionListener());
+					gui.getOrderGui().getToBeDeliveredTable().getSelectionModel().addListSelectionListener(new ToBeDeliveredSelectionListener());
+					gui.getOrderGui().getDeclinedOrderTable().getSelectionModel().addListSelectionListener(new DeclinedOrderSelectionListener());
+					gui.getOrderGui().getOrderHistoryTable().getSelectionModel().addListSelectionListener(new OrderHistorySelectionListener());*/
+					gui.getSignupGui().getSignUp2().setVisible(false);
+					gui.getLoginGui().displayLoginScreen();
+					gui.getLoginGui().getLogin().addActionListener(new LoginListener());
+					gui.getLoginGui().getSignUp().addActionListener(new SignUpListener());
+				}
+			}
 		}
 	}
 	
+	
+	
+	public class AcceptButtonListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			Order order = new Order(gui.getOrderGui().getOrderNoT().getText());
+			gui.getOrderGui().getOrderNoT().setText("");
+			gui.getOrderGui().getCustNo().setText("");
+			order = hungryRestaurant.getPendingOrder(order);
+			order.setStatus(Order.STATUS_CONFIRMED);
+			if(model.updateOrder(restaurant.getAccountInfo(), order)){
+				int index = gui.getOrderGui().getTable().getSelectedRow();
+				if(index>=1){
+					gui.getOrderGui().getTable().setRowSelectionInterval(index-1, index-1);
+					gui.getOrderGui().getTable().addRowSelectionInterval(index-1, index-1);
+				}
+				if (gui.getOrderGui().getToBeDeliveredTable().getRowCount()>0){
+					index = gui.getOrderGui().getTable().getSelectedRow();
+				}
+				hungryRestaurant.removePendingOrder(order);
+				hungryRestaurant.addOrModifyAcceptedOrder(order);
+			}
+			
+		}
+	}
+	
+	
+	public class DeclineButtonListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			Order order = new Order(gui.getOrderGui().getOrderNoT().getText());
+			gui.getOrderGui().getOrderNoT().setText("");
+			gui.getOrderGui().getCustNo().setText("");
+			order = hungryRestaurant.getPendingOrder(order);
+			System.out.println("status is "+order.getStatus());
+			order.setStatus(Order.STATUS_REJECTED);
+			if(model.updateOrder(restaurant.getAccountInfo(), order)){
+				int index = gui.getOrderGui().getTable().getSelectedRow();
+				if(index>=1){
+					gui.getOrderGui().getTable().setRowSelectionInterval(index-1, index-1);
+				}
+				hungryRestaurant.removePendingOrder(order);
+				hungryRestaurant.addOrModifyDeclinedOrder(order);
+			}
+			
+		}
+	}
+	
+	
+	public class DeliverButtonListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			Order order = new Order(gui.getOrderGui().getToBeDeliveredOrderNoT().getText());
+			gui.getOrderGui().getToBeDeliveredOrderNo().setText("");
+			gui.getOrderGui().getToBeDeliveredCustNo().setText("");
+			order = hungryRestaurant.getAcceptedOrder(order);
+			order.setStatus(Order.STATUS_FINISHED);
+			if(model.updateOrder(restaurant.getAccountInfo(), order)){
+				int index = gui.getOrderGui().getToBeDeliveredTable().getSelectedRow();
+				if(index>=1){
+					gui.getOrderGui().getToBeDeliveredTable().setRowSelectionInterval(index-1, index-1);
+				}
+				hungryRestaurant.removeAcceptedOrder(order);
+				hungryRestaurant.addOrModifyOrderHistory(order);
+			}
+			
+		}
+	}
 	/**
 	 * SelectionListener class implements ListSelection Listener. Gives 
 	 * implementation for the valueChanged method.
@@ -174,33 +371,166 @@ public class ihungryRestaurantController {
 		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
 		 */
 		
-		public void valueChanged(ListSelectionEvent e){
+		public void valueChanged(ListSelectionEvent e) {
+			System.out.println("into currorders listener");
+			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
+			gui.getOrderGui().getSubPanel10().setVisible(true);
+			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+			int minIndex = lsm.getMinSelectionIndex();		
 			
-			gui.getSubPanel10().setVisible(true);
-			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-			int minIndex = lsm.getMinSelectionIndex();
-            int maxIndex = lsm.getMaxSelectionIndex();
-                       
-            
-            //for(int i=0;i<currOrders.size();i++){
-            	//if(currOrders.get(i).getOrderID().equals(data[minIndex][0])){
-            		//System.out.println("match found");
-            		//gui.getSubPanel10().setVisible(true);
-            		Order selectedOrder = currOrders.get(minIndex);
-            		gui.getOrderNo().setText(selectedOrder.getOrderID());
-            		gui.getCustNo().setText(selectedOrder.getCustID());
-            		String[] orderDetails = new String[50];
-            		for(int j=0;j<selectedOrder.getOrderItems().size();j++){
-            			orderDetails[j] = selectedOrder.getOrderItems().get(j).getItem().getItemName() + "    " + selectedOrder.getOrderItems().get(j).getQuantity();
-            		}
-            		gui.setSelectedOrderDetails(orderDetails);
-            	//}
-            //}
+			if(minIndex>=0)
+			{
+				List<Order> pendingOrders = new ArrayList<Order>(hungryRestaurant.getPendingOrders());
+				Order selectedOrder = pendingOrders.get(minIndex);
+				
+				gui.getOrderGui().getOrderNoT().setText(selectedOrder.getOrderID());
+				gui.getOrderGui().getCustNo().setText(selectedOrder.getCustID());
+				String[] orderDetails = new String[50];
+				
+				for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
+					orderDetails[j] = selectedOrder.getOrderItems().get(j)
+							.getItem().getItemName()
+							+ "    "
+							+ selectedOrder.getOrderItems().get(j).getQuantity();
+				}
+				gui.getOrderGui().setSelectedOrderDetails(orderDetails);
+			}
 		}
-		
 	}
 	
 	
+	public class ToBeDeliveredSelectionListener implements ListSelectionListener{
+		
+		/*
+		 * This method will populate the JList with the details of the currently selected order.
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
+		
+		public void valueChanged(ListSelectionEvent e) {
+			System.out.println("into tobedeliveredorders listener");
+			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
+			gui.getOrderGui().getToBeDeliveredSubPanel().setVisible(true);
+			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+			int minIndex = lsm.getMinSelectionIndex();			
+			
+			if (minIndex>=0)
+			{
+				List<Order> acceptedOrders = new ArrayList<Order>(hungryRestaurant.getAcceptedOrders());
+				Order selectedOrder = acceptedOrders.get(minIndex);
+				gui.getOrderGui().getToBeDeliveredOrderNo().setText(selectedOrder.getOrderID());
+				gui.getOrderGui().getToBeDeliveredCustNo().setText(selectedOrder.getCustID());
+				String[] orderDetails = new String[50];
+				
+				for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
+					orderDetails[j] = selectedOrder.getOrderItems().get(j)
+							.getItem().getItemName()
+							+ "    "
+							+ selectedOrder.getOrderItems().get(j).getQuantity();
+				}
+				gui.getOrderGui().getToBeDeliveredList().setListData(orderDetails);
+			}
+		}	
+	}
+	
+	/**
+	 * DeclinedOrderSelectionListener class implements ListSelection Listener. Gives 
+	 * implementation for the valueChanged method.
+	 * 
+	 * @author parkavi
+	 *
+	 */
+	public class DeclinedOrderSelectionListener implements ListSelectionListener{
+		private boolean loop = true;
+		
+		/*
+		 * This method will populate the JList with the details of the currently selected order.
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
+		
+		public void valueChanged(ListSelectionEvent e) {
+			
+			System.out.println("into declinedorders listener");
+			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
+			gui.getOrderGui().getDeclinedOrderSubPanel().setVisible(true);
+			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+			int minIndex = lsm.getMinSelectionIndex();
+			
+			if(minIndex>=1)
+				loop = true;
+			
+			if (minIndex>=0)
+			{	
+				if(loop)
+				{
+					List<Order> declinedOrders = new ArrayList<Order>(hungryRestaurant.getDeclinedOrders());
+					Order selectedOrder = declinedOrders.get(minIndex);
+					gui.getOrderGui().getDeclinedOrderOrderNo().setText(selectedOrder.getOrderID());
+					gui.getOrderGui().getDeclinedOrderCustNo().setText(selectedOrder.getCustID());
+					String[] orderDetails = new String[50];
+					
+					for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
+						orderDetails[j] = selectedOrder.getOrderItems().get(j)
+								.getItem().getItemName()
+								+ "    "
+								+ selectedOrder.getOrderItems().get(j).getQuantity();
+					}
+					gui.getOrderGui().getDeclinedOrderList().setListData(orderDetails);
+				}
+				if(minIndex==0)
+					loop = false;
+			}
+		}
+	}
+	
+	/**
+	 * OrderHistorySelectionListener class implements ListSelection Listener. Gives 
+	 * implementation for the valueChanged method.
+	 * 
+	 * @author parkavi
+	 *
+	 */
+	public class OrderHistorySelectionListener implements ListSelectionListener{
+		
+		private boolean loop = true;
+		/*
+		 * This method will populate the JList with the details of the currently selected order.
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
+		
+		public void valueChanged(ListSelectionEvent e) {
+			System.out.println("into orderhistory listener");
+			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
+			gui.getOrderGui().getOrderHistorySubPanel().setVisible(true);
+			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+			int minIndex = lsm.getMinSelectionIndex();		
+			
+			if(minIndex>=1)
+				loop = true;
+			
+			if (minIndex>=0)
+			{
+				if (loop)
+				{
+					List<Order> oldOrders = new ArrayList<Order>(hungryRestaurant.getOldOrders());
+					Order selectedOrder = oldOrders.get(minIndex);
+					gui.getOrderGui().getOrderHistoryOrderNo().setText(selectedOrder.getOrderID());
+					gui.getOrderGui().getOrderHistoryCustNo().setText(selectedOrder.getCustID());
+					String[] orderDetails = new String[50];
+					
+					for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
+						orderDetails[j] = selectedOrder.getOrderItems().get(j)
+								.getItem().getItemName()
+								+ "    "
+								+ selectedOrder.getOrderItems().get(j).getQuantity();
+					}
+					gui.getOrderGui().getOrderHistoryList().setListData(orderDetails);
+				}
+				if(minIndex==0)
+					loop = false;
+			}
+		}
+		
+	}
 	
 	/**
 	 * EditButtonListener class implements the actionPerformed method checking for 
@@ -208,18 +538,15 @@ public class ihungryRestaurantController {
 	 * 
 	 * @author parkavi
 	 *
-	 */
-	
-	
+	 */		
 	class EditButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) 
 		{
-			System.out.println(event.getSource());
 			int ind = listOfEdit.indexOf(event.getSource());
 			
-			JTextField name = gui.getItemNames(ind);
-		    JTextField description = gui.getDescription(ind);
-		    JTextField price = gui.getPrice(ind);
+			JTextField name = gui.getOrderGui().getItemNames(ind);
+		    JTextField description = gui.getOrderGui().getDescription(ind);
+		    JTextField price = gui.getOrderGui().getPrice(ind);
 		    
 		    if(name.getText().equals("") || description.getText().equals("") || price.getText().equals("")){
 				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Please enter a value in each field before saving.</FONT></HTML>");	
@@ -229,10 +556,6 @@ public class ihungryRestaurantController {
 		    	
 				if(listOfEdit.get(ind).getText()=="Save")
 				{		
-				    //Item newItem = new Item(Integer.toString(++itemNo),name.getText(),description.getText(),p);
-		     
-				     //call a method to send this item to server to be stored in the database
-				     
 				     name.setEditable(false);
 				     description.setEditable(false);
 				     price.setEditable(false);
@@ -243,15 +566,42 @@ public class ihungryRestaurantController {
 					     listOfItemNames.set(indx*5+ind,name.getText());
 					     listOfDescription.set(indx*5+ind,description.getText());
 					     listOfPrice.set(indx*5+ind,price.getText());
+					     
+					     //update the menu 
+					     Item updateItem = restaurant.getMenu().getItems().get(indx*5+ind);
+					     updateItem.setItemName(name.getText());
+					     updateItem.setItemDescription(description.getText());
+					     updateItem.setItemPrice(Double.parseDouble(price.getText()));
+					     restaurant.getMenu().setItem(indx*5+ind, updateItem);
+					     
+					     //write Menu to DB
+					     while (!model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu()))
+					     {
+					    	 
+					     }
 				     }
 				     else{
 				    	 listOfItemNames.add(name.getText());
 					     listOfDescription.add(description.getText());
 					     listOfPrice.add(price.getText());
+					     
+					     //add item to menu
+					     String newItemId = null;
+					     if (restaurant.getMenu().getMenuSize()==0)
+					    	 newItemId = "1";
+					     else
+					     {
+					    	 Item lastItem = restaurant.getMenu().getItems().get(restaurant.getMenu().getMenuSize()-1);
+					    	 newItemId = Integer.toString(Integer.parseInt(lastItem.getItemId()) + 1);
+					     }
+					     Item newItem = new Item(newItemId,name.getText(),description.getText(),Double.parseDouble(price.getText()),new Rating(0,0),new Album());
+					     restaurant.getMenu().addItem(newItem);
+					     
+					     //write Menu to DB
+					     boolean result = model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu());
+					     System.out.println("result = "+result);
 				     }
-				     		
 				}
-				
 				else if(listOfEdit.get(ind).getText()=="Edit")
 				{
 					name.setEditable(true);
@@ -262,27 +612,45 @@ public class ihungryRestaurantController {
 			        /*//replace the newly entered item and its price
 			        listOfItemNames.set(indx*5+ind,name.getText());
 			        listOfDescription.set(indx*5+ind,description.getText());
-			        listOfPrice.set(indx*5+ind,price.getText());*/
-					
+			        listOfPrice.set(indx*5+ind,price.getText());*/					
 				}
 		    }
 		}
 	}
 	
+	
 	class DeleteButtonListener implements ActionListener {
+		
 		public void actionPerformed(ActionEvent event) {
 			
+			int ind = listOfDelete.indexOf(event.getSource());
+			
+			if(indx*5+ind<listOfItemNames.size())
+			{
+				listOfItemNames.remove(indx*5+ind);
+				listOfDescription.remove(indx*5+ind);
+				listOfPrice.remove(indx*5+ind);
+				onClickNext();
+				
+				//remove item from menu
+			    restaurant.getMenu().removeItem(indx*5+ind);
+				
+				//write Menu to DB
+				while (!model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu()))
+			     {
+			    	 
+			     }
+			}
 		}
 	}
-	
+		
 	/**
 	 * NextButtonListener class implements the actionPerformed method and 
 	 * populates the textfields to show the next set of menu items.
 	 * 
 	 * @author parkavi
 	 *
-	 */
-	
+	 */	
 	class NextButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 				
@@ -298,40 +666,41 @@ public class ihungryRestaurantController {
 				indx = indx + 1;
 				System.out.println("into next index = " + indx);
 				System.out.println("into next size = " + listOfItemNames.size());
-				for(int i=0;i<5;i++)
-				{
-					if(indx*5+i<listOfItemNames.size()){
-						gui.getItemNames(i).setText(listOfItemNames.get(indx*5+i));
-						gui.getDescription(i).setText(listOfDescription.get(indx*5+i));
-						gui.getPrice(i).setText(listOfPrice.get(indx*5+i));
-						gui.getItemNames(i).setEditable(false);
-						gui.getDescription(i).setEditable(false);
-						gui.getPrice(i).setEditable(false);
-						listOfEdit.get(i).setText("Edit");
-						listOfDelete.get(i).setText("Delete");
-						gui.getPrev().setVisible(true);
-						
-					}
-					else{
-						gui.getItemNames(i).setText("");
-						gui.getDescription(i).setText("");
-						gui.getPrice(i).setText("");
-						gui.getItemNames(i).setEditable(true);
-						gui.getDescription(i).setEditable(true);
-						gui.getPrice(i).setEditable(true);
-						listOfEdit.get(i).setText("Save");
-						listOfDelete.get(i).setText("Delete");
-						gui.getPrev().setVisible(true);
-					}
-					
-				}
+				onClickNext();
+				gui.getOrderGui().getPrev().setVisible(true);			
 			}
 			else{
 				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Please fill all the values before going to next page.</FONT></HTML>");	
 				JOptionPane.showMessageDialog(null,errorFields);
+			}			
+		}
+	}
+	
+	
+	public void onClickNext(){
+		
+		for(int i=0;i<5;i++)
+		{
+			if(indx*5+i<listOfItemNames.size()){
+				gui.getOrderGui().getItemNames(i).setText(listOfItemNames.get(indx*5+i));
+				gui.getOrderGui().getDescription(i).setText(listOfDescription.get(indx*5+i));
+				gui.getOrderGui().getPrice(i).setText(listOfPrice.get(indx*5+i));
+				gui.getOrderGui().getItemNames(i).setEditable(false);
+				gui.getOrderGui().getDescription(i).setEditable(false);
+				gui.getOrderGui().getPrice(i).setEditable(false);
+				listOfEdit.get(i).setText("Edit");
+				listOfDelete.get(i).setText("Delete");	
 			}
-				
-			
+			else{
+				gui.getOrderGui().getItemNames(i).setText("");
+				gui.getOrderGui().getDescription(i).setText("");
+				gui.getOrderGui().getPrice(i).setText("");
+				gui.getOrderGui().getItemNames(i).setEditable(true);
+				gui.getOrderGui().getDescription(i).setEditable(true);
+				gui.getOrderGui().getPrice(i).setEditable(true);
+				listOfEdit.get(i).setText("Save");
+				listOfDelete.get(i).setText("Delete");	
+			}
 		}
 	}
 	
@@ -342,8 +711,7 @@ public class ihungryRestaurantController {
 	 * 
 	 * @author parkavi
 	 *
-	 */
-	
+	 */	
 	class PrevButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			indx = indx - 1;
@@ -351,31 +719,22 @@ public class ihungryRestaurantController {
 			System.out.println("into prev size = " + listOfItemNames.size());
 			for (int i=0;i<5;i++){
 				listOfEdit.get(i).setText("Edit");
-				gui.getItemNames(i).setText(listOfItemNames.get(indx*5+i));
-				gui.getDescription(i).setText(listOfDescription.get(indx*5+i));
-				gui.getPrice(i).setText(listOfPrice.get(indx*5+i));
-				gui.getItemNames(i).setEditable(false);
-				gui.getDescription(i).setEditable(false);
-				gui.getPrice(i).setEditable(false);
+				gui.getOrderGui().getItemNames(i).setText(listOfItemNames.get(indx*5+i));
+				gui.getOrderGui().getDescription(i).setText(listOfDescription.get(indx*5+i));
+				gui.getOrderGui().getPrice(i).setText(listOfPrice.get(indx*5+i));
+				gui.getOrderGui().getItemNames(i).setEditable(false);
+				gui.getOrderGui().getDescription(i).setEditable(false);
+				gui.getOrderGui().getPrice(i).setEditable(false);
 			}
 			if (indx == 0){
 				System.out.println("exiting prev");
-				gui.getPrev().setVisible(false);
+				gui.getOrderGui().getPrev().setVisible(false);
 			}
 			
 		}
 	}
 	
-	/*
-	 * This method is called to update the list of pending orders.
-	 */
-	
-	public void setCurrentOrders(){
-		gui.setCurrentOrders(data,pointer);
-		for(int i=0;i<pointer;i++)
-			for(int j=0;j<5;j++)
-				this.data[i][j]="";
-	}
-
-	
+	public ihungryRestaurantModelInterface getModel(){
+		return model;
+	}		
 }
