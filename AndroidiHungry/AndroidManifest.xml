@@ -4,8 +4,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="15" />
+        android:minSdkVersion="7" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -100,6 +99,9 @@
             android:label="@string/title_activity_order_review"
             android:screenOrientation="portrait" >
         </activity>
+        
+        <service android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.NotifyService"/>
+                		
     </application>
 
 </manifest>

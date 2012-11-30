@@ -9,7 +9,6 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.Overlay;
 import com.readystatesoftware.maps.*;
 
-import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ActivitySwitchSignals;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.CustomerAccountInfoCreator;
 import edu.jhu.cs.oose.project.group14.ihungry.androidapp.FileHandler;
@@ -44,12 +43,6 @@ public class NearbyActivity extends MapActivity {
 	private List<AccountInfo> restaurant_acc_infos;
 	private List<ContactInfo> restaurant_con_infos;
 	
-/*	static final private int[][] restaurant_locations = {
-			{ 39337482, -76634559 }, { 39337249, -76624322 },
-			{ 39344429, -76631478 }, { 39334798, -76620687 },
-			{ 39313321, -76617787 }, { 39330855, -76633269 },
-			{ 39329058, -76615716 }, { 39328962, -76609548 } };
-*/	
 	private TapControlledMapView mapView;
 	private MapController mapController;
 	private Location currentLocation;
@@ -181,15 +174,6 @@ public class NearbyActivity extends MapActivity {
 		protected String doInBackground(Void... params) {
 			try {
 				/* Get a list of restaurants infos */
-			/*	AccountInfo accinfo = new AccountInfo();
-				accinfo.setUserName(FileHandler.username_stored);
-				accinfo.setPasswd(FileHandler.pwd_stored);
-				Log.v("userName & pwd", FileHandler.username_stored+ " "+FileHandler.pwd_stored);
-			*/	
-			//	accinfo.setUserName("lyang");
-			//	accinfo.setPasswd(MD5.getMd5("123"));
-			//	accinfo.setPasswd("123"); // WRONG
-
 				clientModel = new AndroidClientModelImpl(CustomerAccountInfoCreator.createAccountInfo(
 						FileHandler.username_stored, FileHandler.pwd_stored));
 
@@ -219,12 +203,6 @@ public class NearbyActivity extends MapActivity {
 				Log.e("[doInBackground]", "Error");
 			}
 
-			/*
-			 * for (int i = 0; i < overlayitem2_multi.size(); i++) {
-			 * MyOverlayItem overlayitem_one = overlayitem2_multi.get(i);
-			 * Log.i("[Map Items]", overlayitem_one.getRestaurantID() + " " +
-			 * overlayitem_one.getTitle() + " " + overlayitem_one.getPoint()); }
-			 */
 			return "Done Searching";
 		}
 
@@ -263,8 +241,6 @@ public class NearbyActivity extends MapActivity {
 		if (locationInCache(locationName)) {
 			// return;
 		} else {
-			// GeoPoint pt = getLocationByGeocoder(locationName);
-			//GeoPoint pt = new GeoPoint(restaurant_locations[index][0],restaurant_locations[index][1]);
 			GeoPoint pt = new GeoPoint((int)locationinfo.getLatitude(), (int)locationinfo.getLongitude());
 			
 			if (pt != null)
@@ -440,9 +416,3 @@ public class NearbyActivity extends MapActivity {
 	}
 
 }
-
-/* ############ (TEST) Connect server ############ */
-/*	clientModel = new AndroidClientModelImpl();
-String responseSvr = clientmodel.getResponseFromServerT();
-Log.v("[Response]", responseSvr);
-*/

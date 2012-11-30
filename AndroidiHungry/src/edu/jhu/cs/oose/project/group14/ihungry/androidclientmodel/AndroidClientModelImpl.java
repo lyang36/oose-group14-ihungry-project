@@ -397,8 +397,32 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		return null;
 	}
 
-	public List<Order> retrieveChangedOrders() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Order> retrieveChangedOrders() { // Very Similar to retrieveAllOrders()
+		List<Order> changed_orders = new ArrayList<Order>();
+		
+		String sendStr = CommunicationProtocol.construcSendingStr(
+				customer_account.getId(), customer_account.getPasswd(),
+				CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER, "");
+		
+		String responseStr = "";
+		try {
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
+			System.out.println("response: "+responseStr);
+			
+			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
+			ListedJSONObj jobj = new ListedJSONObj();
+			jobj.parseFromJSONObject(new JSONObject(supinfo));
+		
+			Iterator<JSONObject> it = jobj.iterator();
+			while(it.hasNext()){
+				Order order = new Order("", "", "", -1, new ArrayList<OrderItem>());
+				order.parseFromJSONObject(it.next());
+				changed_orders.add(order);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return changed_orders;
 	}
 }
