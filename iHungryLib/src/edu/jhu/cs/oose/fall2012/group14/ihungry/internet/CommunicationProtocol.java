@@ -18,6 +18,8 @@ public class CommunicationProtocol {
 	 * the server port
 	 */
 
+
+
 	public static int SERVER_PORT = 22;
 	
 	/**

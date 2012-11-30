@@ -36,11 +36,13 @@ public class LocationInfo implements JSONHandler<LocationInfo>{
 	 */
 	public LocationInfo( double lat, double lon){
 		this((long) (lat * 1e6), (long) (lon * 1e6));
+		this.address = " ";
 	}
 	
 	public LocationInfo( long lat, long lon){
 		this.latitude = lat;
 		this.longitude = lon;
+		this.address = " ";
 	}
 	
 	public LocationInfo( String add){

@@ -15,6 +15,7 @@ import org.junit.Test;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOperatorTestUnit;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.ListedJSONObj;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.OrderQuerier;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
@@ -32,6 +33,7 @@ import edu.jhu.cs.oose.project.group14.ihungry.model.Rating;
 
 
 public class MessageReactorImplTest {
+	String supstring;
 	public void testCommand(String uname, String passwd,String command,
 			final String expectedReturnCmd, String supinfo){
 		MessageReactorImpl msgReactor = new MessageReactorImpl();
@@ -71,11 +73,13 @@ public class MessageReactorImplTest {
 				String cmdString = CommunicationProtocol.getRequestFromReceivedStr(msg);
 				System.out.println("SuppliInfo: \n" +
 						CommunicationProtocol.getSupinfoFromReceivedStr(msg));
-				//System.out.println(CommunicationProtocol.getSupinfoFromReceivedStr(msg));
 				assertEquals(expectedReturnCmd, cmdString);
+				//returnedObj = new JSONObject();
+				supstring = CommunicationProtocol.getSupinfoFromReceivedStr(msg);
 			}
 			
 		});
+		
 	}
 
 	@Test
@@ -351,7 +355,7 @@ public class MessageReactorImplTest {
 		
 		
 		order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
-				MD5.getNameMd5("lyang"), Order.STATUS_CANCELLED, new ArrayList<OrderItem>());
+				MD5.getNameMd5("lyres"), Order.STATUS_CANCELLED, new ArrayList<OrderItem>());
 		
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.CUS_UPDATE_ORDER,
@@ -366,10 +370,18 @@ public class MessageReactorImplTest {
 		
 		
 		System.out.println("Customer try to retrive changed orders, should be zero");
-
+	
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER,
 				CommunicationProtocol.PROCESS_SUCCEEDED, "");
+		try {
+			JSONObject retj = new JSONObject(supstring);
+			assertEquals(retj.getInt(ListedJSONObj.KEY_COUNT), 0);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		
 		
 		System.out.println("Business try to retrive changed orders -- 1 changed");
 		querier = new OrderQuerier();
@@ -378,12 +390,27 @@ public class MessageReactorImplTest {
 		testCommand(MD5.getNameMd5("lyres"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_RETRIVE_CHANGED_ORDERS,
 				CommunicationProtocol.PROCESS_SUCCEEDED, querier.getJSON().toString());
+		try {
+			JSONObject retj = new JSONObject(supstring);
+			assertEquals(retj.getInt(ListedJSONObj.KEY_COUNT), 1);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		
 		
 		System.out.println("Business try to retrive changed orders -- 0 changed");
 		querier.setRestaurantID(MD5.getNameMd5("lyres"));
 		testCommand(MD5.getNameMd5("lyres"),
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_RETRIVE_CHANGED_ORDERS,
 				CommunicationProtocol.PROCESS_SUCCEEDED, querier.getJSON().toString());
+		
+		try {
+			JSONObject retj = new JSONObject(supstring);
+			assertEquals(retj.getInt(ListedJSONObj.KEY_COUNT), 0);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		
 		
 		System.out.println("Business update an order");
@@ -393,10 +420,34 @@ public class MessageReactorImplTest {
 				MD5.getMd5("123"), CommunicationProtocol.BUSI_PROCESS_ORDER,
 				CommunicationProtocol.PROCESS_SUCCEEDED, order.getJSON().toString());
 		
+		
+		
 		System.out.println("Customer try to retrive changed orders, should be 1");
 		testCommand(MD5.getNameMd5("lyang"),
 				MD5.getMd5("123"), CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER,
 				CommunicationProtocol.PROCESS_SUCCEEDED, "");
+		
+		try {
+			JSONObject retj = new JSONObject(supstring);
+			assertEquals(retj.getInt(ListedJSONObj.KEY_COUNT), 1);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		System.out.println("Customer try to retrive changed orders, should be 0");
+		testCommand(MD5.getNameMd5("lyang"),
+				MD5.getMd5("123"), CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER,
+				CommunicationProtocol.PROCESS_SUCCEEDED, "");
+		
+		try {
+			JSONObject retj = new JSONObject(supstring);
+			assertEquals(retj.getInt(ListedJSONObj.KEY_COUNT), 0);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
 		
 		
 		System.out.println("Restaurant test use order to get customer's contact");

@@ -216,7 +216,7 @@ public class DBOperator implements DataBaseOperater{
 					retjson.add(jordr);
 					if(corder.checkIsNewToCus()){
 						corder.flipToCusStatus();
-						cusCollection.findAndModify(ordobj, 
+						orderCollection.findAndModify(ordobj, 
 								(DBObject)JSON.parse(corder.getJSON().toString()));
 					}
 					
@@ -248,7 +248,7 @@ public class DBOperator implements DataBaseOperater{
 					retjson.add(jordr);
 					if(corder.checkIsNewToCus()){
 						corder.flipToCusStatus();
-						cusCollection.findAndModify(ordobj, 
+						orderCollection.findAndModify(ordobj, 
 								(DBObject)JSON.parse(corder.getJSON().toString()));
 					}
 				} catch (JSONException e) {
@@ -276,7 +276,16 @@ public class DBOperator implements DataBaseOperater{
 					retjson.add(jordr);
 					if(corder.checkIsNewToCus()){
 						corder.flipToCusStatus();
-						cusCollection.findAndModify(ordobj, 
+						/*DBObject orderquery = new BasicDBObject();
+						orderquery.put(corder.KEY_ORDERID, corder.getOrderID());
+						DBObject neworder = (DBObject)JSON.parse(corder.getJSON().toString());
+						neworder.removeField("_id");
+						System.out.println("aaaaaaa: " + corder.toString());
+						System.out.println("bbbbbbb: " + neworder);
+						//System.out.println(cusCollection.find(orderquery).next());
+						orderCollection.findAndModify(orderquery, 
+								neworder);*/
+						orderCollection.findAndModify(ordobj, 
 								(DBObject)JSON.parse(corder.getJSON().toString()));
 					}
 				} catch (JSONException e) {
@@ -306,7 +315,7 @@ public class DBOperator implements DataBaseOperater{
 					retjson.add(jordr);
 					if(corder.checkIsNewToRes()){
 						corder.flipToResStatus();
-						cusCollection.findAndModify(ordobj, 
+						orderCollection.findAndModify(ordobj, 
 								(DBObject)JSON.parse(corder.getJSON().toString()));
 					}
 					
