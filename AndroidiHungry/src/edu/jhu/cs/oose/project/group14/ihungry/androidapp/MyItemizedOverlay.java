@@ -2,14 +2,10 @@ package edu.jhu.cs.oose.project.group14.ihungry.androidapp;
 
 import java.util.*;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
@@ -68,13 +64,11 @@ public class MyItemizedOverlay extends BalloonItemizedOverlay<MyOverlayItem> {
 	 */
 	@Override
 	protected boolean onBalloonTap(int index, MyOverlayItem item) {
-		Toast.makeText(
-				c,
-				"onBalloonTap for overlay index " + index + " "
-						+ item.getTitle().toString() + " "
-						+ item.getSnippet().toString() + " "
-						+ item.getRestaurantID(), Toast.LENGTH_SHORT).show();
-
+	/*	ToastDisplay.DisplayToastOnScr(c, "onBalloonTap for overlay index " + index + " "
+				+ item.getTitle().toString() + " "
+				+ item.getSnippet().toString() + " "
+				+ item.getRestaurantID());
+	*/
 		String rest_id = item.getRestaurantID();
 		String rest_name = item.getTitle();
 		String rest_addr = item.getSnippet();
