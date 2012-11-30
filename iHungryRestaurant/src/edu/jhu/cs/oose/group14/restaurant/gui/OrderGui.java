@@ -949,6 +949,13 @@ public class OrderGui implements Observer {
 			 {
 				 orderNoT.setText(order.getOrderID());
 				 custNoT.setText(order.getCustID());
+				 for (int k = 0; k < order.getOrderItems().size(); k++) {
+						orderDetails[k] = order.getOrderItems().get(j)
+								.getItem().getItemName()
+								+ "    "
+								+ order.getOrderItems().get(j).getQuantity();
+					}
+				 setSelectedOrderDetails(orderDetails);
 				 break;
 			 }
 			 j++;
