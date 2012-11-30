@@ -11,13 +11,6 @@ import java.util.*;
  */
 
 public interface AndroidClientModel {
-	
-	/**
-	 * Get response from server in the form of String. This method is used mainly for testing connection with server (send & response)
-	 * @return a response from the server
-	 */
-//	public String getResponseFromServerT();
-	
 
 	/**
 	 * Check whether the customer's username and password are valid by sending these two values to the server.
@@ -53,38 +46,28 @@ public interface AndroidClientModel {
 	 */
 	public Customer getCustomerInfo( String username, String password);
 	
-	
 	/**
-	 * Get the Restaurant object info from the server.
-	 * @param restId Restaurant ID
-	 * @return the restaurant's ContactInfo
-	 */
-	
-	/**
-	 * Get the list of Restaurant info
-	 * @return
+	 * Get the list of Restaurant info given user's location info.
+	 * @param loc User's LocationInfo
+	 * @return a list of Restaurant info
 	 */
 	public List<AccountInfo> getRestaurantAccountInfos(LocationInfo loc);
 	
 	
+	/**
+	 * Giving a list of restaurant account info, return a list of restaurant contact info.
+	 * @param bus_accInfos
+	 * @return
+	 */
 	public List<ContactInfo> getRestaurantContactInfos(List<AccountInfo> bus_accInfos);
 	
 	
 	/**
-	 * Get the Contact Info of a specific 
+	 * Get the contact info of a specific restaurant's account info.
 	 * @param bus_accInfo
 	 * @return
 	 */
 	public ContactInfo getRestaurantContactInfoSingle(AccountInfo bus_accInfo);
-
-	
-	/**
-	 * Retrieve a list of restaurants based on the customer's GPS location.
-	 * @param loc LocationInfo
-	 * @return a list of restaurant
-	 */
-	//public List<ContactInfo> retrieveRestaurants(LocationInfo loc);
-	
 	
 	/**
 	 * Return a Menu of a specified restaurant.
@@ -92,19 +75,15 @@ public interface AndroidClientModel {
 	 * @return a Menu of that Restaurant
 	 */
 	public Menu retrieveMenu(String restId);
-	 
-	
+	 	
 	/**
-	 * Create an order given the info of the customer, restaurant and order-items.
-	 * @param orderId Order id
-	 * @param custId Customer id
+	 * Create an order given the info of the restaurant and order-items.
 	 * @param restId Restaurant id
 	 * @param status status of order
 	 * @param orderitems a list of orderitems
 	 * @return
 	 */
 	public Order createOrder(String restId, int status, List<OrderItem> orderitems); 
-	
 	
 	/**
 	 * Submit the order to the server for processing.
@@ -115,8 +94,7 @@ public interface AndroidClientModel {
 	
 	
 	/**
-	 * Retrieve all the orders this specific customer made previously
-	 * @param custId Customer's ID
+	 * Retrieve all the orders the customer made previously.
 	 * @return
 	 */
 	public List<Order> retrieveAllOrders();
@@ -124,20 +102,17 @@ public interface AndroidClientModel {
 	
 	/**
 	 * Retrieve orders from the server based on the info of the customer, 
-	 * the status of requested orders and the number of orders
+	 * the status of requested orders and the number of orders.
 	 * @param status status of the order (processes/confirmed/etc.)
 	 * @param count # of orders customer wants to see
-	 * @return an arraylist of Orders satisfying the requirements
+	 * @return a list of Orders satisfying the requirements
 	 */
 	public List<Order> retrieveOrders(String status, int count);
 	
-	
 	/**
-	 * This is called frequently by the client requesting status changed orders
-	 * @return an arraylist of Orders satisfying the requirements
+	 * This is called frequently by the client requesting status changed orders.
+	 * @return a list of Orders satisfying the requirements
 	 */
 	public List<Order> retrieveChangedOrders();
-	
-//	public void processOrder(Order order, String status);
-	
+		
 }

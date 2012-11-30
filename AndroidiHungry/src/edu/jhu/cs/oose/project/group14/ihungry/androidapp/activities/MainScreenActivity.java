@@ -42,6 +42,7 @@ public class MainScreenActivity extends Activity {
 		alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
 		// stopNotifyService();
+		// this.getApplicationContext().bindService(NotifyService.class, conn, flags)
 		startNotifyService();
 
 		// Hook up button presses to the appropriate event handler.
@@ -144,7 +145,7 @@ public class MainScreenActivity extends Activity {
 		 * sendBroadcast(intent);
 		 */
 		alarmManager.cancel(pendingIntent);
-		stopService(new Intent(MainScreenActivity.this, NotifyService.class));
+		//stopService(new Intent(MainScreenActivity.this, NotifyService.class));
 
 		Toast.makeText(MainScreenActivity.this, "Fetch STOP", Toast.LENGTH_LONG)
 				.show();
