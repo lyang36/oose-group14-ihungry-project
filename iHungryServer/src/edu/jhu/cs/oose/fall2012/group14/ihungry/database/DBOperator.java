@@ -368,7 +368,7 @@ public class DBOperator implements DataBaseOperater{
 					retjson.add(jordr);
 					if(corder.checkIsNewToRes()){
 						corder.flipToResStatus();
-						System.out.println("Order Changed to" + corder.getJSON().toString());
+						//System.out.println("Order Changed to" + corder.getJSON().toString());
 						orderCollection.findAndModify(ordobj, 
 								(DBObject)JSON.parse(corder.getJSON().toString()));
 					}
@@ -492,7 +492,7 @@ public class DBOperator implements DataBaseOperater{
 		ContactInfo rc = null;
 		try {
 			rc =  ((new Customer()).parseFromJSONObject(new JSONObject(
-					this.getBusiness_priv(acc.getId()).toString()))).getContactInfo();
+					this.getCustomer_priv(acc.getId()).toString()))).getContactInfo();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -521,6 +521,19 @@ public class DBOperator implements DataBaseOperater{
 			e.printStackTrace();
 		}
 		return rm;
+	}
+
+	@Override
+	public ContactInfo busiGetCusContactInfo(Order odr) {
+		//check whether this order is a valid order
+		query = new BasicDBObject();
+		query.put(Order.KEY_ORDERID, odr.getOrderID());
+		if(orderCollection.find(query).hasNext()){
+			AccountInfo acc = new AccountInfo();
+			acc.setId(odr.getCustID());
+			return this.getCustomerContactInfo(acc);
+		}
+		return null;
 	}
 
 }

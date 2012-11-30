@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Iterator;
 
 
@@ -23,7 +23,7 @@ import com.mongodb.util.JSON;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.ListedJSONObj;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
-import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.*;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Album;
 import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
@@ -126,6 +126,7 @@ public class DBOperatorTestUnit {
 		Order order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
 				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
 		
+		
 		DBOperator dboperator = new DBOperator();
 		dboperator.connectToDB();
 		AccountInfo acc = new AccountInfo("lyang", "abc");
@@ -134,6 +135,7 @@ public class DBOperatorTestUnit {
 		
 		System.out.println("Testing submit an order!");
 		dboperator.submitOrder(order);
+		
 		
 		System.out.println("Retrive new order by business");
 		ListedJSONObj retord = dboperator.getChangedBusiOrders(busiAcc);
@@ -151,13 +153,63 @@ public class DBOperatorTestUnit {
 		//business update orders
 		System.out.println("Testing update an order by business!");
 		order = new Order(MD5.getMd5("order1"), MD5.getNameMd5("lyang"),
-				MD5.getNameMd5("No1Res"), Order.STATUS_CONFIRMED, new ArrayList<OrderItem>());
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
 		dboperator.busiUpdateOrder(order);
+		Order order11 = new Order(MD5.getMd5("order11"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+		dboperator.submitOrder(order11);
+		Order order12 = new Order(MD5.getMd5("order12"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+		dboperator.submitOrder(order12);
+		Order order13 = new Order(MD5.getMd5("order13"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+		dboperator.submitOrder(order13);
+		try{
+			Thread.sleep(10000);
+		}
+		catch(Exception e){
+			
+		}
+		Order order14 = new Order(MD5.getMd5("order14"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+		dboperator.submitOrder(order14);
+		try{
+			Thread.sleep(10000);
+		}
+		catch(Exception e){
+			
+		}
+		Order order15 = new Order(MD5.getMd5("order15"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+		dboperator.submitOrder(order15);
+		
+		try{
+			Thread.sleep(10000*3);
+		}
+		catch(Exception e){
+			
+		}
+		Order order16 = new Order(MD5.getMd5("order16"), MD5.getNameMd5("lyang"),
+				MD5.getNameMd5("grp14"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+		dboperator.submitOrder(order16);
+		
 		retord = dboperator.getBusiOrders(busiAcc, 0, 10);
 		System.out.println(retord.getJSON().toString());
 		try {
 			assertEquals((retord.getJSON().getJSONObject("0").getInt(Order.KEY_STATUS)), 
-					Order.STATUS_CONFIRMED);
+					Order.STATUS_UNDERPROCING);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			fail();
+	
+		}
+		
+		
+		retord = dboperator.getBusiOrders(busiAcc, 0, 10);
+		System.out.println(retord.getJSON().toString());
+		try {
+			assertEquals((retord.getJSON().getJSONObject("0").getInt(Order.KEY_STATUS)), 
+					Order.STATUS_UNDERPROCING);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			fail();
