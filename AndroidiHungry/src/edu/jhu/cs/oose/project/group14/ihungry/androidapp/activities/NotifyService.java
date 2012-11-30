@@ -73,9 +73,17 @@ public class NotifyService extends Service {
 		List<Order> orders = clientModel.retrieveChangedOrders();
 
 		if (orders.size() != 0) {
+			
+			// Get the first order's info
+			Order order1 = (Order)orders.get(0);
+			AccountInfo bus_accInfo = new AccountInfo();
+			bus_accInfo.setId(order1.getRestID());
+			ContactInfo rest_contact = clientModel.getRestaurantContactInfoSingle(bus_accInfo);
+			String rest_name = rest_contact.getRealName();
+			String changedStatus = order1.getStatusMeaning();
 
-			ToastDisplay.DisplayToastOnScr(NotifyService.this, "Orders size: "
-					+ orders.size());
+			//ToastDisplay.DisplayToastOnScr(NotifyService.this, "Orders size: "
+			//		+ orders.size());
 
 			IntentFilter intentFilter = new IntentFilter();
 			intentFilter.addAction(ACTION);
@@ -90,7 +98,7 @@ public class NotifyService extends Service {
 			/*   */
 			Context context = getApplicationContext();
 			String notificationTitle = "Updated order available";
-			String notificationText = notifyCounter + "";
+			String notificationText = "Your order from "+ rest_name + ": " + changedStatus;
 			// Intent myIntent = new Intent(Intent.ACTION_VIEW,
 			// Uri.parse(myBlog));
 			Intent myIntent = new Intent(NotifyService.this,

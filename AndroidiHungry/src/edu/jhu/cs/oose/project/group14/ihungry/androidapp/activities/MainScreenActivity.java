@@ -42,6 +42,7 @@ public class MainScreenActivity extends Activity {
 		alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
 		// stopNotifyService();
+		// this.getApplicationContext().bindService(NotifyService.class, conn, flags)
 		startNotifyService();
 
 		// Hook up button presses to the appropriate event handler.
