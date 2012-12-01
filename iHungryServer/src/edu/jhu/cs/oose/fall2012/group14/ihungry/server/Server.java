@@ -32,6 +32,7 @@ class doComms implements Runnable {
     	input="";
     	try {
     		input = internet.receiveMessage();
+    		System.out.println("Input Message: " + input);
     		reactor.reactToMsg(input, internet);
     		server.close();
     	} catch (Exception ioe) {
@@ -54,37 +55,43 @@ public class Server implements ServerModel{
 	 */
 	@Override
 	public void run() {
+		ServerSocket listener = null;
+		Socket server;
 	    try{
-	      ServerSocket listener = new ServerSocket(CommunicationProtocol.SERVER_PORT);
-	      Socket server;
-	      System.out.println("Start Listening...");
+	    	listener = new ServerSocket(CommunicationProtocol.SERVER_PORT);
+	    	System.out.println("Start Listening...");
+	    } catch (Exception ioe) {
+		      System.out.println("Exception on socket listen: " + ioe);
+		      ioe.printStackTrace();
+		}
 	      
 	      while(true){
-	    	  server = listener.accept();
-			  threadNum ++;
-			  if(threadNum >= maxConnections){
-				  threadNum = 0;
-			  }
-			  try {
-				msreactor = msreactor.getClass().newInstance();
-				
-				DBOperator op = new DBOperator();
-				op.connectToDB();
-				msreactor.setOperater(op);
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-			  doComms conn_c= new doComms(server, msreactor);
-			  Thread t = new Thread(conn_c);
-			  t.start();
-			  System.out.println("Connection " + threadNum +" starts...");
+	    	  try{
+		    	  server = listener.accept();
+				  threadNum ++;
+				  if(threadNum >= maxConnections){
+					  threadNum = 0;
+				  }
+				  try {
+					  msreactor = msreactor.getClass().newInstance();
+					
+					  DBOperator op = new DBOperator();
+					  op.connectToDB();
+					  msreactor.setOperater(op);
+				  } catch (InstantiationException e) {
+					  e.printStackTrace();
+				  } catch (IllegalAccessException e) {
+					  e.printStackTrace();
+				  }
+				  doComms conn_c= new doComms(server, msreactor);
+				  Thread t = new Thread(conn_c);
+				  t.start();
+				  System.out.println("Connection " + threadNum +" starts...");
+	    	  }catch(Exception e){
+	    		  e.printStackTrace();
+	    	  }
 	      }
-	    } catch (IOException ioe) {
-	      System.out.println("IOException on socket listen: " + ioe);
-	      ioe.printStackTrace();
-	    }
+
 	}
 
 
