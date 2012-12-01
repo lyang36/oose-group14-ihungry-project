@@ -48,7 +48,7 @@ public class NotifyService extends Service {
 	@Override
 	public void onCreate() {
 		ToastDisplay.DisplayToastOnScr(NotifyService.this,
-				"Fetching changed orders every 30 seconds");
+				"Fetching changed orders every 10 seconds");
 
 		notifyServiceReceiver = new NotifyServiceReceiver();
 
