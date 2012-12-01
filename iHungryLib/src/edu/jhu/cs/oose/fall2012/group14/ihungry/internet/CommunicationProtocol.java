@@ -11,13 +11,16 @@ public class CommunicationProtocol {
 	/**
 	 * basic connection parameters
 	 */
-	public static String SERVER_IP_ADDRESS = "128.220.144.126";
+	public static String SERVER_IP_ADDRESS = "mantiqueira.sdss.pha.jhu.edu";
 	//"128.220.233.230";//"mantiqueira.sdss.pha.jhu.edu";
 	
 	/**
 	 * the server port
 	 */
-	public static int SERVER_PORT = 3391;
+
+
+
+	public static int SERVER_PORT = 22;
 	
 	/**
 	 * server command strings
