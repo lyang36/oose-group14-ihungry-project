@@ -32,6 +32,7 @@ public class MainScreenActivity extends Activity {
 	/* ......... Notify Service ........... */
 	private PendingIntent pendingIntent;
 	private AlarmManager alarmManager;
+	private final int updateInterval = 10; //10 seconds
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -113,7 +114,7 @@ public class MainScreenActivity extends Activity {
 
 		long currentTimeMillis = System.currentTimeMillis();
 		/* Notification Interval */
-		long updateIntervalTimeMillis = 10 * DateUtils.SECOND_IN_MILLIS;
+		long updateIntervalTimeMillis = updateInterval * DateUtils.SECOND_IN_MILLIS;
 		long nextUpdateTimeMillis = currentTimeMillis
 				+ updateIntervalTimeMillis;
 		Time nextUpdateTime = new Time();
