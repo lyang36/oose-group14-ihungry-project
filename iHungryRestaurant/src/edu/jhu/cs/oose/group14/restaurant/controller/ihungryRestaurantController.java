@@ -44,10 +44,7 @@ public class ihungryRestaurantController {
 	private List<JButton> listOfEdit;
     private List<JButton> listOfDelete;
     private List<String> listOfItemNames, listOfDescription, listOfPrice ;
-	private int itemNo =0;
 	private int indx=0;
-	private Object[][] data =  new Object[1000][5];
-	private int pointer = 0;
 	private Restaurant restaurant = new Restaurant(new Menu(),new Album());
 	private String username,realname,password,confirmPassword = null;
 	private String priPhone,secPhone,email,birthDate,state,address = null;
@@ -93,16 +90,13 @@ public class ihungryRestaurantController {
 			if (model.loginCheck(username,password))
 			{
 				String result = model.attemptLogin(username,password);
-				System.out.println("result="+result);
+				//System.out.println("result="+result);
 				if (!result.equals(""))
-				{
-					System.out.println("successfully logged in");
-					
-					
-					
+				{	
 					hungryRestaurant = iHungryRestaurant.getInstance();
 					hungryRestaurant.setAccountInfo(new AccountInfo(username, password));
 					
+					//start the thread
 					Timer timer = new Timer("RetrieveOrdersTask", true);					
 				    timer.scheduleAtFixedRate(new RetrieveOrdersTask(), 5000, 5000);
 
@@ -155,7 +149,6 @@ public class ihungryRestaurantController {
 					gui.getOrderGui().getDeclinedOrderTable().getSelectionModel().addListSelectionListener(new DeclinedOrderSelectionListener());
 					gui.getOrderGui().getOrderHistoryTable().getSelectionModel().addListSelectionListener(new OrderHistorySelectionListener());
 					
-					//add listeners to accept and decline buttons
 				}
 				else
 				{
@@ -274,22 +267,6 @@ public class ihungryRestaurantController {
 				result = model.signupForNewUser(restaurant);
 				if (result)
 				{
-					/*gui.getOrderGui().displayOrderScreen();
-					//gui.getOrderGui().getAcceptButton().addActionListener()
-					for(int i=0;i<5;i++)
-					{
-						listOfEdit.get(i).addActionListener(new EditButtonListener() );
-						listOfDelete.get(i).addActionListener(new DeleteButtonListener() );
-					}
-					gui.getOrderGui().getNext().addActionListener(new NextButtonListener());
-					gui.getOrderGui().getPrev().addActionListener(new PrevButtonListener());
-					gui.getOrderGui().getAcceptButton().addActionListener(new AcceptButtonListener());
-					gui.getOrderGui().getDeclineButton().addActionListener(new DeclineButtonListener());
-					gui.getOrderGui().getDeliverButton().addActionListener(new DeliverButtonListener());
-					gui.getOrderGui().getTable().getSelectionModel().addListSelectionListener(new SelectionListener());
-					gui.getOrderGui().getToBeDeliveredTable().getSelectionModel().addListSelectionListener(new ToBeDeliveredSelectionListener());
-					gui.getOrderGui().getDeclinedOrderTable().getSelectionModel().addListSelectionListener(new DeclinedOrderSelectionListener());
-					gui.getOrderGui().getOrderHistoryTable().getSelectionModel().addListSelectionListener(new OrderHistorySelectionListener());*/
 					gui.getSignupGui().getSignUp2().setVisible(false);
 					gui.getLoginGui().displayLoginScreen();
 					gui.getLoginGui().getLogin().addActionListener(new LoginListener());
@@ -299,13 +276,24 @@ public class ihungryRestaurantController {
 		}
 	}
 	
-	
+
+	/**
+	 * AcceptButtonListener class implements the actionPerformed method. Moves the
+	 * accepted order from pending orders to to be delivered orders.
+	 * 
+	 * @author parkavi
+	 *
+	 */	
 	
 	public class AcceptButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			Order order = new Order(gui.getOrderGui().getOrderNoT().getText());
+			//clear the order details pane
 			gui.getOrderGui().getOrderNoT().setText("");
 			gui.getOrderGui().getCustNo().setText("");
+			String[] emptyDetails = new String[2];
+			gui.getOrderGui().getList1().setListData(emptyDetails);
+			
 			order = hungryRestaurant.getPendingOrder(order);
 			order.setStatus(Order.STATUS_CONFIRMED);
 			if(model.updateOrder(restaurant.getAccountInfo(), order)){
@@ -324,14 +312,24 @@ public class ihungryRestaurantController {
 		}
 	}
 	
+	/**
+	 * DeleteButtonListener class implements the actionPerformed method. Moves the
+	 * accepted order from pending orders to declined orders.
+	 * 
+	 * @author parkavi
+	 *
+	 */	
 	
 	public class DeclineButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			Order order = new Order(gui.getOrderGui().getOrderNoT().getText());
+			
 			gui.getOrderGui().getOrderNoT().setText("");
 			gui.getOrderGui().getCustNo().setText("");
+			String[] emptyDetails = new String[2];
+			gui.getOrderGui().getList1().setListData(emptyDetails);
+			
 			order = hungryRestaurant.getPendingOrder(order);
-			System.out.println("status is "+order.getStatus());
 			order.setStatus(Order.STATUS_REJECTED);
 			if(model.updateOrder(restaurant.getAccountInfo(), order)){
 				int index = gui.getOrderGui().getTable().getSelectedRow();
@@ -346,11 +344,23 @@ public class ihungryRestaurantController {
 	}
 	
 	
+	/**
+	 * DeliverButtonListener class implements the actionPerformed method. Moves the
+	 * accepted order from to-be-delivered orders to old orders.
+	 * 
+	 * @author parkavi
+	 *
+	 */	
+	
 	public class DeliverButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			Order order = new Order(gui.getOrderGui().getToBeDeliveredOrderNoT().getText());
+			//clear the order details section
 			gui.getOrderGui().getToBeDeliveredOrderNo().setText("");
 			gui.getOrderGui().getToBeDeliveredCustNo().setText("");
+			String[] emptyDetails = new String[2];
+			gui.getOrderGui().getToBeDeliveredList().setListData(emptyDetails);
+			
 			order = hungryRestaurant.getAcceptedOrder(order);
 			order.setStatus(Order.STATUS_FINISHED);
 			if(model.updateOrder(restaurant.getAccountInfo(), order)){
@@ -364,6 +374,8 @@ public class ihungryRestaurantController {
 			
 		}
 	}
+	
+	
 	/**
 	 * SelectionListener class implements ListSelection Listener. Gives 
 	 * implementation for the valueChanged method.
@@ -379,7 +391,8 @@ public class ihungryRestaurantController {
 		 */
 		
 		public void valueChanged(ListSelectionEvent e) {
-			System.out.println("into currorders listener");
+			
+			//System.out.println("into currorders listener");
 			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getSubPanel10().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
@@ -400,7 +413,7 @@ public class ihungryRestaurantController {
 							+ "    "
 							+ selectedOrder.getOrderItems().get(j).getQuantity();
 				}
-				gui.getOrderGui().setSelectedOrderDetails(orderDetails);
+				gui.getOrderGui().getList1().setListData(orderDetails);
 			}
 		}
 	}
@@ -414,7 +427,8 @@ public class ihungryRestaurantController {
 		 */
 		
 		public void valueChanged(ListSelectionEvent e) {
-			System.out.println("into tobedeliveredorders listener");
+			
+			//System.out.println("into tobedeliveredorders listener");
 			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getToBeDeliveredSubPanel().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
@@ -439,6 +453,7 @@ public class ihungryRestaurantController {
 		}	
 	}
 	
+	
 	/**
 	 * DeclinedOrderSelectionListener class implements ListSelection Listener. Gives 
 	 * implementation for the valueChanged method.
@@ -456,7 +471,7 @@ public class ihungryRestaurantController {
 		
 		public void valueChanged(ListSelectionEvent e) {
 			
-			System.out.println("into declinedorders listener");
+			//System.out.println("into declinedorders listener");
 			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getDeclinedOrderSubPanel().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
@@ -505,7 +520,8 @@ public class ihungryRestaurantController {
 		 */
 		
 		public void valueChanged(ListSelectionEvent e) {
-			System.out.println("into orderhistory listener");
+			
+			//System.out.println("into orderhistory listener");
 			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getOrderHistorySubPanel().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();

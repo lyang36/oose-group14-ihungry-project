@@ -9,6 +9,15 @@ import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelImpl;
 import edu.jhu.cs.oose.group14.restaurant.model.ihungryRestaurantModelInterface;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 
+
+/**
+ * Specifies the workload for the daemon thread to connect to the server every 
+ * 5 seconds and fetch the new/changed orders.
+ *  
+ * @author parkavi
+ *
+ */
+
 public class RetrieveOrdersTask extends TimerTask {
 
 	private ihungryRestaurantModelInterface hungryRestaurantService; 
@@ -20,12 +29,9 @@ public class RetrieveOrdersTask extends TimerTask {
 	@Override
 	public void run() {
 
-		System.out.println("Thread running...");
+		//System.out.println("Thread running...");
 		iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 		List<Order> orders = hungryRestaurantService.retrieveChangedOrders(hungryRestaurant.getAccountInfo().getId());
-		System.out.println("uname = "+hungryRestaurant.getAccountInfo().getUname());
-		System.out.println("passwd = "+hungryRestaurant.getAccountInfo().getPasswd());
-		System.out.println("new size = "+orders.size());
 		
 		for (Iterator<Order> orderIterator = orders.iterator(); orderIterator.hasNext();) {
 			Order order = orderIterator.next();
