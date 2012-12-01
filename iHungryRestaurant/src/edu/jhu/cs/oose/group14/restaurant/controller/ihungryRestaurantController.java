@@ -611,18 +611,19 @@ public class ihungryRestaurantController {
 					     //add item to menu
 					     String newItemId = null;
 					     if (restaurant.getMenu().getMenuSize()==0)
-					    	 newItemId = "1";
+					    	 newItemId = "i001";
 					     else
 					     {
 					    	 Item lastItem = restaurant.getMenu().getItems().get(restaurant.getMenu().getMenuSize()-1);
-					    	 newItemId = Integer.toString(Integer.parseInt(lastItem.getItemId()) + 1);
+					    	 String lastItemId = lastItem.getItemId().substring(1);
+					    	 newItemId = "i" + Integer.toString(Integer.parseInt(lastItemId) + 1);
 					     }
 					     Item newItem = new Item(newItemId,name.getText(),description.getText(),Double.parseDouble(price.getText()),new Rating(0,0),new Album());
 					     restaurant.getMenu().addItem(newItem);
 					     
 					     //write Menu to DB
 					     boolean result = model.updateMenu(restaurant.getAccountInfo(),restaurant.getMenu());
-					     System.out.println("result = "+result);
+					     
 				     }
 				}
 				else if(listOfEdit.get(ind).getText()=="Edit")
@@ -630,12 +631,7 @@ public class ihungryRestaurantController {
 					name.setEditable(true);
 			        description.setEditable(true);
 			        price.setEditable(true);
-			        listOfEdit.get(ind).setText("Save");
-			        
-			        /*//replace the newly entered item and its price
-			        listOfItemNames.set(indx*5+ind,name.getText());
-			        listOfDescription.set(indx*5+ind,description.getText());
-			        listOfPrice.set(indx*5+ind,price.getText());*/					
+			        listOfEdit.get(ind).setText("Save");			
 				}
 		    }
 		}
@@ -687,8 +683,6 @@ public class ihungryRestaurantController {
 			
 			if(nextProceed){
 				indx = indx + 1;
-				System.out.println("into next index = " + indx);
-				System.out.println("into next size = " + listOfItemNames.size());
 				onClickNext();
 				gui.getOrderGui().getPrev().setVisible(true);			
 			}
