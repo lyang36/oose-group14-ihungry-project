@@ -6,7 +6,12 @@ import javax.swing.border.BevelBorder;
 import java.awt.BorderLayout;
 import java.awt.Container;
 
-
+/**
+ * LoginGui class has the methods to display the Gui for login page and other helper methods.
+ * 
+ * @author Parkavi
+ *
+ */
 
 public class LoginGui {
 	
@@ -23,10 +28,13 @@ public class LoginGui {
 	
 	
 	public LoginGui(Container contentPane){
-		
-		this.contentPane = contentPane;
-		
+		this.contentPane = contentPane;	
 	}
+	
+	
+	/*
+	 * Displays the Gui for login screen 
+	 */
 	
 	public void displayLoginScreen(){
 		
@@ -48,13 +56,13 @@ public class LoginGui {
 			{
 				usernameLogin = new JTextField();
 				usernameLogin.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-				usernameLogin.setText("No1Res");
+				//usernameLogin.setText("No1Res");
 			}
 			{
 				passwordLogin = new JPasswordField();
-				passwordLogin.setRequestFocusEnabled(false);
+				//passwordLogin.setRequestFocusEnabled(false);
 				passwordLogin.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-				passwordLogin.setText("abc");
+				//passwordLogin.setText("abc");
 			}
 			{
 				username = new JLabel();

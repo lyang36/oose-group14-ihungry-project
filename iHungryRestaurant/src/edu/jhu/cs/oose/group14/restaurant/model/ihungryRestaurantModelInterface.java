@@ -12,14 +12,6 @@ import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
 
 public interface ihungryRestaurantModelInterface {
 	
-	
-	
-	/**
-	 * Get response from server in the form of String. This method is used mainly for testing connection with server (send & response)
-	 * @return a response from the server
-	 */
-	public String getResponseFromServer();
-	
 	/**
 	 * Check whether the restaurant's username and password are valid by sending these two values to the server.
 	 * @param username
@@ -81,11 +73,6 @@ public interface ihungryRestaurantModelInterface {
 	 * @param restId Restaurant ID
 	 * @return an arraylist of Orders satisfying the requirements
 	 */
-	public List<Order> retrieveChangedOrders(String restId);
-	
-	
-	
-	
-	
+	public List<Order> retrieveChangedOrders(String restId);	
 
 }

@@ -16,6 +16,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
+/**
+ * SignupGui has methods for displaying the sugnup screen.
+ * @author parkavi
+ *
+ */
+
 public class SignupGui {
 	private Container contentPane;
 	
@@ -46,11 +52,15 @@ public class SignupGui {
 	private JButton signup2T;
 	private JPanel jPanel1;
 	
+	
 	public SignupGui(Container contentPane){
 		this.contentPane = contentPane;
 		
 	}
 
+	/*
+	 * Displays the signup screen
+	 */
 	
 	public void displayFirstPageSignUpGui(){
 		{	
@@ -176,17 +186,15 @@ public class SignupGui {
 				.addGap(50)
 				.addComponent(nextSignUpL, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
 				.addContainerGap(54, Short.MAX_VALUE));
-		}
-		
-		
+		}	
 	}
+	
 	
 	public void setSignUpPanel(){
 		signUpPanel.setVisible(true);
 		passwordSignUpT.setText("");
 		confirmPasswordSignUpT.setText("");
 	}
-	
 	
 	public JButton getNextSignUp(){
 		return nextSignUpL;
@@ -213,9 +221,12 @@ public class SignupGui {
 	}
 	
 	
-	
+	/*
+	 * Displays the signup screen
+	 */
 	
 	public void displaySecondPageSignUpGui(){
+		
 		Object[] statesList = {"AB ALBERTA","AK ALASKA","AL ALABAMA","AR ARKANSAS","AS AMERICAN SAMOA","AZ ARIZONA",
 				               "BC BRITISH COLUMBIA","CA CALIFORNIA","CO COLORADO","CT CONNECTICUT","DC DISTRICT OF COLUMBIA",
 				               "DE DELAWARE","FL FLORIDA","FM FEDERATED STATES OF MICRONESIA","GA GEORGIA","GU GUAM",
@@ -228,6 +239,7 @@ public class SignupGui {
 				               "PQ QUEBEC","PR PUERTO RICO","PW PALAU","RI RHODE ISLAND","SC SOUTH CAROLINA","SD SOUTH DAKOTA","SK SASKATCHEWAN",
 				               "TN TENNESSEE","TX TEXAS","UT UTAH","VA VIRGINIA","VI VIRGIN ISLANDS","VT VERMONT","WA WASHINGTON","WI WISCONSIN",
 				               "WV WEST VIRGINIA","WY WYOMING"};
+		
 		signUpPanel.setVisible(false);
 		{
 			signUpPanel2 = new JPanel();
