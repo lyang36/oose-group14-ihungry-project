@@ -9,8 +9,11 @@ import edu.jhu.cs.oose.project.group14.ihungry.androidapp.ToastDisplay;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.text.format.DateUtils;
 import android.text.format.Time;
@@ -44,8 +47,15 @@ public class MainScreenActivity extends Activity {
 
 		// stopNotifyService();
 		// this.getApplicationContext().bindService(NotifyService.class, conn, flags)
-		startNotifyService();
-
+		
+		/*if( isMyServiceRunning() ){
+			// Should reset the alarm
+			ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service already running!");
+		} else{
+			ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service not running - start new one!");
+			startNotifyService();
+		}*/
+		
 		// Hook up button presses to the appropriate event handler.
 		((ImageButton) findViewById(R.id.imgbtn_Nearby))
 				.setOnClickListener(imgbtn_Nearby_Listener);
@@ -103,6 +113,20 @@ public class MainScreenActivity extends Activity {
 	};
 
 	/**
+	 * Check whether the notification service is running.
+	 * @return
+	 */
+	public boolean isMyServiceRunning() {
+	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if (NotifyService.class.getName().equals(service.service.getClassName())) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
+	/**
 	 * Start the background notification service and executed every interval of time.
 	 */
 	public void startNotifyService() {
@@ -112,27 +136,28 @@ public class MainScreenActivity extends Activity {
 		pendingIntent = PendingIntent.getService(MainScreenActivity.this, 0,
 				myIntent, 0);
 
-		long currentTimeMillis = System.currentTimeMillis();
-		/* Notification Interval */
+		/*long currentTimeMillis = System.currentTimeMillis();
+		// Notification Interval 
 		long updateIntervalTimeMillis = updateInterval * DateUtils.SECOND_IN_MILLIS;
 		long nextUpdateTimeMillis = currentTimeMillis
 				+ updateIntervalTimeMillis;
 		Time nextUpdateTime = new Time();
 		nextUpdateTime.set(nextUpdateTimeMillis);
-
-		/*
-		 * Calendar calendar = Calendar.getInstance();
-		 * calendar.setTimeInMillis(System.currentTimeMillis());
-		 * calendar.add(Calendar.SECOND, 5);
 		 */
+		
+		 Calendar calendar = Calendar.getInstance();
+		 calendar.setTimeInMillis(System.currentTimeMillis());
+		 //calendar.add(Calendar.SECOND, 5);
+		 
 		// alarmManager.set(AlarmManager.RTC_WAKEUP, nextUpdateTimeMillis,
 		// pendingIntent);
 
 		/* Service is waken up and executed every interval of time */
-		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-				nextUpdateTimeMillis, updateIntervalTimeMillis, pendingIntent);
-		// alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-		// calendar.getTimeInMillis(), 5*1000, pendingIntent);
+		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+		//		nextUpdateTimeMillis, updateIntervalTimeMillis, pendingIntent);
+		
+		 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+		 calendar.getTimeInMillis(), 5*1000, pendingIntent);
 	}
 
 	/**

@@ -68,8 +68,9 @@ public class NotifyService extends Service {
 	@SuppressWarnings("deprecation")
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		ToastDisplay.DisplayToastOnScr(NotifyService.this,
+				"Service: start command");
 
-		// Test : retrieve all orders
 		List<Order> orders = clientModel.retrieveChangedOrders();
 
 		if (orders.size() != 0) {
