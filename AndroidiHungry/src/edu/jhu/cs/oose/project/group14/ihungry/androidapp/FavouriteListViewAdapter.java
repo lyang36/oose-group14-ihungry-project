@@ -4,8 +4,12 @@ import java.util.*;
 
 import com.example.androidihungry.R;
 
+import edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.OrderReviewActivity;
+import edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel.AndroidClientModel;
+import edu.jhu.cs.oose.project.group14.ihungry.androidclientmodel.AndroidClientModelImpl;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Item;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
+import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 import edu.jhu.cs.oose.project.group14.ihungry.model.OrderItem;
 
 import android.app.Activity;
@@ -39,12 +43,20 @@ public class FavouriteListViewAdapter extends BaseAdapter {
 	private TextView quantity;
 	private Button btn_order;
 	private List<OrderItem> menu_order;
+	
+	private AndroidClientModel a_model;
+	private Context c;
 
 	public FavouriteListViewAdapter(Activity a, List<OrderItem> menu_order_in) {
 		activity = a;
 		menu_order = menu_order_in;
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		a_model = new AndroidClientModelImpl(CustomerAccountInfoCreator.createAccountInfo(
+				FileHandler.username_stored, FileHandler.pwd_stored));
+		
+		c=a.getApplicationContext();
 	}
 	
 	/**
@@ -109,10 +121,21 @@ public class FavouriteListViewAdapter extends BaseAdapter {
 				
 				Log.v("[Favourite listview adapter]","btn_order clicked:"+clickItem.getItem().getItemName());
 
-			//	clickItem.addQuantity(1);
+				// Create a order
+				List<OrderItem> order_items = new ArrayList<OrderItem>();
+				order_items.add(clickItem);
+
+				String restID = "cfc1b016980afb5569daf3dc"; // New China II
+				Order order = a_model.createOrder(restID, Order.STATUS_UNDERPROCING, order_items);
+				boolean submit_result = a_model.submitOrder(order);
+				
+				if(submit_result)
+					ToastDisplay.DisplayToastOnScr(c, "Order Submitted Successful !");
+				else 
+					ToastDisplay.DisplayToastOnScr(c, "Order Submitted Failed !");
+				
 				((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
 				
-	
 			}
 		});	
 		

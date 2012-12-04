@@ -27,7 +27,6 @@ public class FavouritesActivity extends Activity {
 	
 	private ListView m_ListView;
 	private FavouriteListViewAdapter list_adapter;
-	private AndroidClientModel a_model;
 	private List<OrderItem> order_items = new ArrayList<OrderItem>();
 
 
@@ -38,10 +37,10 @@ public class FavouritesActivity extends Activity {
         
 		m_ListView = (ListView) findViewById(R.id.list);
 		
-		Item item1 = new Item("i_001","8-piece Chicken Mixed", 10.99, new Rating(4.3, 65), new Album());
+		Item item1 = new Item("i_001","Chicken with Broccoli", 4.5, new Rating(4.0, 10), new Album());
 		OrderItem order_item1 = new OrderItem(item1, 1);
 		
-		Item item2 = new Item("i_002","Butterfly Shrimp", 8.35, new Rating(3.6, 12), new Album());
+		Item item2 = new Item("i_002","B-B-Q Spare Ribs", 5.25, new Rating(3.95, 12), new Album());
 		OrderItem order_item2 = new OrderItem(item2, 1);
 		
 		order_items.add(order_item1);
