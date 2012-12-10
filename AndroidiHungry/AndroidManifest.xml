@@ -3,8 +3,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk
-        android:minSdkVersion="7" />
+    <uses-sdk android:minSdkVersion="7" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -33,18 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--
-        <activity android:name="FavouriteScrActivity" >
-        </activity>
-        <activity android:name="MyProfileActivity" >
-        </activity>
-        <activity android:name="OrderScrActivity" >
-        </activity>
-        <activity android:name="ReviewOrderActivity" >
-        </activity>
-        -->
-
         <activity
             android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.MainScreenActivity"
             android:configChanges="orientation"
@@ -99,9 +86,10 @@
             android:label="@string/title_activity_order_review"
             android:screenOrientation="portrait" >
         </activity>
-        
-        <service android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.NotifyService"/>
-                		
+
+        <service android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.NotifyService" />
+        <service android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.MyAlarmService" />
+
     </application>
 
 </manifest>

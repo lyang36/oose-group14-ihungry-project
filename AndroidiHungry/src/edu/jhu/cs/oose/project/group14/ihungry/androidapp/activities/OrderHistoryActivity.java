@@ -40,6 +40,11 @@ public class OrderHistoryActivity extends Activity {
 
 	}
 
+	/**
+	 * Make the HTML webpage based on the information of input order.
+	 * @param orders_in input Order instance.
+	 * @return
+	 */
 	private String makeOrderHistoryHTML(List<Order> orders_in) {
 		// String HTML_str = "<html><body>Hello, world!</body></html>";
 
@@ -70,6 +75,11 @@ public class OrderHistoryActivity extends Activity {
 		return HTML_str;
 	}
 	
+	/**
+	 * Make the HTML code given one single order information.
+	 * @param order_single
+	 * @return
+	 */
 	private String makeEachOrderHTML(Order order_single) {
 		String HTML_str = new String("");
 		AccountInfo bus_accInfo = new AccountInfo();
@@ -113,6 +123,11 @@ public class OrderHistoryActivity extends Activity {
 		return HTML_str;
 	}
 	
+	/**
+	 * Make the HTML code based on the single input OrderItem instance.
+	 * @param orderItem
+	 * @return
+	 */
 	private String makeOrderItemHTML(OrderItem orderItem) {
 		Item item = (Item)orderItem.getItem();
 		

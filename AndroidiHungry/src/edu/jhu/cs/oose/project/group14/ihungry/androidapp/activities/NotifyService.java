@@ -39,17 +39,13 @@ public class NotifyService extends Service {
 	private static final int MY_NOTIFICATION_ID = 1;
 	private NotificationManager notificationManager;
 	private Notification myNotification;
-	private final String myBlog = "http://ugrad.cs.jhu.edu/~group14/";
 
-	private int notifyCounter = 0;
+	//private int notifyCounter = 0;
 
 	private AndroidClientModel clientModel;
 
 	@Override
 	public void onCreate() {
-		ToastDisplay.DisplayToastOnScr(NotifyService.this,
-				"Fetching changed orders every 10 seconds");
-
 		notifyServiceReceiver = new NotifyServiceReceiver();
 
 		/* Initialize AndroidClientModel */
@@ -68,23 +64,24 @@ public class NotifyService extends Service {
 	@SuppressWarnings("deprecation")
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		ToastDisplay.DisplayToastOnScr(NotifyService.this,
-				"Service: start command");
+		//ToastDisplay.DisplayToastOnScr(NotifyService.this, "Notify Service: start command");
 
 		List<Order> orders = clientModel.retrieveChangedOrders();
 
 		if (orders.size() != 0) {
-			
+
 			// Get the first order's info
-			Order order1 = (Order)orders.get(0);
+			Order order1 = (Order) orders.get(0);
 			AccountInfo bus_accInfo = new AccountInfo();
 			bus_accInfo.setId(order1.getRestID());
-			ContactInfo rest_contact = clientModel.getRestaurantContactInfoSingle(bus_accInfo);
+			ContactInfo rest_contact = clientModel
+					.getRestaurantContactInfoSingle(bus_accInfo);
 			String rest_name = rest_contact.getRealName();
 			String changedStatus = order1.getStatusMeaning();
 
-			//ToastDisplay.DisplayToastOnScr(NotifyService.this, "Orders size: "
-			//		+ orders.size());
+			// ToastDisplay.DisplayToastOnScr(NotifyService.this,
+			// "Orders size: "
+			// + orders.size());
 
 			IntentFilter intentFilter = new IntentFilter();
 			intentFilter.addAction(ACTION);
@@ -92,14 +89,14 @@ public class NotifyService extends Service {
 
 			// Send Notification
 			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			notifyCounter++;
+			//notifyCounter++;
 			myNotification = new Notification(R.drawable.ic_launcher,
-					"Notification " + notifyCounter, System.currentTimeMillis());
+					"iHungry Notification", System.currentTimeMillis());
 
-			/*   */
 			Context context = getApplicationContext();
 			String notificationTitle = "Updated order available";
-			String notificationText = "Your order from "+ rest_name + ": " + changedStatus;
+			String notificationText = "Your order from " + rest_name + ": "
+					+ changedStatus;
 			// Intent myIntent = new Intent(Intent.ACTION_VIEW,
 			// Uri.parse(myBlog));
 			Intent myIntent = new Intent(NotifyService.this,
@@ -114,8 +111,9 @@ public class NotifyService extends Service {
 					notificationText, pendingIntent);
 			notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
 		}
-			return super.onStartCommand(intent, flags, startId);
-		
+
+		return super.onStartCommand(intent, flags, startId);
+
 	}
 
 	@Override

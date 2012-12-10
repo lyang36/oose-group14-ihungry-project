@@ -35,7 +35,8 @@ public class MainScreenActivity extends Activity {
 	/* ......... Notify Service ........... */
 	private PendingIntent pendingIntent;
 	private AlarmManager alarmManager;
-	private final int updateInterval = 10; //10 seconds
+	private final int updateInterval = 10; //in seconds
+	private final int MY_ALARM_SERVICE_PROCESS_ID = 100;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,13 +49,13 @@ public class MainScreenActivity extends Activity {
 		// stopNotifyService();
 		// this.getApplicationContext().bindService(NotifyService.class, conn, flags)
 		
-		/*if( isMyServiceRunning() ){
+		if( isMyServiceRunning() ){
 			// Should reset the alarm
 			ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service already running!");
 		} else{
 			ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service not running - start new one!");
 			startNotifyService();
-		}*/
+		}
 		
 		// Hook up button presses to the appropriate event handler.
 		((ImageButton) findViewById(R.id.imgbtn_Nearby))
@@ -119,7 +120,7 @@ public class MainScreenActivity extends Activity {
 	public boolean isMyServiceRunning() {
 	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-	        if (NotifyService.class.getName().equals(service.service.getClassName())) {
+	        if (MyAlarmService.class.getName().equals(service.service.getClassName())) {
 	            return true;
 	        }
 	    }
@@ -132,8 +133,8 @@ public class MainScreenActivity extends Activity {
 	public void startNotifyService() {
 
 		Intent myIntent = new Intent(MainScreenActivity.this,
-				NotifyService.class);
-		pendingIntent = PendingIntent.getService(MainScreenActivity.this, 0,
+				MyAlarmService.class);
+		pendingIntent = PendingIntent.getService(MainScreenActivity.this, MY_ALARM_SERVICE_PROCESS_ID,
 				myIntent, 0);
 
 		/*long currentTimeMillis = System.currentTimeMillis();
@@ -147,7 +148,7 @@ public class MainScreenActivity extends Activity {
 		
 		 Calendar calendar = Calendar.getInstance();
 		 calendar.setTimeInMillis(System.currentTimeMillis());
-		 //calendar.add(Calendar.SECOND, 5);
+		 //calendar.add(Calendar.SECOND, updateInterval);
 		 
 		// alarmManager.set(AlarmManager.RTC_WAKEUP, nextUpdateTimeMillis,
 		// pendingIntent);
@@ -155,9 +156,12 @@ public class MainScreenActivity extends Activity {
 		/* Service is waken up and executed every interval of time */
 		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
 		//		nextUpdateTimeMillis, updateIntervalTimeMillis, pendingIntent);
-		
-		 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-		 calendar.getTimeInMillis(), 5*1000, pendingIntent);
+		 
+		 alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+				 calendar.getTimeInMillis(), updateInterval*1000, pendingIntent);
+		 
+		// alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+		// calendar.getTimeInMillis(), updateInterval*1000, pendingIntent);
 	}
 
 	/**
@@ -170,11 +174,15 @@ public class MainScreenActivity extends Activity {
 		 * intent.putExtra("RQS", NotifyService.STOP_SERVICE);
 		 * sendBroadcast(intent);
 		 */
-		alarmManager.cancel(pendingIntent);
-		//stopService(new Intent(MainScreenActivity.this, NotifyService.class));
+		
+		Intent intentstop = new Intent(MainScreenActivity.this,
+				MyAlarmService.class);
+		PendingIntent senderstop = PendingIntent.getService(MainScreenActivity.this, MY_ALARM_SERVICE_PROCESS_ID,
+				intentstop, 0);
+		alarmManager.cancel(senderstop);
+		stopService(new Intent(MainScreenActivity.this, MyAlarmService.class));
 
-		Toast.makeText(MainScreenActivity.this, "Fetch STOP", Toast.LENGTH_LONG)
-				.show();
+		ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Fetch STOP");
 	}
 
 	@Override
