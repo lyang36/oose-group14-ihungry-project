@@ -7,6 +7,7 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -19,7 +20,7 @@ public class MyAlarmService extends Service {
 	@Override
 	public void onCreate() {
 		ToastDisplay.DisplayToastOnScr(MyAlarmService.this,
-				"Fetching Changed Orders Every 10 seconds");
+				"Fetching Changed Orders Every 20 seconds");
 	}
 
 	@Override
@@ -41,8 +42,10 @@ public class MyAlarmService extends Service {
 
 		Intent intent2 = new Intent();
 		intent2.setAction(NotifyService.ACTION);
-		intent2.putExtra("RQS", NotifyService.STOP_SERVICE);
+		intent2.putExtra("RQS", NotifyService.RQS_STOP_SERVICE);
 		sendBroadcast(intent2);
+		
+		Log.v("MyAlarmService","onDestory");
 		
 		stopSelf();
 		super.onDestroy();

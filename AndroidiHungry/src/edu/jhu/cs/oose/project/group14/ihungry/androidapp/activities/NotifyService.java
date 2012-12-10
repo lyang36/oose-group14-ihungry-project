@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.IBinder;
+import android.util.Log;
 
 /**
  * A Notification Service used to notify user their changed orders.
@@ -46,6 +47,9 @@ public class NotifyService extends Service {
 
 	@Override
 	public void onCreate() {
+		//ToastDisplay.DisplayToastOnScr(NotifyService.this, "Notify Service: onCreate");
+		Log.i("[NotifyService]","Start Id "+NotifyService.this.hashCode());
+
 		notifyServiceReceiver = new NotifyServiceReceiver();
 
 		/* Initialize AndroidClientModel */
@@ -63,8 +67,14 @@ public class NotifyService extends Service {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
+	public int onStartCommand(Intent intent, int flags, int startId) {		
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(ACTION);
+		registerReceiver(notifyServiceReceiver, intentFilter);
+
 		//ToastDisplay.DisplayToastOnScr(NotifyService.this, "Notify Service: start command");
+		Log.v("[NotifyService]","Notify: onStartCommand");
+		Log.i("[NotifyService]","Start Id "+NotifyService.this.hashCode());
 
 		List<Order> orders = clientModel.retrieveChangedOrders();
 
@@ -78,14 +88,6 @@ public class NotifyService extends Service {
 					.getRestaurantContactInfoSingle(bus_accInfo);
 			String rest_name = rest_contact.getRealName();
 			String changedStatus = order1.getStatusMeaning();
-
-			// ToastDisplay.DisplayToastOnScr(NotifyService.this,
-			// "Orders size: "
-			// + orders.size());
-
-			IntentFilter intentFilter = new IntentFilter();
-			intentFilter.addAction(ACTION);
-			registerReceiver(notifyServiceReceiver, intentFilter);
 
 			// Send Notification
 			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -118,8 +120,7 @@ public class NotifyService extends Service {
 
 	@Override
 	public void onDestroy() {
-		ToastDisplay.DisplayToastOnScr(NotifyService.this,
-				"NotifyService.onDestroy");
+		//ToastDisplay.DisplayToastOnScr(NotifyService.this, "NotifyService.onDestroy");
 
 		this.unregisterReceiver(notifyServiceReceiver);
 		super.onDestroy();
@@ -139,6 +140,7 @@ public class NotifyService extends Service {
 
 			/* Stop the service */
 			if (rqs == RQS_STOP_SERVICE) {
+				Log.v("NotifyServiceReceiver","Stop Service Notify");
 				stopSelf();
 			}
 		}

@@ -35,7 +35,7 @@ public class MainScreenActivity extends Activity {
 	/* ......... Notify Service ........... */
 	private PendingIntent pendingIntent;
 	private AlarmManager alarmManager;
-	private final int updateInterval = 10; //in seconds
+	private final int updateInterval = 20; //in seconds
 	private final int MY_ALARM_SERVICE_PROCESS_ID = 100;
 
 	@Override
