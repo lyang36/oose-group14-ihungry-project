@@ -50,10 +50,9 @@ public class MainScreenActivity extends Activity {
 		// this.getApplicationContext().bindService(NotifyService.class, conn, flags)
 		
 		if( isMyServiceRunning() ){
-			// Should reset the alarm
-			ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service already running!");
+		//	ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service already running!");
 		} else{
-			ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service not running - start new one!");
+		//	ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service not running - start new one!");
 			startNotifyService();
 		}
 		

@@ -102,7 +102,7 @@ public class NotifyService extends Service {
 			// Intent myIntent = new Intent(Intent.ACTION_VIEW,
 			// Uri.parse(myBlog));
 			Intent myIntent = new Intent(NotifyService.this,
-					OrderHistoryActivity.class);
+					OrderHistoryTabLayoutActivity.class);
 
 			PendingIntent pendingIntent = PendingIntent.getActivity(
 					getBaseContext(), 0, myIntent,

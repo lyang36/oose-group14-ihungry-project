@@ -64,8 +64,28 @@
                     android:id="@+id/et_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ems="10" 
-                    android:inputType="textPersonName" />
+                    android:ems="8" 
+                    android:inputType="textPassword" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm Pwd:"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                <EditText
+                    android:id="@+id/et_confirmpwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:inputType="textPassword" />
+
             </TableRow>
 
             <TableRow

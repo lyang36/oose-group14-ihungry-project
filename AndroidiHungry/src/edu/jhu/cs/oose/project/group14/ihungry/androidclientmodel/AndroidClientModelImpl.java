@@ -284,7 +284,7 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		 */
 		List<Order> my_orders = new ArrayList<Order>();
 		OrderQuerier querier = new OrderQuerier();
-		querier.setCusID("lyang");
+		//querier.setCusID(customer_account.getUname());
 		
 		String sendStr = CommunicationProtocol.construcSendingStr(
 				customer_account.getId(), customer_account.getPasswd(),
@@ -312,16 +312,36 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		return my_orders;
 	}
 
-	public List<Order> retrieveOrders(String status, int count) {
-		// TODO Auto-generated method stub
-		/*
-		 * 1. Generate a sending message to be sent to the server with Customer,
-		 * status and count
-		 */
-		/* 2. Call internetClient.sendAndGet to get response from server */
-		/* 3. If valid => parse the information to List<Order> object */
+	public List<Order> retrieveOrders(int status, int count) {
+		List<Order> my_orders = new ArrayList<Order>();
+		OrderQuerier querier = new OrderQuerier();
+		//querier.setCusID(customer_account.getUname());
+		querier.setStatus(status);
 		
-		return null;
+		String sendStr = CommunicationProtocol.construcSendingStr(
+				customer_account.getId(), customer_account.getPasswd(),
+				CommunicationProtocol.CUS_RETRIVE_ORDER, querier.getJSON().toString());
+		
+		String responseStr = "";
+		try {
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTION_TIMEOUT);
+			System.out.println("response: "+responseStr);
+			
+			String supinfo = CommunicationProtocol.getSupinfoFromReceivedStr(responseStr);
+			ListedJSONObj jobj = new ListedJSONObj();
+			jobj.parseFromJSONObject(new JSONObject(supinfo));
+		
+			Iterator<JSONObject> it = jobj.iterator();
+			while(it.hasNext()){
+				Order order = new Order("", "", "", -1, new ArrayList<OrderItem>());
+				order.parseFromJSONObject(it.next());
+				my_orders.add(order);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return my_orders;
 	}
 
 	public List<Order> retrieveChangedOrders() { // Very Similar to retrieveAllOrders()

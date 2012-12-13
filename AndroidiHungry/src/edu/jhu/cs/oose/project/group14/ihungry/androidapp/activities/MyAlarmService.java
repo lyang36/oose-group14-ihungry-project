@@ -19,8 +19,8 @@ public class MyAlarmService extends Service {
 	
 	@Override
 	public void onCreate() {
-		ToastDisplay.DisplayToastOnScr(MyAlarmService.this,
-				"Fetching Changed Orders Every 20 seconds");
+		//ToastDisplay.DisplayToastOnScr(MyAlarmService.this,
+		//		"Fetching Changed Orders Every 20 seconds");
 	}
 
 	@Override

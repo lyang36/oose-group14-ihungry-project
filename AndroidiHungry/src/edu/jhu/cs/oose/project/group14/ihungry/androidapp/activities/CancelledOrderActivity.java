@@ -12,12 +12,12 @@ import android.view.Menu;
 import android.webkit.WebView;
 
 /**
- * This view is used to show the finished orders of the user's.
+ * This view is used to show the cancelled orders of the user's.
  * 
  * @author SuNFloWer
  * 
  */
-public class OrderHistoryActivity extends Activity {
+public class CancelledOrderActivity extends Activity {
 
 	private WebView webView;
 	private AndroidClientModel clientModel;
@@ -25,34 +25,26 @@ public class OrderHistoryActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_order_history);
+		setContentView(R.layout.activity_cancelled_order);
 
 		clientModel = new AndroidClientModelImpl(
 				CustomerAccountInfoCreator.createAccountInfo(
 						FileHandler.username_stored, FileHandler.pwd_stored));
 
 		webView = (WebView) findViewById(R.id.webView1);
-		webView.loadData(OrderHistoryTabLayoutActivity.makeOrderHistoryHTML(clientModel.retrieveOrders(Order.STATUS_FINISHED, -1), clientModel),
+		webView.loadData(OrderHistoryTabLayoutActivity.makeOrderHistoryHTML(clientModel.retrieveOrders(Order.STATUS_CANCELLED, -1), clientModel),
 				"text/html", "UTF-8");
 
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_order_history, menu);
+		getMenuInflater().inflate(R.menu.activity_cancelled_order, menu);
 		return true;
 	}
 
-	/*
-	 * @Override public boolean onKeyDown(int keyCode, KeyEvent event) { if
-	 * (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) { // do
-	 * something on back. setResult(ActivitySwitchSignals.MAINSCREENSWH);
-	 * finish(); return true; } return super.onKeyDown(keyCode, event); }
-	 */
-
 	@Override
 	public void onBackPressed() {
-		// Let OrderHistoryTabLayout handle this event.
 		this.getParent().onBackPressed();
 	}
 

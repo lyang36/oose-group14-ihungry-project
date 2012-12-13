@@ -107,7 +107,7 @@ public interface AndroidClientModel {
 	 * @param count # of orders customer wants to see
 	 * @return a list of Orders satisfying the requirements
 	 */
-	public List<Order> retrieveOrders(String status, int count);
+	public List<Order> retrieveOrders(int status, int count);
 	
 	/**
 	 * This is called frequently by the client requesting status changed orders.
