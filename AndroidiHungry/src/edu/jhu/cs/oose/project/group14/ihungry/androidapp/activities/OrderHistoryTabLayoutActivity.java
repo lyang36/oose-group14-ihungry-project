@@ -39,35 +39,35 @@ public class OrderHistoryTabLayoutActivity extends TabActivity {
 		// Tab for Processing Orders
 		TabSpec processing_spec = tabHost.newTabSpec("Processing");
 		processing_spec.setIndicator("Processing",
-				getResources().getDrawable(R.drawable.history));
+				getResources().getDrawable(R.drawable.processing));
 		Intent i = new Intent(this, ProcessingOrderActivity.class);
 		processing_spec.setContent(i);
 
 		// Tab for Confirmed Orders
 		TabSpec confirmed_spec = tabHost.newTabSpec("Confirmed");
 		confirmed_spec.setIndicator("Confirmed",
-				getResources().getDrawable(R.drawable.history));
+				getResources().getDrawable(R.drawable.confirmed));
 		i = new Intent(this, ConfirmedOrderActivity.class);
 		confirmed_spec.setContent(i);
 
 		// Tab for Rejected Orders
 		TabSpec rejected_spec = tabHost.newTabSpec("Rejected");
 		rejected_spec.setIndicator("Rejected",
-				getResources().getDrawable(R.drawable.history));
+				getResources().getDrawable(R.drawable.rejected));
 		i = new Intent(this, RejectedOrderActivity.class);
 		rejected_spec.setContent(i);
 
 		// Tab for Finished Orders
 		TabSpec finished_spec = tabHost.newTabSpec("Finished");
 		finished_spec.setIndicator("Finished",
-				getResources().getDrawable(R.drawable.history));
+				getResources().getDrawable(R.drawable.finished));
 		i = new Intent(this, OrderHistoryActivity.class);
 		finished_spec.setContent(i);
 
 		// Tab for Cancelled Orders
 		TabSpec cancelled_spec = tabHost.newTabSpec("Cancelled");
 		cancelled_spec.setIndicator("Cancelled",
-				getResources().getDrawable(R.drawable.history));
+				getResources().getDrawable(R.drawable.cancelled));
 		i = new Intent(this, CancelledOrderActivity.class);
 		cancelled_spec.setContent(i);
 
