@@ -53,6 +53,8 @@ public class MainScreenActivity extends Activity {
 		//	ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service already running!");
 		} else{
 		//	ToastDisplay.DisplayToastOnScr(MainScreenActivity.this, "Service not running - start new one!");
+			
+			//***** START SERVICE  *****//
 			startNotifyService();
 		}
 		

@@ -114,5 +114,12 @@ public interface AndroidClientModel {
 	 * @return a list of Orders satisfying the requirements
 	 */
 	public List<Order> retrieveChangedOrders();
+	
+	/**
+	 * Update an order this customer previously made(only cancel the order for now).
+	 * @param order order to be updated
+	 * @return
+	 */
+	public boolean updateOrder(Order order);
 		
 }
