@@ -36,6 +36,14 @@ import javax.swing.table.DefaultTableModel;
 import edu.jhu.cs.oose.group14.restaurant.model.iHungryRestaurant;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 
+/**
+ * OrderGui has methods to display the main screen of restaurant application and
+ * other helper methods.
+ * 
+ * @author Parkavi
+ *
+ */
+
 public class OrderGui implements Observer {
 	
 	private Container contentPane;
@@ -99,11 +107,9 @@ public class OrderGui implements Observer {
 	private JTextField orderHistoryCustNoT;
 	
 	private Vector<String> columnNames = new Vector<String>(); 
-	private int pointer = 0;
 	private DefaultTableModel tableModel = new DefaultTableModel();
 	private JTable table = null; 
-	private String[] orderDetails = new String[50];
-	private int orderDetailsPointer = 0;
+	//private String[] orderDetails = new String[50];
 	
 
 	public OrderGui(Container contentPane){
@@ -115,6 +121,7 @@ public class OrderGui implements Observer {
 		columnNames.add("Order Placed Time");
 	}
 	
+	
 	/**
 	 * displayOrderGui method displays the main screen of the ihungry 
 	 * Vendor application. The screen consists of a tabbed pane with 
@@ -125,7 +132,6 @@ public class OrderGui implements Observer {
 	{
 		for(int i=0;i<contentPane.getComponentCount();i++)
 			contentPane.getComponents()[i].setVisible(false);
-		//handle for if restaurant is null(new user) and not null(existing user)
 		
 		{
 			jTabbedPane1 = new JTabbedPane();
@@ -142,6 +148,9 @@ public class OrderGui implements Observer {
 		}
 	}
 	
+	/*
+	 *Displays the View/Update Menu screen 
+	 */
 	
 	private void displayMenu()
 	{
@@ -319,13 +328,12 @@ public class OrderGui implements Observer {
 		viewMenuLayout.linkSize(SwingConstants.VERTICAL, new Component[] {name, decription});
 	}
 	
-	
 
 	
 	/*
-	 * This method is called to display the current orders tab. CurrentOrders
-	 * tab is a split pane with the list of pending orders on one side and details
-	 * of the currently selected order on the right side.
+	 * Displays the current orders screen. Left side of the screen displays
+	 * the list of current pending orders and the right side displays the
+	 * details of the order selected.
 	 */
 
 	private void displayCurrentOrder() {
@@ -361,7 +369,7 @@ public class OrderGui implements Observer {
 			orderNoL1.setText("Order No :");
 		}
 		{
-			list1 = new JList(orderDetails);
+			list1 = new JList();
 		}
 		{
 			accept = new JButton();
@@ -425,6 +433,12 @@ public class OrderGui implements Observer {
 	}
 	
 	
+	/*
+	 * Displays the to be delivered orders screen. Left side of the screen displays
+	 * the list of to be delivered orders and the right side displays the
+	 * details of the order selected.
+	 */
+	
 	private void displayToBeDeliveredOrder() {
 		
 		// create split pane and add it to the tabbed pane
@@ -475,7 +489,7 @@ public class OrderGui implements Observer {
 			toBeDeliveredCustAddrT = new JTextField();
 		}
 		{
-			toBeDeliveredList = new JList(orderDetails);		
+			toBeDeliveredList = new JList();		
 		}	
 		{
 			deliver = new JButton();
@@ -530,9 +544,10 @@ public class OrderGui implements Observer {
 	
 	
 	/*
-	 * This method is called to display the Declined Order tab. Declined Order
-	 * tab is a split pane with the list of declined orders on one side and details
-	 * of the currently selected order on the right side.
+	 * 
+	 * Displays the declined orders screen. Left side of the screen displays
+	 * the list of declined orders and the right side displays the
+	 * details of the order selected.
 	 */
 	private void displayDeclinedOrder() {
 		
@@ -567,7 +582,7 @@ public class OrderGui implements Observer {
 			declinedOrderOrderNoL1.setText("Order No :");
 		}
 		{
-			declinedOrderList = new JList(orderDetails);		
+			declinedOrderList = new JList();		
 		}		
 		{
 			declinedOrderCustNoL1 = new JLabel();
@@ -615,11 +630,14 @@ public class OrderGui implements Observer {
 		declinedOrderSubPanelLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {declinedOrderCustNoT, declinedOrderOrderNoT});
 	}
 	
+	
 	/*
-	 * This method is called to display the Order History tab. Order History
-	 * tab is a split pane with the list of old orders on one side and details
-	 * of the currently selected order on the right side.
+	 * 
+	 * Displays the order history screen. Left side of the screen displays
+	 * the order history and the right side displays the
+	 * details of the order selected.
 	 */
+	 
 	private void displayOrderHistory() {
 		
 		// create split pane and add it to the tabbed pane
@@ -653,7 +671,7 @@ public class OrderGui implements Observer {
 			orderHistoryOrderNoL1.setText("Order No :");
 		}
 		{
-			orderHistoryList = new JList(orderDetails);		
+			orderHistoryList = new JList();		
 		}		
 		{
 			orderHistoryCustNoL1 = new JLabel();
@@ -821,22 +839,11 @@ public class OrderGui implements Observer {
 		return toBeDeliveredOrderNoT;
 	}
 	
-	/*
-	 * This method is called to populate the list with the Order details. 
-	 */
 	
-	public void setSelectedOrderDetails(String[] orderDetails)
+	/*public void setSelectedOrderDetails(String[] orderDetails)
 	{		
 		list1.setListData(orderDetails);		
-	}
-	
-	public int getPointer(){
-		return pointer;
-	}
-	
-	public void setPointer(int pointer){
-		this.pointer=pointer;
-	}
+	}*/
 	
 	
 	/**
@@ -890,6 +897,10 @@ public class OrderGui implements Observer {
 		return jTabbedPane1;
 	}
 	
+	public JList getList1(){
+		return list1;
+	}
+	
 	
 	/*private void showUpdateScreen()
 	{
@@ -905,15 +916,19 @@ public class OrderGui implements Observer {
 			menuFrontMessage.setBorder(new LineBorder(new java.awt.Color(0,0,0), 1, false));
 		}
 	}*/
+	
+	/*
+	 * This method is called whenever there is a change in the model iHungryRestaurant data
+	 */
 
 	 public void update(Observable obs, Object x) {
-		 
 		 
 		 iHungryRestaurant hugryRestaurant = (iHungryRestaurant) obs;
 		 Set<Order> orders = hugryRestaurant.getPendingOrders();
 		
 		 Vector data = new Vector();
 		 
+		 //Iterate through the orders set and populate the data structure
 		 for (Iterator<Order> i = orders.iterator(); i.hasNext();) {
 			Order order = i.next();
 			Vector row = new Vector();
@@ -925,14 +940,11 @@ public class OrderGui implements Observer {
 		}
 		 
 		 int index = 0;
-		 
 		 if(table.getRowCount()>0){
 			 index = table.getSelectedRow();
 		 }
-		 
+		 //change the data vector to the updated structure
 		 tableModel.setDataVector(data, columnNames) ;
-		 
-		 
 		 if(table.getRowCount()>0){
 			 if(table.getRowCount() == 1)
 				 index = 0;
@@ -943,6 +955,7 @@ public class OrderGui implements Observer {
 		 
 		 //Populate the orderNo and cusNo fields when a change is made to the existing table
 		 int j = 0;
+		 String[] orderDetails = new String[50];
 		 for (Iterator<Order> i = orders.iterator(); i.hasNext();){
 			 Order order = i.next();
 			 if(index==j)
@@ -950,23 +963,23 @@ public class OrderGui implements Observer {
 				 orderNoT.setText(order.getOrderID());
 				 custNoT.setText(order.getCustID());
 				 for (int k = 0; k < order.getOrderItems().size(); k++) {
-						orderDetails[k] = order.getOrderItems().get(j)
+						orderDetails[k] = order.getOrderItems().get(k)
 								.getItem().getItemName()
 								+ "    "
-								+ order.getOrderItems().get(j).getQuantity();
+								+ order.getOrderItems().get(k).getQuantity();
 					}
-				 setSelectedOrderDetails(orderDetails);
+				 list1.setListData(orderDetails);
 				 break;
 			 }
 			 j++;
 			 
 		 }
 		 	 
-		 
-		 
+		 	 
 		 orders = hugryRestaurant.getAcceptedOrders();
 		 Vector acceptedOrderData  = new Vector();
 		 
+		//Iterate through the orders set and populate the data structure
 		 for (Iterator<Order> i = orders.iterator(); i.hasNext();) {
 			Order order = i.next();
 			Vector row = new Vector();
@@ -976,15 +989,11 @@ public class OrderGui implements Observer {
 			row.add(new Date(order.getTime()));
 			acceptedOrderData.add(row);
 		}
-		 
-		 
+		  
 		 if(toBeDeliveredTable.getRowCount()>0){
 			 index = toBeDeliveredTable.getSelectedRow();
 		 }
-		 
 		 toBeDeliveredTableModel.setDataVector(acceptedOrderData, columnNames) ;
-		 		 
-		 
 		 if(toBeDeliveredTable.getRowCount()>0){
 			 if(toBeDeliveredTable.getRowCount() == 1)
 				 index = 0;
@@ -994,12 +1003,21 @@ public class OrderGui implements Observer {
 		 toBeDeliveredTable.repaint();
 		 
 		//Populate the orderNo and custNo fields when a change is made to the existing table
+		 j=0;
+		 String[] toBeDeliveredDetails = new String[50];
 		 for (Iterator<Order> i = orders.iterator(); i.hasNext();){
 			 Order order = i.next();
 			 if(index==j)
 			 {
 				 toBeDeliveredOrderNoT.setText(order.getOrderID());
 				 toBeDeliveredCustNoT.setText(order.getCustID());
+				 for (int k = 0; k < order.getOrderItems().size(); k++) {
+						toBeDeliveredDetails[k] = order.getOrderItems().get(k)
+								.getItem().getItemName()
+								+ "    "
+								+ order.getOrderItems().get(k).getQuantity();
+					}
+				 toBeDeliveredList.setListData(toBeDeliveredDetails);
 				 break;
 			 }
 			 j++;
@@ -1010,6 +1028,7 @@ public class OrderGui implements Observer {
 		 orders = hugryRestaurant.getDeclinedOrders();
 		 Vector declinedOrderData  = new Vector();
 		 
+		//Iterate through the orders set and populate the data structure
 		 for (Iterator<Order> i = orders.iterator(); i.hasNext();) {
 			Order order = i.next();
 			Vector row = new Vector();
@@ -1023,10 +1042,7 @@ public class OrderGui implements Observer {
 		 if(declinedOrderTable.getRowCount()>0){
 			 index = declinedOrderTable.getSelectedRow();
 		 }
-		 
-		 declinedOrderTableModel.setDataVector(declinedOrderData, columnNames) ;
-		 		 
-		
+		 declinedOrderTableModel.setDataVector(declinedOrderData, columnNames);		
 		 if(declinedOrderTable.getRowCount()>0){
 			 if(declinedOrderTable.getRowCount() == 1)
 				 index = 0;
@@ -1036,12 +1052,21 @@ public class OrderGui implements Observer {
 		 declinedOrderTable.repaint();
 		 
 		//Populate the orderNo and custNo fields when a change is made to the existing table
+		 j=0;
+		 String[] declinedOrderDetails = new String[50];
 		 for (Iterator<Order> i = orders.iterator(); i.hasNext();){
 			 Order order = i.next();
 			 if(index==j)
 			 {
 				 declinedOrderOrderNoT.setText(order.getOrderID());
 				 declinedOrderCustNoT.setText(order.getCustID());
+				 for (int k = 0; k < order.getOrderItems().size(); k++) {
+						declinedOrderDetails[k] = order.getOrderItems().get(k)
+								.getItem().getItemName()
+								+ "    "
+								+ order.getOrderItems().get(k).getQuantity();
+					}
+				 declinedOrderList.setListData(declinedOrderDetails);
 				 break;
 			 }
 			 j++;
@@ -1052,6 +1077,7 @@ public class OrderGui implements Observer {
 		 orders = hugryRestaurant.getOldOrders();
 		 Vector oldOrderData  = new Vector();
 		 
+		//Iterate through the orders set and populate the data structure
 		 for (Iterator<Order> i = orders.iterator(); i.hasNext();) {
 			Order order = i.next();
 			Vector row = new Vector();
@@ -1065,10 +1091,7 @@ public class OrderGui implements Observer {
 		 if(orderHistoryTable.getRowCount()>0){
 			 index = orderHistoryTable.getSelectedRow();
 		 }
-		 
-		 orderHistoryTableModel.setDataVector(oldOrderData, columnNames);
-		 		 
-		 
+		 orderHistoryTableModel.setDataVector(oldOrderData, columnNames);		 
 		 if(orderHistoryTable.getRowCount()>0){
 			 if(orderHistoryTable.getRowCount() == 1)
 				 index = 0;
@@ -1078,12 +1101,21 @@ public class OrderGui implements Observer {
 		 orderHistoryTable.repaint();
 		 
 		//Populate the orderNo and custNo fields when a change is made to the existing table
+		 j=0;
+		 String[] orderHistoryDetails = new String[50];
 		 for (Iterator<Order> i = orders.iterator(); i.hasNext();){
 			 Order order = i.next();
 			 if(index==j)
 			 {
 				 orderHistoryOrderNoT.setText(order.getOrderID());
 				 orderHistoryCustNoT.setText(order.getCustID());
+				 for (int k = 0; k < order.getOrderItems().size(); k++) {
+						orderHistoryDetails[k] = order.getOrderItems().get(k)
+								.getItem().getItemName()
+								+ "    "
+								+ order.getOrderItems().get(k).getQuantity();
+					}
+				 orderHistoryList.setListData(orderHistoryDetails);
 				 break;
 			 }
 			 j++;

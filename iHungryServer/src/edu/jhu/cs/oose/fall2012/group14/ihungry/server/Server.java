@@ -5,8 +5,11 @@ import java.net.Socket;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOperator;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtilImpl;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReactor;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReplier;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReplierHandler;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.ServerModel;
 
 class doComms implements Runnable {
@@ -32,6 +35,7 @@ class doComms implements Runnable {
     	input="";
     	try {
     		input = internet.receiveMessage();
+    		System.out.println("Input Message: " + input);
     		reactor.reactToMsg(input, internet);
     		server.close();
     	} catch (Exception ioe) {
@@ -54,37 +58,43 @@ public class Server implements ServerModel{
 	 */
 	@Override
 	public void run() {
+		ServerSocket listener = null;
+		Socket server;
 	    try{
-	      ServerSocket listener = new ServerSocket(CommunicationProtocol.SERVER_PORT);
-	      Socket server;
-	      System.out.println("Start Listening...");
+	    	listener = new ServerSocket(CommunicationProtocol.SERVER_PORT);
+	    	System.out.println("Start Listening...");
+	    } catch (Exception ioe) {
+		      System.out.println("Exception on socket listen: " + ioe);
+		      ioe.printStackTrace();
+		}
 	      
 	      while(true){
-	    	  server = listener.accept();
-			  threadNum ++;
-			  if(threadNum >= maxConnections){
-				  threadNum = 0;
-			  }
-			  try {
-				msreactor = msreactor.getClass().newInstance();
-				
-				DBOperator op = new DBOperator();
-				op.connectToDB();
-				msreactor.setOperater(op);
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-			  doComms conn_c= new doComms(server, msreactor);
-			  Thread t = new Thread(conn_c);
-			  t.start();
-			  System.out.println("Connection " + threadNum +" starts...");
+	    	  try{
+		    	  server = listener.accept();
+				  threadNum ++;
+				  if(threadNum >= maxConnections){
+					  threadNum = 0;
+				  }
+				  try {
+					  msreactor = msreactor.getClass().newInstance();
+					
+					  DBOperator op = new DBOperator();
+					  op.connectToDB();
+					  msreactor.setOperater(op);
+				  } catch (InstantiationException e) {
+					  e.printStackTrace();
+				  } catch (IllegalAccessException e) {
+					  e.printStackTrace();
+				  }
+				  doComms conn_c= new doComms(server, msreactor);
+				  Thread t = new Thread(conn_c);
+				  t.start();
+				  System.out.println("Connection " + threadNum +" starts...");
+	    	  }catch(Exception e){
+	    		  e.printStackTrace();
+	    	  }
 	      }
-	    } catch (IOException ioe) {
-	      System.out.println("IOException on socket listen: " + ioe);
-	      ioe.printStackTrace();
-	    }
+
 	}
 
 
@@ -93,9 +103,12 @@ public class Server implements ServerModel{
 		msreactor = msl;
 	}
 	
+	
 	public static void main(String args[]){
 		Server server = new Server();
-		server.setMessageReactor(new MessageReactorImpl());
+		MessageReactor mr= new MessageReactorImpl();
+		//mr.setMessageReplierHandler();
+		server.setMessageReactor(mr);
 		server.run();
 	}
 }
