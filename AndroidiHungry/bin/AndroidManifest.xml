@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.androidihungry"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="7" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:label="Client model impl test"
+        android:targetPackage="com.example.androidihungry" />
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Light.NoTitleBar" >
+        <uses-library android:name="com.google.android.maps" />
+        <uses-library android:name="android.test.runner" />
+
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.ActivityController"
+            android:label="@string/title_activity_controller" >
+            android:configChanges="orientation"
+    		android:screenOrientation="portrait"
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.MainScreenActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_mainscreen"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.NearbyActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_nearby"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.AboutmeActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_aboutme"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.LoginActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.OrderandRestaurantInfoActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_orderand_restaurant_info"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.SignupActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_signup"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.FavouritesActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_favourites"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.OrderHistoryActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_order_history"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.OrderReviewActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_order_review"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.OrderHistoryTabLayoutActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_order_history_tab_layout"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.ProcessingOrderActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_processing_order"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.ConfirmedOrderActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_confirmed_order"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.RejectedOrderActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_rejected_order"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.CancelledOrderActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_cancelled_order"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <service android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.NotifyService" />
+        <service android:name="edu.jhu.cs.oose.project.group14.ihungry.androidapp.activities.MyAlarmService" />
+    </application>
+
+</manifest>
