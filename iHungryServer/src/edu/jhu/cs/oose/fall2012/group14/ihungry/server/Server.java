@@ -5,8 +5,11 @@ import java.net.Socket;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.database.DBOperator;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtilImpl;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReactor;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReplier;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.MessageReplierHandler;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame.ServerModel;
 
 class doComms implements Runnable {
@@ -100,9 +103,12 @@ public class Server implements ServerModel{
 		msreactor = msl;
 	}
 	
+	
 	public static void main(String args[]){
 		Server server = new Server();
-		server.setMessageReactor(new MessageReactorImpl());
+		MessageReactor mr= new MessageReactorImpl();
+		//mr.setMessageReplierHandler();
+		server.setMessageReactor(mr);
 		server.run();
 	}
 }
