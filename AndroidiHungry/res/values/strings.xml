@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">iHungry</string>
@@ -17,5 +18,10 @@
     <string name="title_activity_favourites">FavouritesActivity</string>
     <string name="title_activity_order_history">OrderHistoryActivity</string>
     <string name="title_activity_order_review">OrderReviewActivity</string>
+    <string name="title_activity_order_history_tab_layout">OrderHistoryTabLayoutActivity</string>
+    <string name="title_activity_processing_order">ProcessingOrderActivity</string>
+    <string name="title_activity_confirmed_order">ConfirmedOrderActivity</string>
+    <string name="title_activity_rejected_order">RejectedOrderActivity</string>
+    <string name="title_activity_cancelled_order">CancelledOrderActivity</string>
 
 </resources>
