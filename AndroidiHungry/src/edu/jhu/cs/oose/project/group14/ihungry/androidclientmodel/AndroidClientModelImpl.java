@@ -32,7 +32,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.*;
  * 
  */
 public class AndroidClientModelImpl implements AndroidClientModel {
-	static private final int CONNECTION_TIMEOUT = 20000;
+	static private final int CONNECTION_TIMEOUT = 20000; // Time out => 20 secs
 	private InternetClient internetClient;
 	private AccountInfo customer_account;
 
@@ -155,7 +155,6 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 	}
 
 	public List<AccountInfo> getRestaurantAccountInfos(LocationInfo loc_in) {
-
 		/* Get restaurant Account Infos */
 		List<AccountInfo> busAccountInfos = new ArrayList<AccountInfo>();
 
@@ -273,14 +272,17 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		return order;
 	}
 
-	public boolean submitOrder(Order order) {
-		/* Generate a request containing the JSON object string to the server. */
-		Log.v("[Model: submitOrder]", "Order submitted.!");
-
+	/**
+	 * Combine methods submitOrder() and updateOrder().
+	 * 
+	 * @param order
+	 * @param command
+	 * @return
+	 */
+	public boolean submitOrUpdateOrder(Order order, String command) {
 		String sendStr = CommunicationProtocol.construcSendingStr(
 				customer_account.getId(), customer_account.getPasswd(),
-				CommunicationProtocol.CUS_SUBMIT_ORDER, order.getJSON()
-						.toString());
+				command, order.getJSON().toString());
 		String responseStr = "";
 
 		try {
@@ -299,6 +301,20 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 			return true;
 		}
 		return false;
+
+	}
+
+	public boolean submitOrder(Order order) {
+		/* Generate a request containing the JSON object string to the server. */
+		Log.v("[Model: submitOrder]", "Order submitted.!");
+		return submitOrUpdateOrder(order,
+				CommunicationProtocol.CUS_SUBMIT_ORDER);
+	}
+
+	public boolean updateOrder(Order order) {
+		Log.v("[Model: updateOrder]", "Try to cancel Order.!");
+		return submitOrUpdateOrder(order,
+				CommunicationProtocol.CUS_UPDATE_ORDER);
 	}
 
 	public List<Order> retrieveAllOrders() {
@@ -306,84 +322,45 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 		 * Generate a sending message containing custId to server and if
 		 * response are valid => convert to a List<Order> object
 		 */
-		List<Order> my_orders = new ArrayList<Order>();
 		OrderQuerier querier = new OrderQuerier();
 		// querier.setCusID(customer_account.getUname());
-
 		String sendStr = CommunicationProtocol.construcSendingStr(
 				customer_account.getId(), customer_account.getPasswd(),
 				CommunicationProtocol.CUS_RETRIVE_ORDER, querier.getJSON()
 						.toString());
 
-		String responseStr = "";
-		try {
-			responseStr = internetClient
-					.sendAndGet(sendStr, CONNECTION_TIMEOUT);
-			System.out.println("response: " + responseStr);
-
-			String supinfo = CommunicationProtocol
-					.getSupinfoFromReceivedStr(responseStr);
-			ListedJSONObj jobj = new ListedJSONObj();
-			jobj.parseFromJSONObject(new JSONObject(supinfo));
-
-			Iterator<JSONObject> it = jobj.iterator();
-			while (it.hasNext()) {
-				Order order = new Order("", "", "", -1,
-						new ArrayList<OrderItem>());
-				order.parseFromJSONObject(it.next());
-				my_orders.add(order);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return my_orders;
+		return processOrdersFromServer(sendStr);
 	}
 
 	public List<Order> retrieveOrders(int status, int count) {
-		List<Order> my_orders = new ArrayList<Order>();
 		OrderQuerier querier = new OrderQuerier();
 		// querier.setCusID(customer_account.getUname());
 		querier.setStatus(status);
-
 		String sendStr = CommunicationProtocol.construcSendingStr(
 				customer_account.getId(), customer_account.getPasswd(),
 				CommunicationProtocol.CUS_RETRIVE_ORDER, querier.getJSON()
 						.toString());
 
-		String responseStr = "";
-		try {
-			responseStr = internetClient
-					.sendAndGet(sendStr, CONNECTION_TIMEOUT);
-			System.out.println("response: " + responseStr);
-
-			String supinfo = CommunicationProtocol
-					.getSupinfoFromReceivedStr(responseStr);
-			ListedJSONObj jobj = new ListedJSONObj();
-			jobj.parseFromJSONObject(new JSONObject(supinfo));
-
-			Iterator<JSONObject> it = jobj.iterator();
-			while (it.hasNext()) {
-				Order order = new Order("", "", "", -1,
-						new ArrayList<OrderItem>());
-				order.parseFromJSONObject(it.next());
-				my_orders.add(order);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return my_orders;
+		return processOrdersFromServer(sendStr);
 	}
 
-	public List<Order> retrieveChangedOrders() { // Very Similar to
-													// retrieveAllOrders()
-		List<Order> changed_orders = new ArrayList<Order>();
-
+	public List<Order> retrieveChangedOrders() {
 		String sendStr = CommunicationProtocol.construcSendingStr(
 				customer_account.getId(), customer_account.getPasswd(),
 				CommunicationProtocol.CUS_RETRIVE_CHANGED_ORDER, "");
 
+		return processOrdersFromServer(sendStr);
+	}
+
+	/**
+	 * Process and return orders from the response of the server in methods
+	 * retrieveAllOrders(), retrieveOrders(), retrieveChangedOrders().
+	 * 
+	 * @param sendStr
+	 * @return
+	 */
+	public List<Order> processOrdersFromServer(String sendStr) {
+		List<Order> my_orders = new ArrayList<Order>();
 		String responseStr = "";
 		try {
 			responseStr = internetClient
@@ -397,44 +374,15 @@ public class AndroidClientModelImpl implements AndroidClientModel {
 
 			Iterator<JSONObject> it = jobj.iterator();
 			while (it.hasNext()) {
-				System.out.println("One Order");
 				Order order = new Order("", "", "", -1,
 						new ArrayList<OrderItem>());
 				order.parseFromJSONObject(it.next());
-				changed_orders.add(order);
+				my_orders.add(order);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		return changed_orders;
+		return my_orders;
 	}
 
-	public boolean updateOrder(Order order) {
-		Log.v("[Model: updateOrder]", "Try to cancel Order.!");
-
-		String sendStr = CommunicationProtocol.construcSendingStr(
-				customer_account.getId(), customer_account.getPasswd(),
-				CommunicationProtocol.CUS_UPDATE_ORDER, order.getJSON()
-						.toString());
-		String responseStr = "";
-
-		try {
-			responseStr = internetClient
-					.sendAndGet(sendStr, CONNECTION_TIMEOUT);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		if (CommunicationProtocol.getRequestFromReceivedStr(responseStr)
-				.equals(CommunicationProtocol.PROCESS_FAILED)) {
-			return false;
-		} else if (CommunicationProtocol.getRequestFromReceivedStr(responseStr)
-				.equals(CommunicationProtocol.PROCESS_SUCCEEDED)) {
-			return true;
-		}
-		return false;
-
-	}
 }

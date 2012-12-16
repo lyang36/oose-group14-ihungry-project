@@ -25,6 +25,12 @@ import android.view.Menu;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
+/**
+ * A TabLayout Activity acting a tab host that contains five tabs inside:<p>
+ * Processing, Confirmed, Rejected, Finished, Cancelled Order History Tabs. 
+ * @author SuNFloWer
+ *
+ */
 @SuppressWarnings("deprecation")
 public class OrderHistoryTabLayoutActivity extends TabActivity {
 	// private AndroidClientModel clientModel;
