@@ -158,11 +158,19 @@ public class DBOperatorTestUnit {
 		Order order11 = new Order(MD5.getMd5("order11"), MD5.getNameMd5("lyang"),
 				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
 		dboperator.submitOrder(order11);
+		OrderItem o1 = new OrderItem(new Item("1","Pizza","Small Pizza",5.0,new Rating(),new Album()),3);
+		List<OrderItem> list2 = new ArrayList<OrderItem>();
+		list2.add(o1);
 		Order order12 = new Order(MD5.getMd5("order12"), MD5.getNameMd5("lyang"),
-				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, list2);
 		dboperator.submitOrder(order12);
+		o1 = new OrderItem(new Item("1","Pizza","Small Pizza",5.0,new Rating(),new Album()),2);
+		OrderItem o2 = new OrderItem(new Item("2","Fries","Fries",2.25,new Rating(),new Album()),2);
+		List<OrderItem> list = new ArrayList<OrderItem>();
+		list.add(o1);
+		list.add(o2);
 		Order order13 = new Order(MD5.getMd5("order13"), MD5.getNameMd5("lyang"),
-				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING,list );
 		dboperator.submitOrder(order13);
 		try{
 			Thread.sleep(10000);
@@ -170,8 +178,13 @@ public class DBOperatorTestUnit {
 		catch(Exception e){
 			
 		}
+		o1 = new OrderItem(new Item("1","Pizza","Small Pizza",5.0,new Rating(),new Album()),2);
+		o2 = new OrderItem(new Item("3","Soda","Soda",1.00,new Rating(),new Album()),2);
+		List<OrderItem> list1 = new ArrayList<OrderItem>();
+		list1.add(o1);
+		list1.add(o2);
 		Order order14 = new Order(MD5.getMd5("order14"), MD5.getNameMd5("lyang"),
-				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
+				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, list1);
 		dboperator.submitOrder(order14);
 		try{
 			Thread.sleep(10000);

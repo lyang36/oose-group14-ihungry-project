@@ -9,6 +9,7 @@ import java.util.*;
  * @author Group 14
  *
  */
+
 public interface AndroidClientModel {
 
 	/**
@@ -19,6 +20,7 @@ public interface AndroidClientModel {
 	 */
 	public boolean loginCheck( String username, String password);
 	
+
 	/**
 	 * Submit the information of the customer to the client.
 	 * @param username
@@ -50,6 +52,7 @@ public interface AndroidClientModel {
 	 * @return a list of Restaurant info
 	 */
 	public List<AccountInfo> getRestaurantAccountInfos(LocationInfo loc);
+	
 	
 	/**
 	 * Giving a list of restaurant account info, return a list of restaurant contact info.

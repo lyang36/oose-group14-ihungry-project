@@ -2,6 +2,11 @@ package edu.jhu.cs.oose.group14.restaurant.model;
 
 import java.util.*;
 
+/**
+ * Data Model class for IHungry Restaurant. Holds four structures for current,
+ * to be delivered, declined and old orders.Whenever this datamodel changes,
+ * orderGui will be notified to repaint with new data.
+ */
 
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
