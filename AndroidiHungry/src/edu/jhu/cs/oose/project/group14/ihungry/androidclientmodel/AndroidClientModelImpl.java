@@ -32,11 +32,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.*;
  * 
  */
 public class AndroidClientModelImpl implements AndroidClientModel {
-<<<<<<< HEAD
-	static private final int CONNECTION_TIMEOUT = 30000;
-=======
 	static private final int CONNECTION_TIMEOUT = 20000; // Time out => 20 secs
->>>>>>> refs/remotes/origin/szhao_branch
 	private InternetClient internetClient;
 	private AccountInfo customer_account;
 

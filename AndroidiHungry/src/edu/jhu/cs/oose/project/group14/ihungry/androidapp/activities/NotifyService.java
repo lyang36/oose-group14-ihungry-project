@@ -67,9 +67,6 @@ public class NotifyService extends Service {
 
 	@SuppressWarnings("deprecation")
 	@Override
-<<<<<<< HEAD
-	public int onStartCommand(Intent intent, int flags, int startId) {
-=======
 	public int onStartCommand(Intent intent, int flags, int startId) {		
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(ACTION);
@@ -78,9 +75,7 @@ public class NotifyService extends Service {
 		//ToastDisplay.DisplayToastOnScr(NotifyService.this, "Notify Service: start command");
 		Log.v("[NotifyService]","Notify: onStartCommand");
 		Log.i("[NotifyService]","Start Id "+NotifyService.this.hashCode());
->>>>>>> refs/remotes/origin/szhao_branch
 
-		// Test : retrieve all orders
 		List<Order> orders = clientModel.retrieveChangedOrders();
 
 		if (orders.size() != 0) {

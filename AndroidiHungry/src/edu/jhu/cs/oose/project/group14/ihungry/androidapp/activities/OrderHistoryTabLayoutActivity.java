@@ -27,7 +27,7 @@ import android.widget.TabHost.TabSpec;
 
 /**
  * A TabLayout Activity acting a tab host that contains five tabs inside:<p>
- * Processing, Confirmed, Rejected, Finished, Cancelled Order History Tabs. 
+ * Processing, Confirmed, Rejected, Finished, Cancelled Order History Tabs.
  * @author SuNFloWer
  *
  */
