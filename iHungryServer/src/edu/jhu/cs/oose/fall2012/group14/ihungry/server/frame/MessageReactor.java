@@ -1,5 +1,7 @@
 package edu.jhu.cs.oose.fall2012.group14.ihungry.server.frame;
 
+import java.util.List;
+
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.InternetUtil;
 
 /**
@@ -20,4 +22,7 @@ public interface MessageReactor {
 	 * @param operater
 	 */
 	public void setOperater(DataBaseOperater operater);
+	
+	
+	public void setMessageReplierHandler(MessageReplierHandler handler);
 }
