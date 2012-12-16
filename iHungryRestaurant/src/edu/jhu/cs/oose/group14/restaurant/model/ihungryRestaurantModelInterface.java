@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.CommunicationProtocol;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Customer;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
@@ -38,6 +39,17 @@ public interface ihungryRestaurantModelInterface {
 	 * @return PROCESS_SUCCEEDED/PROCESS_FAILED
 	 */
 	public boolean updateMenu(AccountInfo accinfo, Menu menu);
+	
+	
+	/**
+	 * Called whenever a change has been made to the contact details. This method
+	 * updates the contact in the database.
+	 *  
+	 * @param accinfo
+	 * @param ci
+	 * @return PROCESS_SUCCEEDED/PROCESS_FAILED
+	 */
+	public boolean updateContact(AccountInfo accinfo, ContactInfo ci);
 	
 	/**
 	 * Called whenever a change has been made to an order. This method
