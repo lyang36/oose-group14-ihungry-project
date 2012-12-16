@@ -17,10 +17,12 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -30,6 +32,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -108,8 +111,36 @@ public class OrderGui implements Observer {
 	
 	private Vector<String> columnNames = new Vector<String>(); 
 	private DefaultTableModel tableModel = new DefaultTableModel();
-	private JTable table = null; 
+	private JTable table = null;
+	private JPanel updatePanel;
+	private JPanel subPanel2;
 	//private String[] orderDetails = new String[50];
+	private JLabel passwordOrderL;
+	private JPasswordField passwordOrderT;
+	private JComboBox stateOrderT;
+	private JTextField cityOrderT;
+	private JTextField zipOrderT;
+	private JTextField streetOrderT;
+	private JTextField emailOrderT;
+	private JTextField priOrderT;
+	private JTextField secOrderT;
+	private JLabel emailOrderL;
+	private JLabel addressOrderL;
+	private JLabel priOrderL;
+	private JLabel secOrderL;
+	private JButton updateT;
+	private Object[] statesList = {"AB ALBERTA","AK ALASKA","AL ALABAMA","AR ARKANSAS","AS AMERICAN SAMOA","AZ ARIZONA",
+        "BC BRITISH COLUMBIA","CA CALIFORNIA","CO COLORADO","CT CONNECTICUT","DC DISTRICT OF COLUMBIA",
+        "DE DELAWARE","FL FLORIDA","FM FEDERATED STATES OF MICRONESIA","GA GEORGIA","GU GUAM",
+        "HI HAWAII","IA IOWA","ID IDAHO","IL ILLINOIS","IN INDIANA","KS KANSAS","KY KENTUCKY",
+        "LA LOUISIANA","MA MASSACHUSETTS","MB MANITOBA","MD MARYLAND","ME MAINE","MH MARSHALL ISLANDS",
+        "MI MICHIGAN","MN MINNESOTA","MO MISSOURI","MP NORTHERN MARIANA ISLANDS","MS MISSISSIPPI",
+        "MT MONTANA","NB NEW BRUNSWICK","NC NORTH CAROLINA","ND NORTH DAKOTA","NE NEBRASKA","NF NEWFOUNDLAND",
+        "NH NEW HAMPSHIRE","NJ NEW JERSEY","NM NEW MEXICO","NS NOVA SCOTIA","NT NORTHWEST TERRITORY","NU NUNAVUT",
+        "NV NEVADA","NY NEW YORK","OH OHIO","OK OKLAHOMA","ON ONTARIO","OR OREGON","PA PENNSYLVANIA","PE PRINCE EDWARD ISLAND",
+        "PQ QUEBEC","PR PUERTO RICO","PW PALAU","RI RHODE ISLAND","SC SOUTH CAROLINA","SD SOUTH DAKOTA","SK SASKATCHEWAN",
+        "TN TENNESSEE","TX TEXAS","UT UTAH","VA VIRGINIA","VI VIRGIN ISLANDS","VT VERMONT","WA WASHINGTON","WI WISCONSIN",
+        "WV WEST VIRGINIA","WY WYOMING"};;
 	
 
 	public OrderGui(Container contentPane){
@@ -143,6 +174,7 @@ public class OrderGui implements Observer {
 			displayToBeDeliveredOrder();
 			displayDeclinedOrder();								
 			displayOrderHistory();
+			displayUpdateProfile();
 			//showUpdateScreen();
 			
 		}
@@ -155,7 +187,7 @@ public class OrderGui implements Observer {
 	private void displayMenu()
 	{
 		viewMenu = new JPanel();
-		jTabbedPane1.addTab("View/Update Menu", null, viewMenu, null);
+		jTabbedPane1.addTab("Update Menu", null, viewMenu, null);
 		GroupLayout viewMenuLayout = new GroupLayout((JComponent)viewMenu);
 		viewMenu.setLayout(viewMenuLayout);
 		viewMenu.setPreferredSize(new java.awt.Dimension(788, 543));
@@ -720,6 +752,168 @@ public class OrderGui implements Observer {
 	}
 	
 	
+	
+	
+	 //Displays the View/Update Menu screen 
+	 
+	
+	private void displayUpdateProfile()
+	{
+		
+		
+		updatePanel = new JPanel();
+		jTabbedPane1.addTab("Update Profile", null, updatePanel, null);
+		GroupLayout updatePanelLayout = new GroupLayout((JComponent)updatePanel);
+		updatePanel.setLayout(updatePanelLayout);
+		updatePanel.setPreferredSize(new java.awt.Dimension(788, 543));
+		updatePanel.setBorder(BorderFactory.createTitledBorder(""));
+		
+		{
+			subPanel2 = new JPanel();
+			GroupLayout subPanel2Layout = new GroupLayout((JComponent)subPanel2);
+			subPanel2.setLayout(subPanel2Layout);
+			subPanel2.setBorder(BorderFactory.createTitledBorder("Update Details"));
+			
+			{
+				passwordOrderL = new JLabel();
+				passwordOrderL.setText("Password:");
+			}
+			{
+				passwordOrderT = new JPasswordField();
+			}
+			{
+				
+				stateOrderT = new JComboBox(statesList);
+				stateOrderT.setSelectedIndex(0);
+			}
+			{
+				cityOrderT = new JTextField();
+				cityOrderT.setToolTipText("City");
+			}
+			{
+				zipOrderT = new JTextField();
+				zipOrderT.setToolTipText("Zip");
+			}
+			{
+				streetOrderT = new JTextField();
+				streetOrderT.setToolTipText("Street");
+			}
+			{
+				emailOrderT = new JTextField();
+			}
+			{
+				priOrderT = new JTextField();
+			}
+			{
+				secOrderT = new JTextField();
+			}
+			{
+				emailOrderL = new JLabel();
+				emailOrderL.setText("Email:");
+			}
+			{
+				addressOrderL = new JLabel();
+				addressOrderL.setText("Address:");
+			}
+			{
+				priOrderL = new JLabel();
+				priOrderL.setText("Primary Phone:");
+			}
+			{
+				secOrderL = new JLabel();
+				secOrderL.setText("Secondary Phone:");
+			}
+
+
+			subPanel2Layout.setHorizontalGroup(subPanel2Layout.createSequentialGroup()
+					.addGroup(subPanel2Layout.createParallelGroup()
+							.addComponent(passwordOrderL, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+							.addComponent(emailOrderL, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+							.addComponent(addressOrderL, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+							.addComponent(priOrderL, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+							.addComponent(secOrderL, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE))
+							.addGap(64)
+							.addGroup(subPanel2Layout.createParallelGroup()
+									.addGroup(GroupLayout.Alignment.LEADING, subPanel2Layout.createSequentialGroup()
+											.addComponent(stateOrderT, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addGap(0, 0, Short.MAX_VALUE))
+											.addGroup(GroupLayout.Alignment.LEADING, subPanel2Layout.createSequentialGroup()
+													.addComponent(cityOrderT, GroupLayout.PREFERRED_SIZE, 139, GroupLayout.PREFERRED_SIZE)
+													.addGap(45)
+													.addComponent(zipOrderT, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+													.addGap(0, 68, Short.MAX_VALUE))
+													.addGroup(subPanel2Layout.createSequentialGroup()
+															.addComponent(streetOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+															.addGap(0, 0, Short.MAX_VALUE))
+															.addGroup(subPanel2Layout.createSequentialGroup()
+																	.addComponent(emailOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+																	.addGap(0, 0, Short.MAX_VALUE))
+																	.addGroup(subPanel2Layout.createSequentialGroup()
+																			.addComponent(passwordOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+																			.addGap(0, 0, Short.MAX_VALUE))
+																					.addGroup(subPanel2Layout.createSequentialGroup()
+																							.addComponent(priOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+																							.addGap(0, 0, Short.MAX_VALUE))
+																							.addGroup(subPanel2Layout.createSequentialGroup()
+																									.addComponent(secOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+																									.addGap(0, 0, Short.MAX_VALUE)))
+																									.addContainerGap(65, 65));
+			subPanel2Layout.setVerticalGroup(subPanel2Layout.createSequentialGroup()
+					.addContainerGap(22, 22)
+					.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(passwordOrderL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+							.addComponent(passwordOrderT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+							.addGap(23)
+					.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(emailOrderL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+							.addComponent(emailOrderT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+							.addGap(23)
+							.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(addressOrderL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+									.addComponent(streetOrderT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+									.addGap(23)
+									.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+											.addComponent(cityOrderT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+											.addComponent(zipOrderT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+											.addGap(23)
+											.addComponent(stateOrderT, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+											.addGap(23)
+											.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+													.addComponent(priOrderL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+													.addComponent(priOrderT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+													.addGap(23)
+													.addGroup(subPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+															.addComponent(secOrderL, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+															.addComponent(secOrderT, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+															.addContainerGap(32, 32));
+		}
+		{
+			updateT = new JButton();
+			updateT.setText("Update");
+		}
+		
+		updatePanelLayout.setHorizontalGroup(updatePanelLayout.createSequentialGroup()
+				.addContainerGap(207, 207)
+				.addGroup(updatePanelLayout.createParallelGroup()
+				    .addGroup(updatePanelLayout.createSequentialGroup()
+				        .addComponent(subPanel2, GroupLayout.PREFERRED_SIZE, 465, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 0, Short.MAX_VALUE))
+				    .addGroup(GroupLayout.Alignment.LEADING, updatePanelLayout.createSequentialGroup()
+				        .addGap(205)
+				        .addComponent(updateT, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 174, Short.MAX_VALUE)))
+				.addContainerGap(118, 118));
+		updatePanelLayout.setVerticalGroup(updatePanelLayout.createSequentialGroup()
+				.addContainerGap(38, 38)
+				.addComponent(subPanel2, GroupLayout.PREFERRED_SIZE, 408, GroupLayout.PREFERRED_SIZE)
+				.addGap(42)
+				.addComponent(updateT, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(60, Short.MAX_VALUE));
+		
+	}
+
+
+	
 	/**
 	 * getPrice method returns a reference of the list of Price fields
 	 * to the model.
@@ -729,6 +923,42 @@ public class OrderGui implements Observer {
 	
 	public JTextField getPrice(int ind){
 		return listOfPrice.get(ind);
+	}
+	
+	public JButton getUpdate(){
+		return updateT;
+	}
+	
+	public JTextField getPasswordOrderT(){
+		return passwordOrderT;
+	}
+	
+	public JTextField getEmailOrderT(){
+		return emailOrderT;
+	}
+	
+	public JTextField getStreetOrderT(){
+		return streetOrderT;
+	}
+	
+	public JComboBox getStateOrderT(){
+		return stateOrderT;
+	}
+	
+	public JTextField getCityOrderT(){
+		return cityOrderT;
+	}
+	
+	public JTextField getZipOrderT(){
+		return zipOrderT;
+	}
+	
+	public JTextField getPriOrderT(){
+		return priOrderT;
+	}
+	
+	public JTextField getSecOrderT(){
+		return secOrderT;
 	}
 	
 	public JButton getNext(){
@@ -837,6 +1067,10 @@ public class OrderGui implements Observer {
 	
 	public JTextField getToBeDeliveredOrderNoT(){
 		return toBeDeliveredOrderNoT;
+	}
+	
+	public Object[] getStatesList(){
+		return statesList;
 	}
 	
 	

@@ -1,6 +1,8 @@
 package edu.jhu.cs.oose.group14.restaurant.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -12,9 +14,14 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import edu.jhu.cs.oose.group14.restaurant.gui.ihungryRestaurantGui;
 import edu.jhu.cs.oose.group14.restaurant.model.iHungryRestaurant;
@@ -30,6 +37,7 @@ import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Rating;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
+import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 
 /**
  * ihungryRestaurantModel class is the model class for ihungry vendor 
@@ -47,7 +55,7 @@ public class ihungryRestaurantController {
 	private int indx=0;
 	private Restaurant restaurant = new Restaurant(new Menu(),new Album());
 	private String username,realname,password,confirmPassword = null;
-	private String priPhone,secPhone,email,birthDate,state,address = null;
+	private String priPhone,secPhone,email,birthDate,state,address,coord1,coord2 = null;
 	private iHungryRestaurant hungryRestaurant;
 	
 	/*
@@ -66,6 +74,52 @@ public class ihungryRestaurantController {
 		
 		// Register the Observer to the Observable
 		iHungryRestaurant.getInstance().addObserver(gui.getOrderGui());
+	}
+	
+	
+	public String getCoordinates(String address){
+		try
+        {
+            String thisLine;
+            String address1 = address;
+            address1 = address1.replace(' ', '+');
+            address1 = address1.replace(',', '+');
+            System.out.println("address:       "+address1);
+            URL u = new URL("http://maps.google.com/maps/geo?q=\'" + address1 + "\'&output=xml&key=AIzaSyDA6y535k8_IQu-3XLpVn865SiEkBLSQ74");
+ 
+            BufferedReader theHTML = new BufferedReader(new InputStreamReader(u.openStream()));
+ 
+            FileWriter fstream = new FileWriter("url.xml");
+            BufferedWriter out = new BufferedWriter(fstream);
+            while ((thisLine = theHTML.readLine()) != null)
+                out.write(thisLine);
+            out.close();
+            File file = new File("url.xml");
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(file);
+            doc.getDocumentElement().normalize();
+            NodeList nl = doc.getElementsByTagName("code");
+            Element n = (Element)nl.item(0);
+            String st = n.getFirstChild().getNodeValue();
+ 
+            if (st.equals("200"))
+            {
+                NodeList n2 = doc.getElementsByTagName("coordinates");
+                Element nn = (Element)n2.item(0);
+                String st1 = nn.getFirstChild().getNodeValue();
+ 
+                return st1;
+            }
+            else
+            {
+            	return null;
+            }
+        }
+		catch (Exception e) {
+			System.out.println("Exception Occured");
+            return null;
+        }
 	}
 	
 	/**
@@ -108,11 +162,7 @@ public class ihungryRestaurantController {
 					}
 					
 					restaurant.parseFromJSONObject(jsonobj);
-					if(username.equals("group14 cafe"))
-					{
-						restaurant.getContactInfo().getAddress().setLatitude(39320056);
-						restaurant.getContactInfo().getAddress().setLongitude(-76619896);
-					}
+					System.out.println(restaurant.getContactInfo().getAddress().getLatitude());
 					populateMenuFields();
 										
 					gui.getOrderGui().displayOrderScreen();
@@ -134,6 +184,33 @@ public class ihungryRestaurantController {
 					hungryRestaurant.setOldOrders(model.retreiveOrders(
 							hungryRestaurant.getAccountInfo().getId(),
 							Order.STATUS_FINISHED, 100));
+					
+					gui.getOrderGui().getPasswordOrderT().setText("");
+					gui.getOrderGui().getEmailOrderT().setText(restaurant.getContactInfo().getEmail());
+					String address = restaurant.getContactInfo().getAddress().getAddress();
+					
+					String street = address.split(",")[0];
+					String city = address.split(",")[1];
+					String state = address.split(",")[2].trim(); 
+					String zip = state.split(" ")[1];
+					state = state.split(" ")[0];
+					gui.getOrderGui().getStreetOrderT().setText(street);
+					gui.getOrderGui().getCityOrderT().setText(city);
+					gui.getOrderGui().getZipOrderT().setText(zip);
+					Object stateObj = state;
+					
+					int j=0;
+					for(Object o:gui.getOrderGui().getStatesList())
+					{
+						if (o.toString().split(" ")[0].trim().equals(stateObj.toString().trim()))
+							break;
+						j++;
+					}
+					System.out.println(j);
+					gui.getOrderGui().getStateOrderT().setSelectedIndex(j);
+					gui.getOrderGui().getPriOrderT().setText(restaurant.getContactInfo().getPrimPhone());
+					gui.getOrderGui().getSecOrderT().setText(restaurant.getContactInfo().getSecPhone());
+					
 					for(int i=0;i<5;i++)
 					{
 						listOfEdit.get(i).addActionListener(new EditButtonListener() );
@@ -148,18 +225,24 @@ public class ihungryRestaurantController {
 					gui.getOrderGui().getToBeDeliveredTable().getSelectionModel().addListSelectionListener(new ToBeDeliveredSelectionListener());
 					gui.getOrderGui().getDeclinedOrderTable().getSelectionModel().addListSelectionListener(new DeclinedOrderSelectionListener());
 					gui.getOrderGui().getOrderHistoryTable().getSelectionModel().addListSelectionListener(new OrderHistorySelectionListener());
+					gui.getOrderGui().getUpdate().addActionListener(new UpdateButtonListener());
+					
 					
 				}
 				else
 				{
 					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Password is incorrect.</FONT></HTML>");	
 					JOptionPane.showMessageDialog(null,errorFields);
+					gui.getLoginGui().getPasswordLogin().setText("");
+					gui.getLoginGui().getPasswordLogin().requestFocus();
 				}
 			}
 			else
 			{
 				JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username does not exists.</FONT></HTML>");	
 				JOptionPane.showMessageDialog(null,errorFields);
+				gui.getLoginGui().getUsernameLogin().setText("");
+				gui.getLoginGui().getUsernameLogin().requestFocus();
 			}
 		}
 		
@@ -249,18 +332,30 @@ public class ihungryRestaurantController {
 				email = gui.getSignupGui().getEmail().getText();
 				birthDate = "";
 				state = (String) gui.getSignupGui().getState().getSelectedItem();
-				address = gui.getSignupGui().getStreet().getText().concat(gui.getSignupGui().getCity().getText()).
-				                      concat(state).concat(gui.getSignupGui().getZip().getText());
+				address = gui.getSignupGui().getStreet().getText().concat(",").concat(gui.getSignupGui().getCity().getText()).concat(",").
+				                      concat(state).concat(" ").concat(gui.getSignupGui().getZip().getText());
+				String coords = getCoordinates(address);
+				if (coords!=null)
+				{
+					coord1=coords.split(",")[0];
+					coord1=coord1.replace(".","");
+					coord2=coords.split(",")[1];
+					coord2=coord2.replace(".","");
+				}
+				System.out.println("coord1:          "+coord1);
+				System.out.println("coord2:          "+coord2);
 				
 				Icon newIcon = new Icon();
 				AccountInfo newAccount = new AccountInfo(username,password);
-				LocationInfo newLocation = new LocationInfo(address);
+				LocationInfo newLocation = new LocationInfo(address,Long.parseLong(coord1),Long.parseLong(coord2));
 				ContactInfo newContact = new ContactInfo(realname,newLocation,priPhone,secPhone,email,birthDate,newIcon);
 				Menu newMenu = new Menu();
 				Album newAlbum = new Album();
 				restaurant = new Restaurant(newMenu,newAlbum);
 				restaurant.setAccountInfo(newAccount);
 				restaurant.setContactInfo(newContact);
+				System.out.println(restaurant.getContactInfo().getAddress().getLatitude());
+				System.out.println(restaurant.getContactInfo().getAddress().getLongitude());
 				
 				boolean result;
 				
@@ -273,6 +368,9 @@ public class ihungryRestaurantController {
 					gui.getLoginGui().getSignUp().addActionListener(new SignUpListener());
 				}
 			}
+			
+			
+			
 		}
 	}
 	
@@ -372,6 +470,62 @@ public class ihungryRestaurantController {
 				hungryRestaurant.addOrModifyOrderHistory(order);
 			}
 			
+		}
+	}
+	
+	/**
+	 * UpdateButtonListener class implements the actionPerformed method. Updates 
+	 * the restaurant's details that the user has entered.
+	 * 
+	 * @author parkavi
+	 *
+	 */	
+	
+	public class UpdateButtonListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			if (gui.getOrderGui().getPasswordOrderT().getText() != restaurant.getAccountInfo().getPasswd() ||
+			gui.getOrderGui().getEmailOrderT().getText()!=restaurant.getContactInfo().getEmail() ||
+			gui.getOrderGui().getStreetOrderT().getText()!=restaurant.getContactInfo().getAddress().getAddress() ||
+			gui.getOrderGui().getPriOrderT().getText()!=restaurant.getContactInfo().getPrimPhone() ||
+			gui.getOrderGui().getSecOrderT().getText()!=restaurant.getContactInfo().getSecPhone())
+			{
+					ContactInfo ci = restaurant.getContactInfo();
+					ci.setPrimPhone(gui.getOrderGui().getPriOrderT().getText());
+					ci.setSecPhone(gui.getOrderGui().getSecOrderT().getText());
+					 
+					String addr = gui.getOrderGui().getStreetOrderT().getText().concat(",").concat(gui.getOrderGui().getCityOrderT().getText()).concat(",").
+	                      concat((String) gui.getOrderGui().getStateOrderT().getSelectedItem()).concat(" ").concat(gui.getOrderGui().getZipOrderT().getText());
+					String coords = getCoordinates(addr);
+					String coor1 ="";
+					String coor2 ="";
+					if (coords!=null)
+					{
+						coor1=coords.split(",")[0];
+						coor1=coor1.replace(".","");
+						coor2=coords.split(",")[1];
+						coor2=coor2.replace(".","");
+					}
+					System.out.println("coor1:          "+coor1);
+					System.out.println("coor2:          "+coor2);
+					
+					ci.setAddress(new LocationInfo(addr,Long.parseLong(coor1),Long.parseLong(coor2)));
+					ci.setEmail(gui.getOrderGui().getEmailOrderT().getText());
+					if(model.updateContact(restaurant.getAccountInfo(), ci))
+					{
+						JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Successfully Updated.</FONT></HTML>");	
+						JOptionPane.showMessageDialog(null,errorFields);
+					}
+						
+						
+					
+			}
+			else
+			{
+				if ( gui.getOrderGui().getPasswordOrderT().getText()!="")
+				{
+					MD5.getMd5(gui.getOrderGui().getPasswordOrderT().getText());
+				}
+			}
 		}
 	}
 	

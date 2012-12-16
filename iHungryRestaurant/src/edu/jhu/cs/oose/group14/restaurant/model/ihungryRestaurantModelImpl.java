@@ -13,6 +13,7 @@ import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.ListedJSONObj;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.MD5;
 import edu.jhu.cs.oose.fall2012.group14.ihungry.internet.OrderQuerier;
 import edu.jhu.cs.oose.project.group14.ihungry.model.AccountInfo;
+import edu.jhu.cs.oose.project.group14.ihungry.model.ContactInfo;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Menu;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Order;
 import edu.jhu.cs.oose.project.group14.ihungry.model.Restaurant;
@@ -129,6 +130,39 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 	}
 	
 	
+	public boolean updateContact(AccountInfo accInfo, ContactInfo ci){
+		
+		System.out.println("into update contact");
+		
+		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(accInfo.getUname()), accInfo.getPasswd(),
+				         CommunicationProtocol.BUSI_UPDATE_CONTACT, ci.getJSON().toString());
+		String responseStr = "";
+		
+		try
+		{
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+		}
+		catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		System.out.println(responseStr);
+		
+		if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_SUCCEEDED) )
+		{
+			return true;
+		} 
+		else if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_FAILED) )
+		{
+			return false;
+		}
+		
+		return false;
+		
+	}
+	
+	
 	public boolean updateOrder(AccountInfo accInfo,Order order){
 		
 		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(accInfo.getUname()), accInfo.getPasswd(),
@@ -218,7 +252,7 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
 		}
 		catch (Exception e) {
-		System.out.println("Exception Occured");
+		System.out.println("Exception Occured in send and get");
 		}
 		
 		//parse from the supinfo to a list of orders
