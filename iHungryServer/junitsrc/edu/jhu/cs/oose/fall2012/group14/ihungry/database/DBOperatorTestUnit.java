@@ -143,6 +143,7 @@ public class DBOperatorTestUnit {
 		try {
 			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_RES)), 
 					true);
+			
 			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_CUS)), 
 					false);
 		} catch (JSONException e1) {
@@ -172,7 +173,12 @@ public class DBOperatorTestUnit {
 		Order order13 = new Order(MD5.getMd5("order13"), MD5.getNameMd5("lyang"),
 				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING,list );
 		dboperator.submitOrder(order13);
-
+		try{
+			Thread.sleep(100);
+		}
+		catch(Exception e){
+			
+		}
 		o1 = new OrderItem(new Item("1","Pizza","Small Pizza",5.0,new Rating(),new Album()),2);
 		o2 = new OrderItem(new Item("3","Soda","Soda",1.00,new Rating(),new Album()),2);
 		List<OrderItem> list1 = new ArrayList<OrderItem>();
@@ -181,12 +187,23 @@ public class DBOperatorTestUnit {
 		Order order14 = new Order(MD5.getMd5("order14"), MD5.getNameMd5("lyang"),
 				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, list1);
 		dboperator.submitOrder(order14);
-
+		try{
+			Thread.sleep(100);
+		}
+		catch(Exception e){
+			
+		}
 		Order order15 = new Order(MD5.getMd5("order15"), MD5.getNameMd5("lyang"),
 				MD5.getNameMd5("No1Res"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
 		dboperator.submitOrder(order15);
 		
-
+		try{
+			Thread.sleep(100);
+		}
+		catch(Exception e){
+			
+		}
+		
 		Order order16 = new Order(MD5.getMd5("order16"), MD5.getNameMd5("lyang"),
 				MD5.getNameMd5("grp14"), Order.STATUS_UNDERPROCING, new ArrayList<OrderItem>());
 		dboperator.submitOrder(order16);
@@ -219,7 +236,7 @@ public class DBOperatorTestUnit {
 		System.out.println(retord.getJSON().toString());
 		try {
 			assertEquals((retord.getJSON().getJSONObject("0").getInt(Order.KEY_STATUS)), 
-					Order.STATUS_CONFIRMED);
+					Order.STATUS_UNDERPROCING);
 			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_CUS)), 
 					true);
 			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_RES)), 
@@ -237,7 +254,7 @@ public class DBOperatorTestUnit {
 		System.out.println(retord.getJSON().toString());
 		try {
 			assertEquals((retord.getJSON().getJSONObject("0").getInt(Order.KEY_STATUS)), 
-					Order.STATUS_CONFIRMED);
+					Order.STATUS_UNDERPROCING);
 			
 			assertEquals((retord.getJSON().getJSONObject("0").getBoolean(Order.IS_NEW_TO_CUS)), 
 					false);
