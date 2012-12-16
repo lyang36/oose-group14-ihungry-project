@@ -83,6 +83,10 @@ public class ContactInfo implements JSONHandler<ContactInfo>{
 		this.primPhone = phone;
 	}
 	
+	public void setEmail(String email){
+		this.email = email;
+	}
+	
 	public void setSecPhone(String phone){
 		this.secPhone = phone;
 	}
