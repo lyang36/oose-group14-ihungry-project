@@ -51,6 +51,17 @@ public interface ihungryRestaurantModelInterface {
 	 */
 	public boolean updateContact(AccountInfo accinfo, ContactInfo ci);
 	
+	
+	/**
+	 * Called by the business to retrieve the address of customer.
+	 *  
+	 * @param AccountInfo accInfo 
+	 * @param Order ord
+	 * @return PROCESS_SUCCEEDED/PROCESS_FAILED
+	 */
+	public String getCustContact(AccountInfo accInfo, Order ord);
+	
+	
 	/**
 	 * Called whenever a change has been made to an order. This method
 	 * updates the order in the database.
