@@ -1,7 +1,10 @@
 package edu.jhu.cs.oose.group14.restaurant.gui;
 
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.metal.OceanTheme;
 
 import edu.jhu.cs.oose.group14.restaurant.controller.ihungryRestaurantController;
 
@@ -18,7 +21,7 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 	private LoginGui loginGui;
 	private OrderGui orderGui;
 	private SignupGui signupGui;
-	
+
 	/*
 	 * Main method creates an object of ihungryVendorGui class and an object 
 	 * of model class and passes the Gui class object to model object thus 
@@ -31,6 +34,17 @@ public class ihungryRestaurantGui extends javax.swing.JFrame {
 				ihungryRestaurantController control = new ihungryRestaurantController(gui);
 				gui.setLocationRelativeTo(null);
 				gui.setVisible(true);
+				
+				
+				try{ 
+					   UIManager.setLookAndFeel(
+					        UIManager.getSystemLookAndFeelClassName());
+					//UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+					
+					}
+					catch(Exception e){
+					 e.printStackTrace();
+					}
 			}
 		});
 	}
