@@ -36,7 +36,7 @@ public class ActivityController extends Activity {
 		switchArray.append( ActivitySwitchSignals.ABOUTMESWH, 		new AboutmeSwitcher() );
 		switchArray.append( ActivitySwitchSignals.FAVOURITESSWH, 	new FavouriteSwitcher() );
 		switchArray.append( ActivitySwitchSignals.ORDERHISTORYSWH, 	new OrderhistorySwitcher() );
-	
+		
 		// Load the first Screen / Activity
 		intent_i = new Intent(getApplicationContext(), LoginActivity.class);
 		startActivityForResult(intent_i, ActivitySwitchSignals.LOGIN);
@@ -112,7 +112,9 @@ public class ActivityController extends Activity {
 	class OrderhistorySwitcher extends ActivitySwitcher{
 		@Override
 		void switchOnCode(Activity act) {
-			startActivityForResult(new Intent(getApplicationContext(), OrderHistoryActivity.class), ActivitySwitchSignals.ORDERHISTORY);
+		//	startActivityForResult(new Intent(getApplicationContext(), OrderHistoryActivity.class), ActivitySwitchSignals.ORDERHISTORY);
+			startActivityForResult(new Intent(getApplicationContext(), OrderHistoryTabLayoutActivity.class), ActivitySwitchSignals.ORDERHISTORY);
+
 		}
 	}
 }

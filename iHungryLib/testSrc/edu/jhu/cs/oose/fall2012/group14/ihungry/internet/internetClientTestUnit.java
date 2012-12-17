@@ -34,9 +34,9 @@ public class internetClientTestUnit {
 		
 		InternetClient client = new InternetClient();
 		try {
-			
-			assertEquals(CommunicationProtocol.getRequestFromReceivedStr(client.sendAndGet(a, 30000)), CommunicationProtocol.LOGIN_ERROR);
-			
+			for(int i = 0; i < 6000; i++){
+				assertEquals(CommunicationProtocol.getRequestFromReceivedStr(client.sendAndGet(a, 30000)), CommunicationProtocol.LOGIN_ERROR);
+			}
 		//	assertEquals(CommunicationProtocol.getRequestFromReceivedStr(client.sendAndGet(a, 30000)), CommunicationProtocol.LOGOUT);
 			
 		//	System.out.println(CommunicationProtocol.getRequestFromReceivedStr(client.sendAndGet(a, 30000)));

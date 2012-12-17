@@ -17,11 +17,12 @@ class doComms implements Runnable {
     private String line,input;
     MessageReactor reactor;
     InternetUtilImpl internet;
-    
+    DBOperator dboperator;
 
-    doComms(Socket server, MessageReactor reactor) {
+    doComms(Socket server, MessageReactor reactor, DBOperator db) {
     	this.server = server;
     	this.reactor = reactor;
+    	this.dboperator = db;
     	internet = new InternetUtilImpl();
 
     	try {
@@ -38,10 +39,14 @@ class doComms implements Runnable {
     		System.out.println("Input Message: " + input);
     		reactor.reactToMsg(input, internet);
     		server.close();
+    		dboperator.close();
+
     	} catch (Exception ioe) {
     		System.out.println("IOException on socket listen: " + ioe);
     		ioe.printStackTrace();
-    	}
+    	}   	
+    	System.out.println("Threads Ended");
+    	return;
     }
 }
 
@@ -70,6 +75,7 @@ public class Server implements ServerModel{
 	      
 	      while(true){
 	    	  try{
+	    		  DBOperator op = null;
 		    	  server = listener.accept();
 				  threadNum ++;
 				  if(threadNum >= maxConnections){
@@ -77,8 +83,8 @@ public class Server implements ServerModel{
 				  }
 				  try {
 					  msreactor = msreactor.getClass().newInstance();
-					
-					  DBOperator op = new DBOperator();
+					  op = null;
+					  op = new DBOperator();
 					  op.connectToDB();
 					  msreactor.setOperater(op);
 				  } catch (InstantiationException e) {
@@ -86,13 +92,15 @@ public class Server implements ServerModel{
 				  } catch (IllegalAccessException e) {
 					  e.printStackTrace();
 				  }
-				  doComms conn_c= new doComms(server, msreactor);
+				  doComms conn_c= new doComms(server, msreactor, op);
 				  Thread t = new Thread(conn_c);
 				  t.start();
 				  System.out.println("Connection " + threadNum +" starts...");
+				  Thread.sleep(100);
 	    	  }catch(Exception e){
 	    		  e.printStackTrace();
 	    	  }
+
 	      }
 
 	}

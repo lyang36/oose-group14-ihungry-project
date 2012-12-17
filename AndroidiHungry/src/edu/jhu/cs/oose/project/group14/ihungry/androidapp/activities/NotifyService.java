@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.IBinder;
+import android.util.Log;
 
 /**
  * A Notification Service used to notify user their changed orders.
@@ -39,16 +40,15 @@ public class NotifyService extends Service {
 	private static final int MY_NOTIFICATION_ID = 1;
 	private NotificationManager notificationManager;
 	private Notification myNotification;
-	private final String myBlog = "http://ugrad.cs.jhu.edu/~group14/";
 
-	private int notifyCounter = 0;
+	//private int notifyCounter = 0;
 
 	private AndroidClientModel clientModel;
 
 	@Override
 	public void onCreate() {
-		ToastDisplay.DisplayToastOnScr(NotifyService.this,
-				"Fetching changed orders every 10 seconds");
+		//ToastDisplay.DisplayToastOnScr(NotifyService.this, "Notify Service: onCreate");
+		Log.i("[NotifyService]","Start Id "+NotifyService.this.hashCode());
 
 		notifyServiceReceiver = new NotifyServiceReceiver();
 
@@ -67,42 +67,42 @@ public class NotifyService extends Service {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
+	public int onStartCommand(Intent intent, int flags, int startId) {		
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(ACTION);
+		registerReceiver(notifyServiceReceiver, intentFilter);
 
-		// Test : retrieve all orders
+		//ToastDisplay.DisplayToastOnScr(NotifyService.this, "Notify Service: start command");
+		Log.v("[NotifyService]","Notify: onStartCommand");
+		Log.i("[NotifyService]","Start Id "+NotifyService.this.hashCode());
+
 		List<Order> orders = clientModel.retrieveChangedOrders();
 
 		if (orders.size() != 0) {
-			
+
 			// Get the first order's info
-			Order order1 = (Order)orders.get(0);
+			Order order1 = (Order) orders.get(0);
 			AccountInfo bus_accInfo = new AccountInfo();
 			bus_accInfo.setId(order1.getRestID());
-			ContactInfo rest_contact = clientModel.getRestaurantContactInfoSingle(bus_accInfo);
+			ContactInfo rest_contact = clientModel
+					.getRestaurantContactInfoSingle(bus_accInfo);
 			String rest_name = rest_contact.getRealName();
 			String changedStatus = order1.getStatusMeaning();
 
-			//ToastDisplay.DisplayToastOnScr(NotifyService.this, "Orders size: "
-			//		+ orders.size());
-
-			IntentFilter intentFilter = new IntentFilter();
-			intentFilter.addAction(ACTION);
-			registerReceiver(notifyServiceReceiver, intentFilter);
-
 			// Send Notification
 			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			notifyCounter++;
+			//notifyCounter++;
 			myNotification = new Notification(R.drawable.ic_launcher,
-					"Notification " + notifyCounter, System.currentTimeMillis());
+					"iHungry Notification", System.currentTimeMillis());
 
-			/*   */
 			Context context = getApplicationContext();
 			String notificationTitle = "Updated order available";
-			String notificationText = "Your order from "+ rest_name + ": " + changedStatus;
+			String notificationText = "Your order from " + rest_name + ": "
+					+ changedStatus;
 			// Intent myIntent = new Intent(Intent.ACTION_VIEW,
 			// Uri.parse(myBlog));
 			Intent myIntent = new Intent(NotifyService.this,
-					OrderHistoryActivity.class);
+					OrderHistoryTabLayoutActivity.class);
 
 			PendingIntent pendingIntent = PendingIntent.getActivity(
 					getBaseContext(), 0, myIntent,
@@ -113,14 +113,14 @@ public class NotifyService extends Service {
 					notificationText, pendingIntent);
 			notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
 		}
-			return super.onStartCommand(intent, flags, startId);
-		
+
+		return super.onStartCommand(intent, flags, startId);
+
 	}
 
 	@Override
 	public void onDestroy() {
-		ToastDisplay.DisplayToastOnScr(NotifyService.this,
-				"NotifyService.onDestroy");
+		//ToastDisplay.DisplayToastOnScr(NotifyService.this, "NotifyService.onDestroy");
 
 		this.unregisterReceiver(notifyServiceReceiver);
 		super.onDestroy();
@@ -140,6 +140,7 @@ public class NotifyService extends Service {
 
 			/* Stop the service */
 			if (rqs == RQS_STOP_SERVICE) {
+				Log.v("NotifyServiceReceiver","Stop Service Notify");
 				stopSelf();
 			}
 		}
