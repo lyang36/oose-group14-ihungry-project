@@ -373,19 +373,19 @@ public class ihungryRestaurantController {
 				System.out.println(state);
 				address = gui.getSignupGui().getStreet().getText().concat(",").concat(gui.getSignupGui().getCity().getText()).concat(",").
 				                      concat(state.split(" ")[0]).concat(" ").concat(gui.getSignupGui().getZip().getText());
-				/*String coords = getCoordinates(address);
+				String coords = getCoordinates(address);
 				if (coords!=null)
 				{
 					coord2=coords.split(",")[0];
 					coord2=coord2.replace(".","");
 					coord1=coords.split(",")[1];
 					coord1=coord1.replace(".","");
-				}*/
+				}
 				
 				Icon newIcon = new Icon();
 				AccountInfo newAccount = new AccountInfo(username,password);
-				//LocationInfo newLocation = new LocationInfo(address,Long.parseLong(coord1),Long.parseLong(coord2));
-				LocationInfo newLocation = new LocationInfo(address);
+				LocationInfo newLocation = new LocationInfo(address,Long.parseLong(coord1)/10,Long.parseLong(coord2)/10);
+				//LocationInfo newLocation = new LocationInfo(address);
 				ContactInfo newContact = new ContactInfo(realname,newLocation,priPhone,secPhone,email,birthDate,newIcon);
 				Menu newMenu = new Menu();
 				Album newAlbum = new Album();
@@ -535,7 +535,7 @@ public class ihungryRestaurantController {
 				ci.setSecPhone(gui.getOrderGui().getSecOrderT().getText()); 
 				String addr = gui.getOrderGui().getStreetOrderT().getText().concat(",").concat(gui.getOrderGui().getCityOrderT().getText()).concat(",").
                       concat((String) gui.getOrderGui().getStateOrderT().getSelectedItem().toString().split(" ")[0]).concat(" ").concat(gui.getOrderGui().getZipOrderT().getText());
-				/*String coords = getCoordinates(addr);
+				String coords = getCoordinates(addr);
 				String coor1 ="";
 				String coor2 ="";
 				if (coords!=null)
@@ -545,8 +545,8 @@ public class ihungryRestaurantController {
 					coor1=coords.split(",")[1];
 					coor1=coor1.replace(".","");
 				}
-				try{
-				ci.setAddress(new LocationInfo(addr,Long.parseLong(coor1),Long.parseLong(coor2)));}
+				/*try{
+				//ci.setAddress(new LocationInfo(addr,(Long.parseLong(coor1))/10,Long.parseLong(coor2)));}
 				catch(NumberFormatException nfe){
 					System.out.println("Number Format Exception occured");
 				}
@@ -554,6 +554,16 @@ public class ihungryRestaurantController {
 					System.out.println("Exception occured");
 				}*/
 				li.setAddress(addr);
+				//li.setLatitude((Long.parseLong(coor1))/10);
+				//li.setLongitude((Long.parseLong(coor2))/10);
+				
+				Long var1=(Long.parseLong(coor1))/10;
+				Long var2=(Long.parseLong(coor2))/10;
+				li.setLatitude(var1);
+				li.setLongitude(var2);
+				System.out.println(var1);
+				System.out.println(var2);
+				//li.setAddress(addr);
 				ci.setEmail(gui.getOrderGui().getEmailOrderT().getText());
 				
 				//update the restaurant details
