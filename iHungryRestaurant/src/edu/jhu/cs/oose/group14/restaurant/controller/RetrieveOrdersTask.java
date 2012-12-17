@@ -29,7 +29,6 @@ public class RetrieveOrdersTask extends TimerTask {
 	@Override
 	public void run() {
 
-		//System.out.println("Thread running...");
 		iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 		List<Order> orders = hungryRestaurantService.retrieveChangedOrders(hungryRestaurant.getAccountInfo().getId());
 		

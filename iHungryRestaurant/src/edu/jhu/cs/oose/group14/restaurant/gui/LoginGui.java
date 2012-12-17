@@ -38,6 +38,10 @@ public class LoginGui {
 	
 	public void displayLoginScreen(){
 		
+		for(int i=0;i<contentPane.getComponentCount();i++)
+			if (contentPane.getComponentCount()>0)
+				contentPane.getComponents()[i].setVisible(false);
+		
 		panel1 = new JPanel();
 		contentPane.add(panel1, BorderLayout.CENTER);
 		GroupLayout panel1Layout = new GroupLayout((JComponent)panel1);

@@ -140,7 +140,10 @@ public class OrderGui implements Observer {
         "NV NEVADA","NY NEW YORK","OH OHIO","OK OKLAHOMA","ON ONTARIO","OR OREGON","PA PENNSYLVANIA","PE PRINCE EDWARD ISLAND",
         "PQ QUEBEC","PR PUERTO RICO","PW PALAU","RI RHODE ISLAND","SC SOUTH CAROLINA","SD SOUTH DAKOTA","SK SASKATCHEWAN",
         "TN TENNESSEE","TX TEXAS","UT UTAH","VA VIRGINIA","VI VIRGIN ISLANDS","VT VERMONT","WA WASHINGTON","WI WISCONSIN",
-        "WV WEST VIRGINIA","WY WYOMING"};;
+        "WV WEST VIRGINIA","WY WYOMING"};
+	private JPanel logoutMenu;
+	private JLabel logoutMessage;
+	private JButton logout;;
 	
 
 	public OrderGui(Container contentPane){
@@ -175,10 +178,12 @@ public class OrderGui implements Observer {
 			displayDeclinedOrder();								
 			displayOrderHistory();
 			displayUpdateProfile();
-			//showUpdateScreen();
+			displayLogoutScreen();
 			
 		}
 	}
+	
+	
 	
 	/*
 	 *Displays the View/Update Menu screen 
@@ -760,7 +765,6 @@ public class OrderGui implements Observer {
 	private void displayUpdateProfile()
 	{
 		
-		
 		updatePanel = new JPanel();
 		jTabbedPane1.addTab("Update Profile", null, updatePanel, null);
 		GroupLayout updatePanelLayout = new GroupLayout((JComponent)updatePanel);
@@ -851,12 +855,12 @@ public class OrderGui implements Observer {
 																	.addGroup(subPanel2Layout.createSequentialGroup()
 																			.addComponent(passwordOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
 																			.addGap(0, 0, Short.MAX_VALUE))
+																			.addGroup(subPanel2Layout.createSequentialGroup()
+																					.addComponent(priOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+																					.addGap(0, 0, Short.MAX_VALUE))
 																					.addGroup(subPanel2Layout.createSequentialGroup()
-																							.addComponent(priOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
-																							.addGap(0, 0, Short.MAX_VALUE))
-																							.addGroup(subPanel2Layout.createSequentialGroup()
-																									.addComponent(secOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
-																									.addGap(0, 0, Short.MAX_VALUE)))
+																							.addComponent(secOrderT, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+																							.addGap(0, 0, Short.MAX_VALUE)))
 																									.addContainerGap(65, 65));
 			subPanel2Layout.setVerticalGroup(subPanel2Layout.createSequentialGroup()
 					.addContainerGap(22, 22)
@@ -914,6 +918,47 @@ public class OrderGui implements Observer {
 
 
 	
+
+	private void displayLogoutScreen()
+	{
+		logoutMenu = new JPanel();
+		jTabbedPane1.addTab("Logout", null, logoutMenu, null);
+		GroupLayout logoutMenuLayout = new GroupLayout((JComponent)logoutMenu);
+		logoutMenu.setLayout(logoutMenuLayout);
+		logoutMenu.setPreferredSize(new java.awt.Dimension(788, 543));
+		logoutMenu.setBorder(BorderFactory.createTitledBorder(""));
+		{
+		{
+			logoutMessage = new JLabel();
+			logoutMessage.setText("Click to Logout:");
+		}
+		{
+			logout = new JButton("Log Out");
+			
+		}
+		
+		
+		logoutMenuLayout.setHorizontalGroup(logoutMenuLayout.createSequentialGroup()
+				.addGroup(logoutMenuLayout.createParallelGroup()
+						.addComponent(logoutMessage, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE))
+						.addGap(64)
+						.addGroup(logoutMenuLayout.createParallelGroup()
+														.addGroup(logoutMenuLayout.createSequentialGroup()
+																.addComponent(logout, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+																.addGap(0, 0, Short.MAX_VALUE)))
+																	.addContainerGap(65, 65));
+
+		logoutMenuLayout.setVerticalGroup(logoutMenuLayout.createSequentialGroup()
+				.addContainerGap(22, 22)
+				.addGroup(logoutMenuLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(logoutMessage, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+						.addComponent(logout, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+						.addGap(23)
+														.addContainerGap(32, 32));
+	}
+	}
+	
+	
 	/**
 	 * getPrice method returns a reference of the list of Price fields
 	 * to the model.
@@ -923,6 +968,10 @@ public class OrderGui implements Observer {
 	
 	public JTextField getPrice(int ind){
 		return listOfPrice.get(ind);
+	}
+	
+	public JButton getLogout(){
+		return logout;
 	}
 	
 	public JButton getUpdate(){
@@ -1056,6 +1105,11 @@ public class OrderGui implements Observer {
 	public JTextField getToBeDeliveredCustNo(){
 		return toBeDeliveredCustNoT;
 	}
+	
+	public JTextField getToBeDeliveredCustAddrT(){
+		return toBeDeliveredCustAddrT;
+	}
+		
 	
 	public JList getToBeDeliveredList(){
 		return toBeDeliveredList;

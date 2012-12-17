@@ -226,6 +226,7 @@ public class ihungryRestaurantController {
 					gui.getOrderGui().getDeclinedOrderTable().getSelectionModel().addListSelectionListener(new DeclinedOrderSelectionListener());
 					gui.getOrderGui().getOrderHistoryTable().getSelectionModel().addListSelectionListener(new OrderHistorySelectionListener());
 					gui.getOrderGui().getUpdate().addActionListener(new UpdateButtonListener());
+					gui.getOrderGui().getLogout().addActionListener(new LogoutButtonListener());
 					
 					
 				}
@@ -315,6 +316,7 @@ public class ihungryRestaurantController {
 				{
 					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Username and Password fields cannot be empty.</FONT></HTML>");	
 					JOptionPane.showMessageDialog(null,errorFields);
+					gui.getSignupGui().getUserName().requestFocus();	
 				}
 			}
 		}
@@ -362,7 +364,7 @@ public class ihungryRestaurantController {
 				result = model.signupForNewUser(restaurant);
 				if (result)
 				{
-					gui.getSignupGui().getSignUp2().setVisible(false);
+					//gui.getSignupGui().getSignUp2().setVisible(false);
 					gui.getLoginGui().displayLoginScreen();
 					gui.getLoginGui().getLogin().addActionListener(new LoginListener());
 					gui.getLoginGui().getSignUp().addActionListener(new SignUpListener());
@@ -530,6 +532,15 @@ public class ihungryRestaurantController {
 	}
 	
 	
+	public class LogoutButtonListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			gui.getLoginGui().displayLoginScreen();
+			gui.getLoginGui().getLogin().addActionListener(new LoginListener());
+			gui.getLoginGui().getSignUp().addActionListener(new SignUpListener());
+			
+		}
+	}
+	
 	/**
 	 * SelectionListener class implements ListSelection Listener. Gives 
 	 * implementation for the valueChanged method.
@@ -547,6 +558,7 @@ public class ihungryRestaurantController {
 		public void valueChanged(ListSelectionEvent e) {
 			
 			//System.out.println("into currorders listener");
+			System.out.println(e.getSource());
 			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getSubPanel10().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
@@ -594,6 +606,8 @@ public class ihungryRestaurantController {
 				Order selectedOrder = acceptedOrders.get(minIndex);
 				gui.getOrderGui().getToBeDeliveredOrderNo().setText(selectedOrder.getOrderID());
 				gui.getOrderGui().getToBeDeliveredCustNo().setText(selectedOrder.getCustID());
+				//String custAddr = 
+				gui.getOrderGui().getToBeDeliveredCustAddrT().setText("");
 				String[] orderDetails = new String[50];
 				
 				for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
