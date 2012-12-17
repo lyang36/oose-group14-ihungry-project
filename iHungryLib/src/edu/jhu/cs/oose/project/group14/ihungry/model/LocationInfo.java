@@ -84,6 +84,10 @@ public class LocationInfo implements JSONHandler<LocationInfo>{
 		this.longitude = lon;
 	}
 	
+	public void setAddress(String address){
+		this.address=address;
+	}
+	
 
 	@Override
 	public JSONObject getJSON() {
