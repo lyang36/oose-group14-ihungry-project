@@ -2,7 +2,6 @@ package edu.jhu.cs.oose.group14.restaurant.gui;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 
@@ -29,7 +28,7 @@ public class LoginGui {
 	
 	public LoginGui(Container contentPane){
 		this.contentPane = contentPane;	
-	}
+	}	
 	
 	
 	/*
@@ -60,13 +59,10 @@ public class LoginGui {
 			{
 				usernameLogin = new JTextField();
 				usernameLogin.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-				//usernameLogin.setText("No1Res");
 			}
 			{
 				passwordLogin = new JPasswordField();
-				//passwordLogin.setRequestFocusEnabled(false);
 				passwordLogin.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-				//passwordLogin.setText("abc");
 			}
 			{
 				username = new JLabel();
@@ -77,39 +73,39 @@ public class LoginGui {
 				password.setText("Enter Password");
 			}
 			jPanel1Layout.setHorizontalGroup(jPanel1Layout.createSequentialGroup()
-				.addGap(8)
-				.addGroup(jPanel1Layout.createParallelGroup()
-				    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-				        .addGap(0, 0, Short.MAX_VALUE)
-				        .addComponent(password, GroupLayout.PREFERRED_SIZE, 126, GroupLayout.PREFERRED_SIZE)
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				        .addGroup(jPanel1Layout.createParallelGroup()
-				            .addComponent(passwordLogin, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(usernameLogin, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)))
-				    .addGroup(jPanel1Layout.createSequentialGroup()
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				        .addGroup(jPanel1Layout.createParallelGroup()
-				            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-				                .addComponent(username, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 64, Short.MAX_VALUE))
-				            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-				                .addGap(83)
-				                .addComponent(login, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 0, Short.MAX_VALUE)))
-				        .addGap(119)))
-				.addContainerGap());
+					.addGap(8)
+					.addGroup(jPanel1Layout.createParallelGroup()
+							.addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+									.addGap(0, 0, Short.MAX_VALUE)
+									.addComponent(password, GroupLayout.PREFERRED_SIZE, 126, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addGroup(jPanel1Layout.createParallelGroup()
+											.addComponent(passwordLogin, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
+											.addComponent(usernameLogin, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)))
+											.addGroup(jPanel1Layout.createSequentialGroup()
+													.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+													.addGroup(jPanel1Layout.createParallelGroup()
+															.addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+																	.addComponent(username, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+																	.addGap(0, 64, Short.MAX_VALUE))
+																	.addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+																			.addGap(83)
+																			.addComponent(login, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
+																			.addGap(0, 0, Short.MAX_VALUE)))
+																			.addGap(119)))
+																			.addContainerGap());
 			jPanel1Layout.setVerticalGroup(jPanel1Layout.createSequentialGroup()
-				.addGap(7)
-				.addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(usernameLogin, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(username, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addGap(25)
-				.addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(password, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(passwordLogin, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE))
-				.addGap(0, 18, Short.MAX_VALUE)
-				.addComponent(login, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap());
+					.addGap(7)
+					.addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(usernameLogin, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+							.addComponent(username, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(25)
+							.addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(password, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+									.addComponent(passwordLogin, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE))
+									.addGap(0, 18, Short.MAX_VALUE)
+									.addComponent(login, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+									.addContainerGap());
 		}
 		{
 			signupText = new JLabel();
@@ -120,23 +116,23 @@ public class LoginGui {
 			signup = new JButton();
 			signup.setText("Signup");
 		}
-			panel1Layout.setVerticalGroup(panel1Layout.createSequentialGroup()
+		panel1Layout.setVerticalGroup(panel1Layout.createSequentialGroup()
 				.addContainerGap(23, 23)
 				.addComponent(subpanel1, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 				.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				    .addComponent(signupText, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(signup, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
-				.addContainerGap(181, 181));
-			panel1Layout.setHorizontalGroup(panel1Layout.createSequentialGroup()
+						.addComponent(signupText, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(signup, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(181, 181));
+		panel1Layout.setHorizontalGroup(panel1Layout.createSequentialGroup()
 				.addContainerGap(144, 144)
 				.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				    .addComponent(signup, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(subpanel1, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(signupText, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
-				.addContainerGap(93, 93));
-	
+						.addComponent(signup, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+						.addComponent(subpanel1, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
+						.addComponent(signupText, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(93, 93));
 	}
+	
 	
 	/**
 	 * getLogin method returns a reference of the Login Button to the model 
@@ -160,6 +156,4 @@ public class LoginGui {
 	public JButton getSignUp(){
 		return signup;
 	}
-	
-
 }

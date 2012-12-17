@@ -132,8 +132,6 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 	
 	public boolean updateContact(AccountInfo accInfo, ContactInfo ci){
 		
-		System.out.println("into update contact");
-		
 		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(accInfo.getUname()), accInfo.getPasswd(),
 				         CommunicationProtocol.BUSI_UPDATE_CONTACT, ci.getJSON().toString());
 		String responseStr = "";
@@ -147,8 +145,6 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 			e.printStackTrace();
 		}
 		
-		System.out.println(responseStr);
-		
 		if(CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_SUCCEEDED) )
 		{
 			return true;
@@ -159,6 +155,29 @@ public class ihungryRestaurantModelImpl implements ihungryRestaurantModelInterfa
 		}
 		
 		return false;
+		
+	}
+	
+	
+	public String getCustContact(AccountInfo accInfo, Order ord){
+		
+		String sendStr = CommunicationProtocol.construcSendingStr(MD5.getNameMd5(accInfo.getUname()), accInfo.getPasswd(),
+		         CommunicationProtocol.BUSI_GET_CUS_CONTACT, ord.getJSON().toString());
+		String responseStr = "";
+		try{
+			responseStr = internetClient.sendAndGet(sendStr, CONNECTIONTIMEOUT);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_SUCCEEDED) ){
+			return CommunicationProtocol.getSupinfoFromReceivedStr( responseStr );
+		} else if( CommunicationProtocol.getRequestFromReceivedStr( responseStr ).equals(CommunicationProtocol.PROCESS_FAILED) ){
+			return CommunicationProtocol.getSupinfoFromReceivedStr( responseStr );
+		}
+		
+		return "";
 		
 	}
 	

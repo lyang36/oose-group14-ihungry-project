@@ -76,6 +76,9 @@ public class ihungryRestaurantController {
 		iHungryRestaurant.getInstance().addObserver(gui.getOrderGui());
 	}
 	
+	/*
+	 * Converts the address in String to location coordinates using the Google Maps API
+	 */
 	
 	public String getCoordinates(String address){
 		try
@@ -122,6 +125,7 @@ public class ihungryRestaurantController {
         }
 	}
 	
+	
 	/**
 	 * LoginListener class implements the actionPerformed method checking for
 	 * the user credentials and allowing the user to log into the application.
@@ -130,11 +134,16 @@ public class ihungryRestaurantController {
 	 */	
 	class LoginListener implements ActionListener{
 		
+		
 		public void actionPerformed(ActionEvent event) 
 		{
 			composeForLogIn();			
 		}
 		
+		/*
+		 * Passes the username and password entered to the server. If the server
+		 * accepts this combination then user is logged into the OrderGui screen.
+		 */
 		public void composeForLogIn(){
 			
 			String username = gui.getLoginGui().getUsernameLogin().getText();
@@ -144,7 +153,6 @@ public class ihungryRestaurantController {
 			if (model.loginCheck(username,password))
 			{
 				String result = model.attemptLogin(username,password);
-				//System.out.println("result="+result);
 				if (!result.equals(""))
 				{	
 					hungryRestaurant = iHungryRestaurant.getInstance();
@@ -162,13 +170,15 @@ public class ihungryRestaurantController {
 					}
 					
 					restaurant.parseFromJSONObject(jsonobj);
-					System.out.println(restaurant.getContactInfo().getAddress().getLatitude());
 					populateMenuFields();
 										
 					gui.getOrderGui().displayOrderScreen();
 					gui.getOrderGui().getTabbedPane().setSelectedIndex(1);
+					
+					//Build the menu table
 					onClickNext(); 
-					// get the orders and store it in iHungryRestaurant class					
+					
+					// Get the orders and store it in iHungryRestaurant class					
 					hungryRestaurant.setPendingOrders(model.retreiveOrders(
 							hungryRestaurant.getAccountInfo().getId(),
 							Order.STATUS_UNDERPROCING, 100));
@@ -185,20 +195,25 @@ public class ihungryRestaurantController {
 							hungryRestaurant.getAccountInfo().getId(),
 							Order.STATUS_FINISHED, 100));
 					
-					gui.getOrderGui().getPasswordOrderT().setText("");
+					//Build the UpdateDetails screen
 					gui.getOrderGui().getEmailOrderT().setText(restaurant.getContactInfo().getEmail());
 					String address = restaurant.getContactInfo().getAddress().getAddress();
-					
+					System.out.println(address);
 					String street = address.split(",")[0];
 					String city = address.split(",")[1];
-					String state = address.split(",")[2].trim(); 
-					String zip = state.split(" ")[1];
+					String state = address.split(",")[2].trim();
+					String zip ="";
+					if (state.split(" ").length==2)
+					{
+						zip = state.split(" ")[1];
+					}
 					state = state.split(" ")[0];
 					gui.getOrderGui().getStreetOrderT().setText(street);
 					gui.getOrderGui().getCityOrderT().setText(city);
 					gui.getOrderGui().getZipOrderT().setText(zip);
 					Object stateObj = state;
 					
+					//Highlight the state
 					int j=0;
 					for(Object o:gui.getOrderGui().getStatesList())
 					{
@@ -206,7 +221,6 @@ public class ihungryRestaurantController {
 							break;
 						j++;
 					}
-					System.out.println(j);
 					gui.getOrderGui().getStateOrderT().setSelectedIndex(j);
 					gui.getOrderGui().getPriOrderT().setText(restaurant.getContactInfo().getPrimPhone());
 					gui.getOrderGui().getSecOrderT().setText(restaurant.getContactInfo().getSecPhone());
@@ -247,6 +261,10 @@ public class ihungryRestaurantController {
 			}
 		}
 		
+		/*
+		 * Populates the fields in the Update Menu page. Called whenever next
+		 * and previous buttons are clicked.
+		 */
 		
 		public void populateMenuFields(){
 			
@@ -262,6 +280,7 @@ public class ihungryRestaurantController {
 		}
 	}
 		
+	
 	/**
 	 * SignUpListener class implements the actionPerformed method. Sends a JSON
 	 * object of the Restaurant to the server which creates a new restaurant
@@ -269,13 +288,21 @@ public class ihungryRestaurantController {
 	 * @author parkavi
 	 *
 	 */	
+	
 	class SignUpListener implements ActionListener{
+		
+		
 		public void actionPerformed(ActionEvent event) {
 			
 			gui.getSignupGui().displayFirstPageSignUpGui();
+			gui.getSignupGui().getFirstName().requestFocus();
 			gui.getSignupGui().getNextSignUp().addActionListener(new NextSignUpListener());
 			
 		}
+		
+		/**
+		 * Inner class that displays the first screen of Sign up process
+		 */
 		
 		class NextSignUpListener implements ActionListener{
 			
@@ -294,6 +321,7 @@ public class ihungryRestaurantController {
 						if(!model.loginCheck(username, password))
 						{
 							gui.getSignupGui().displaySecondPageSignUpGui();
+							gui.getSignupGui().getEmail().requestFocus();
 							gui.getSignupGui().getSignUp2().addActionListener(new SecondSignUpListener());							
 						}
 						else
@@ -321,31 +349,37 @@ public class ihungryRestaurantController {
 			}
 		}
 		
+		
+		/**
+		 * Inner class that displays the second screen of Sign Up process
+		 * @author parkavi
+		 *
+		 */
+		
 		class SecondSignUpListener implements ActionListener{
 			
 			public void actionPerformed(ActionEvent event){
 				composeForSignUp();
 			}
 			
-			public void composeForSignUp(){
-				
+			
+			public void composeForSignUp(){		
 				priPhone = gui.getSignupGui().getPriPhone().getText();
 				secPhone = gui.getSignupGui().getSecPhone().getText();
 				email = gui.getSignupGui().getEmail().getText();
 				birthDate = "";
 				state = (String) gui.getSignupGui().getState().getSelectedItem();
+				System.out.println(state);
 				address = gui.getSignupGui().getStreet().getText().concat(",").concat(gui.getSignupGui().getCity().getText()).concat(",").
-				                      concat(state).concat(" ").concat(gui.getSignupGui().getZip().getText());
+				                      concat(state.split(" ")[0]).concat(" ").concat(gui.getSignupGui().getZip().getText());
 				String coords = getCoordinates(address);
 				if (coords!=null)
 				{
-					coord1=coords.split(",")[0];
-					coord1=coord1.replace(".","");
-					coord2=coords.split(",")[1];
+					coord2=coords.split(",")[0];
 					coord2=coord2.replace(".","");
+					coord1=coords.split(",")[1];
+					coord1=coord1.replace(".","");
 				}
-				System.out.println("coord1:          "+coord1);
-				System.out.println("coord2:          "+coord2);
 				
 				Icon newIcon = new Icon();
 				AccountInfo newAccount = new AccountInfo(username,password);
@@ -356,22 +390,17 @@ public class ihungryRestaurantController {
 				restaurant = new Restaurant(newMenu,newAlbum);
 				restaurant.setAccountInfo(newAccount);
 				restaurant.setContactInfo(newContact);
-				System.out.println(restaurant.getContactInfo().getAddress().getLatitude());
-				System.out.println(restaurant.getContactInfo().getAddress().getLongitude());
 				
 				boolean result;
-				
 				result = model.signupForNewUser(restaurant);
 				if (result)
 				{
-					//gui.getSignupGui().getSignUp2().setVisible(false);
 					gui.getLoginGui().displayLoginScreen();
+					gui.getLoginGui().getUsernameLogin().requestFocus();
 					gui.getLoginGui().getLogin().addActionListener(new LoginListener());
 					gui.getLoginGui().getSignUp().addActionListener(new SignUpListener());
 				}
 			}
-			
-			
 			
 		}
 	}
@@ -386,7 +415,9 @@ public class ihungryRestaurantController {
 	 */	
 	
 	public class AcceptButtonListener implements ActionListener{
+		
 		public void actionPerformed(ActionEvent e){
+			
 			Order order = new Order(gui.getOrderGui().getOrderNoT().getText());
 			//clear the order details pane
 			gui.getOrderGui().getOrderNoT().setText("");
@@ -412,6 +443,7 @@ public class ihungryRestaurantController {
 		}
 	}
 	
+	
 	/**
 	 * DeleteButtonListener class implements the actionPerformed method. Moves the
 	 * accepted order from pending orders to declined orders.
@@ -422,8 +454,8 @@ public class ihungryRestaurantController {
 	
 	public class DeclineButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			Order order = new Order(gui.getOrderGui().getOrderNoT().getText());
 			
+			Order order = new Order(gui.getOrderGui().getOrderNoT().getText());
 			gui.getOrderGui().getOrderNoT().setText("");
 			gui.getOrderGui().getCustNo().setText("");
 			String[] emptyDetails = new String[2];
@@ -454,6 +486,7 @@ public class ihungryRestaurantController {
 	
 	public class DeliverButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
+			
 			Order order = new Order(gui.getOrderGui().getToBeDeliveredOrderNoT().getText());
 			//clear the order details section
 			gui.getOrderGui().getToBeDeliveredOrderNo().setText("");
@@ -475,6 +508,7 @@ public class ihungryRestaurantController {
 		}
 	}
 	
+	
 	/**
 	 * UpdateButtonListener class implements the actionPerformed method. Updates 
 	 * the restaurant's details that the user has entered.
@@ -484,62 +518,71 @@ public class ihungryRestaurantController {
 	 */	
 	
 	public class UpdateButtonListener implements ActionListener{
+		
 		public void actionPerformed(ActionEvent e){
-			if (gui.getOrderGui().getPasswordOrderT().getText() != restaurant.getAccountInfo().getPasswd() ||
-			gui.getOrderGui().getEmailOrderT().getText()!=restaurant.getContactInfo().getEmail() ||
+			
+			if (gui.getOrderGui().getEmailOrderT().getText()!=restaurant.getContactInfo().getEmail() ||
 			gui.getOrderGui().getStreetOrderT().getText()!=restaurant.getContactInfo().getAddress().getAddress() ||
 			gui.getOrderGui().getPriOrderT().getText()!=restaurant.getContactInfo().getPrimPhone() ||
 			gui.getOrderGui().getSecOrderT().getText()!=restaurant.getContactInfo().getSecPhone())
 			{
-					ContactInfo ci = restaurant.getContactInfo();
-					ci.setPrimPhone(gui.getOrderGui().getPriOrderT().getText());
-					ci.setSecPhone(gui.getOrderGui().getSecOrderT().getText());
-					 
-					String addr = gui.getOrderGui().getStreetOrderT().getText().concat(",").concat(gui.getOrderGui().getCityOrderT().getText()).concat(",").
-	                      concat((String) gui.getOrderGui().getStateOrderT().getSelectedItem()).concat(" ").concat(gui.getOrderGui().getZipOrderT().getText());
-					String coords = getCoordinates(addr);
-					String coor1 ="";
-					String coor2 ="";
-					if (coords!=null)
-					{
-						coor1=coords.split(",")[0];
-						coor1=coor1.replace(".","");
-						coor2=coords.split(",")[1];
-						coor2=coor2.replace(".","");
-					}
-					System.out.println("coor1:          "+coor1);
-					System.out.println("coor2:          "+coor2);
-					
-					ci.setAddress(new LocationInfo(addr,Long.parseLong(coor1),Long.parseLong(coor2)));
-					ci.setEmail(gui.getOrderGui().getEmailOrderT().getText());
-					if(model.updateContact(restaurant.getAccountInfo(), ci))
-					{
-						JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Successfully Updated.</FONT></HTML>");	
-						JOptionPane.showMessageDialog(null,errorFields);
-					}
-						
-						
-					
-			}
-			else
-			{
-				if ( gui.getOrderGui().getPasswordOrderT().getText()!="")
+				//create a ContactInfo object and update it with the values user entered
+				ContactInfo ci = restaurant.getContactInfo();
+				ci.setPrimPhone(gui.getOrderGui().getPriOrderT().getText());
+				ci.setSecPhone(gui.getOrderGui().getSecOrderT().getText()); 
+				String addr = gui.getOrderGui().getStreetOrderT().getText().concat(",").concat(gui.getOrderGui().getCityOrderT().getText()).concat(",").
+                      concat((String) gui.getOrderGui().getStateOrderT().getSelectedItem().toString().split(" ")[0]).concat(" ").concat(gui.getOrderGui().getZipOrderT().getText());
+				String coords = getCoordinates(addr);
+				String coor1 ="";
+				String coor2 ="";
+				if (coords!=null)
 				{
-					MD5.getMd5(gui.getOrderGui().getPasswordOrderT().getText());
+					coor2=coords.split(",")[0];
+					coor2=coor2.replace(".","");
+					coor1=coords.split(",")[1];
+					coor1=coor1.replace(".","");
 				}
+				try{
+				ci.setAddress(new LocationInfo(addr,Long.parseLong(coor1),Long.parseLong(coor2)));}
+				catch(NumberFormatException nfe){
+					System.out.println("Number Format Exception occured");
+				}
+				catch(Exception e1){
+					System.out.println("Exception occured");
+				}
+				ci.setEmail(gui.getOrderGui().getEmailOrderT().getText());
+				
+				//update the restaurant details
+				if(model.updateContact(restaurant.getAccountInfo(), ci))
+				{
+					JLabel errorFields = new JLabel("<HTML><FONT COLOR = Blue>Successfully Updated.</FONT></HTML>");	
+					JOptionPane.showMessageDialog(null,errorFields);
+				}
+						
 			}
+			
+				
 		}
 	}
+	
+	/**
+	 * LogoutButtonListener class implements the actionPerformed method. After user
+	 * logs out, the initial login screen is again displayed.
+	 * @author parkavi
+	 *
+	 */
 	
 	
 	public class LogoutButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			gui.getLoginGui().displayLoginScreen();
+			gui.getLoginGui().getUsernameLogin().requestFocus();
 			gui.getLoginGui().getLogin().addActionListener(new LoginListener());
 			gui.getLoginGui().getSignUp().addActionListener(new SignUpListener());
 			
 		}
 	}
+	
 	
 	/**
 	 * SelectionListener class implements ListSelection Listener. Gives 
@@ -548,6 +591,7 @@ public class ihungryRestaurantController {
 	 * @author parkavi
 	 *
 	 */
+	
 	public class SelectionListener implements ListSelectionListener{
 		
 		/*
@@ -557,8 +601,6 @@ public class ihungryRestaurantController {
 		
 		public void valueChanged(ListSelectionEvent e) {
 			
-			//System.out.println("into currorders listener");
-			System.out.println(e.getSource());
 			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getSubPanel10().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
@@ -567,12 +609,10 @@ public class ihungryRestaurantController {
 			if(minIndex>=0)
 			{
 				List<Order> pendingOrders = new ArrayList<Order>(hungryRestaurant.getPendingOrders());
-				Order selectedOrder = pendingOrders.get(minIndex);
-				
+				Order selectedOrder = pendingOrders.get(minIndex);			
 				gui.getOrderGui().getOrderNoT().setText(selectedOrder.getOrderID());
 				gui.getOrderGui().getCustNo().setText(selectedOrder.getCustID());
 				String[] orderDetails = new String[50];
-				
 				for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
 					orderDetails[j] = selectedOrder.getOrderItems().get(j)
 							.getItem().getItemName()
@@ -585,6 +625,27 @@ public class ihungryRestaurantController {
 	}
 	
 	
+	/*
+	 *Splits the address from ContactInfo object which is in String format. 
+	 */
+	
+	
+	public String getCustAddress(String supinfo){
+		
+		ContactInfo ci = new ContactInfo(new LocationInfo(""),"");
+		//parse from the supinfo to address and phone number
+		JSONObject supinfoObj = new JSONObject();
+		try {
+			if(supinfo!=null && supinfo.length() > 0)
+				supinfoObj = new JSONObject(supinfo);
+		} catch (JSONException e2) {
+			e2.printStackTrace();
+		}
+		ci.parseFromJSONObject(supinfoObj);
+		return ci.getAddress().getAddress();
+	}
+	
+	
 	public class ToBeDeliveredSelectionListener implements ListSelectionListener{
 		
 		/*
@@ -594,7 +655,6 @@ public class ihungryRestaurantController {
 		
 		public void valueChanged(ListSelectionEvent e) {
 			
-			//System.out.println("into tobedeliveredorders listener");
 			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getToBeDeliveredSubPanel().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
@@ -606,10 +666,13 @@ public class ihungryRestaurantController {
 				Order selectedOrder = acceptedOrders.get(minIndex);
 				gui.getOrderGui().getToBeDeliveredOrderNo().setText(selectedOrder.getOrderID());
 				gui.getOrderGui().getToBeDeliveredCustNo().setText(selectedOrder.getCustID());
-				//String custAddr = 
-				gui.getOrderGui().getToBeDeliveredCustAddrT().setText("");
-				String[] orderDetails = new String[50];
 				
+				//get the customer address 
+				String supinfo = model.getCustContact(restaurant.getAccountInfo(), selectedOrder);
+				String custAddress = getCustAddress(supinfo);
+				gui.getOrderGui().getToBeDeliveredCustAddrT().setText(custAddress);
+				
+				String[] orderDetails = new String[50];
 				for (int j = 0; j < selectedOrder.getOrderItems().size(); j++) {
 					orderDetails[j] = selectedOrder.getOrderItems().get(j)
 							.getItem().getItemName()
@@ -634,12 +697,10 @@ public class ihungryRestaurantController {
 		
 		/*
 		 * This method will populate the JList with the details of the currently selected order.
-		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
 		 */
 		
 		public void valueChanged(ListSelectionEvent e) {
 			
-			//System.out.println("into declinedorders listener");
 			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getDeclinedOrderSubPanel().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
@@ -672,6 +733,7 @@ public class ihungryRestaurantController {
 		}
 	}
 	
+	
 	/**
 	 * OrderHistorySelectionListener class implements ListSelection Listener. Gives 
 	 * implementation for the valueChanged method.
@@ -684,12 +746,10 @@ public class ihungryRestaurantController {
 		private boolean loop = true;
 		/*
 		 * This method will populate the JList with the details of the currently selected order.
-		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
 		 */
 		
 		public void valueChanged(ListSelectionEvent e) {
-			
-			//System.out.println("into orderhistory listener");
+		
 			iHungryRestaurant hungryRestaurant = iHungryRestaurant.getInstance();
 			gui.getOrderGui().getOrderHistorySubPanel().setVisible(true);
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
@@ -722,6 +782,7 @@ public class ihungryRestaurantController {
 		}
 		
 	}
+	
 	
 	/**
 	 * EditButtonListener class implements the actionPerformed method checking for 
@@ -830,6 +891,7 @@ public class ihungryRestaurantController {
 			}
 		}
 	}
+	
 		
 	/**
 	 * NextButtonListener class implements the actionPerformed method and 
